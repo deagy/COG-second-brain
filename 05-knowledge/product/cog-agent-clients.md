@@ -64,6 +64,7 @@ Ten specialist agents split into two classes, identical for every client:
 
 ## Notes
 - **Shim-present assertion (resolved 2026-08-28).** `scripts/validate-agent-surface.sh` now checks the Cline shim: `CLINE.md` and `.cline/rules/cog.md` exist, the three `.cline/agents/` stubs still redirect to `.claude/agents/<name>.md`, `.cline/skills/.gitkeep` is present, and the shim is registered in `cog-update.sh` FRAMEWORK_FILES. Verified passing on the restored tree and on a negative run (removed `CLINE.md` → assertion fires). No Cline-specific agent convention differs: `.cline/agents/` mirrors `.agents/agents/` exactly — both redirect directly to `.claude/agents/<name>.md` with identical frontmatter (name, description, `subagent: true`, `model: flash`), and the targets exist.
+- **Verify rule:** every new guard or assertion in a validation script must be proven by an independent negative run that forces it to fire, not by a happy-path pass alone. (Established adding the Cline shim-present assertion — a happy-path pass gave false confidence until a negative run with `CLINE.md` removed confirmed the assertion actually catches a missing shim.)
 - The shim is regenerative: `/update-cog` pulls framework-file updates from upstream and applies them surgically, leaving personal content untouched.
 
 ---
