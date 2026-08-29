@@ -206,6 +206,14 @@ FRAMEWORK_FILES=(
   ".gemini/skills/url-dump.md"
   ".gemini/skills/update-cog.md"
 
+  # Cline
+  "CLINE.md"
+  ".cline/rules/cog.md"
+  ".cline/agents/task-verifier.md"
+  ".cline/agents/integration-verifier.md"
+  ".cline/agents/harvest-curator.md"
+  ".cline/skills/.gitkeep"
+
   # Plugin metadata
   ".claude-plugin/plugin.json"
   ".cursor-plugin/plugin.json"

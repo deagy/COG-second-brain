@@ -1,0 +1,4 @@
+# Intentionally empty.
+# Cline discovers COG's 33 skills natively from ../.claude/skills/, so there is
+# nothing to duplicate here. Do NOT copy skills into this directory — that would
+# create a second source of truth. See CLINE.md.

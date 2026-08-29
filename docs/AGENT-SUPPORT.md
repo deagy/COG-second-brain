@@ -14,6 +14,7 @@ This document is the packaging contract: it tells contributors and maintainers w
 | Universal agent docs | `AGENTS.md` | 17 commands | Full documented fallback |
 | Kiro | `.kiro/powers/*/POWER.md` | 7 powers | Core workflows only |
 | Gemini CLI | `.gemini/commands/*.toml` + `.gemini/skills/*.md` | 7 commands | Core workflows only |
+| Cline | `.claude/skills/*/SKILL.md` (native) + `.cline/rules/cog.md` | 33 skills + policy | Skills native; policy shim in CLINE.md + .cline/rules/cog.md |
 
 ## What “Full” vs “Core” Means
 
@@ -37,7 +38,7 @@ These surfaces should expose the complete public COG command set:
 - `publish-to-confluence`
 - `update-knowledge-base`
 
-Today, **Claude Code**, **Antigravity**, and **`AGENTS.md`** are the full surfaces.
+Today, **Claude Code**, **Antigravity**, **Cline**, and **`AGENTS.md`** are the full surfaces.
 
 ### Core surfaces
 These surfaces intentionally cover the most common personal workflows first:
