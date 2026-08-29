@@ -1,0 +1,53 @@
+# Repository consolidation — status ledger
+
+North-star: every concern has exactly one owning repository, and the losing implementations are deleted or archived rather than left running.
+Spec: 04-projects/repo-consolidation/spec.md · Registry: 04-projects/harness/ultragoals.md
+Current phase: P3 · Overall: in-progress
+
+## Phases
+| Phase | AC covered | State | Evidence | Notes |
+|---|---|---|---|---|
+| P0 | — | done | evidence/P0/ | Charter + boundary baseline measured at cadre `180a00ca` |
+| P1 | AC-01,02,03,04 | **done** | evidence/P1/ | Kernel published and released; cadre merged and pushed. All four AC verified. Retro: harness/retro/2026-08-29-repo-consolidation-p1.md |
+| P2 | AC-05 | **done** | evidence/P2/ | Archived; intent-brief template salvaged into cadre. Retro: harness/retro/2026-08-29-repo-consolidation-p2.md |
+| P3 | AC-06,07 | in-progress | evidence/P3/ | T-01, T-02 done. Next: T-03, the human-gate decision |
+| P4 | AC-08 | not started | — | Knowledge store: cadre's or recall's, not both |
+| P5 | AC-09,10 | not started | — | Catalog home and cadre's remainder |
+
+## Open AC-n (no PASS row yet)
+- AC-01 through AC-04 — **all closed**, each with an artifact-level observation. See `evidence/P1/ledger.md`.
+- AC-11 — the end-to-end pipeline run. Split out of AC-03 in the 2026-08-28 spec amendment and assigned to P5, where an installed, released, provider-wired kernel exists
+- AC-06, AC-07 — P3. AC-08 — P4. AC-09, AC-10, AC-11 — P5.
+- AC-05 through AC-10 — phases not started
+
+## P0 baseline (measured 2026-08-28, cadre @ 180a00ca)
+- All five boundary tests pass: `TestNoRosterSidePackageImportsTheKernel`, `TestTheKernelDoesNotImportRosterSideCode`, `TestANeutralPackageStaysNeutral`, `TestTheKernelShipsAsItsOwnBinary`, `TestThisRepositoryRunsNoLifecycleOverlayOfItsOwn`
+- Independent import audit: exactly three files import `internal/kernel` — `cmd/agentic-sdlc/main.go` (only non-test importer), `internal/canonicaljson/agreement_test.go` (external test package), `internal/kernel/kernel_boundary_test.go`
+- Zero roster-side imports. `internal/kernel` imports only `internal/canonicaljson`
+- Move inventory: `internal/kernel/` 79 files / 16,857 non-test lines; `cmd/agentic-sdlc/` 1 file; `kernel/` README + 10 JSON contracts; `bin/agentic-sdlc`
+- Distribution already assumes separation: `plugin_generation.go` emits a shim resolving `AGENTIC_SDLC_BIN`, else downloading by `AGENTIC_SDLC_VERSION`
+
+## Next action (resume cold from here)
+
+**P3 T-03 — and it opens with a design decision, not a mapping.**
+
+Map a governed plan's `agents` (primary, reviewers, support) onto gloop's `roles` and an execution `pattern`. The mapping is mechanical. What is not: a governed plan carries `human_gates`, and gloop's executor has no concept of one. `pkg/govplan` already carries them rather than dropping them, precisely so this decision cannot be made by omission.
+
+Three answers, and it is a scope decision for gloop: refuse to execute past the gate and return; execute up to the gate and park; or execute everything and report the gate unmet. The first is the only one consistent with cadre's rule that an agent may not proceed on presumed consent — but it makes gloop's executor gate-aware, which genuinely widens what gloop is.
+
+Then T-04 (equivalence across the 25 corpus cases), T-05 (retire gloop's `Select()` and `catalog.MatchRoutes`), T-06 (prose in both repositories).
+
+Unpushed: cadre `984314fe`, gloop `bb1fd81`.
+
+## Repositories
+## Repositories
+## Repositories
+## Repositories
+## Repositories
+## Repositories
+## Repositories
+## Repositories
+## Repositories
+## Repositories
+- `~/sdk/cadre` @ `1ed3169a` on `main` — **merged and pushed**. Kernel absent from the published tree
+- `~/sdk/cadre-kernel` @ `24ec47c` on `main` — **https://github.com/deagy/cadre-kernel** (public), released `v0.14.2` with five platform archives

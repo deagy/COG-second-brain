@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Repository consolidation: ultragoal report</title>
+<style>
+  :root {
+    --bg: #fbfbfa; --panel: #ffffff; --ink: #1a1a19; --muted: #6b6b68;
+    --line: #e4e4e1; --pass: #1a7f4b; --fail: #b4232a; --skip: #8a8a86;
+    --accent: #1a1a19;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #131313; --panel: #1b1b1a; --ink: #ececea; --muted: #9a9a96;
+      --line: #2c2c2a; --pass: #4ec281; --fail: #f2777c; --skip: #7d7d79;
+      --accent: #ececea;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #131313; --panel: #1b1b1a; --ink: #ececea; --muted: #9a9a96;
+    --line: #2c2c2a; --pass: #4ec281; --fail: #f2777c; --skip: #7d7d79;
+    --accent: #ececea;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 var(--sans); }
+  .wrap { max-width: 62rem; margin: 0 auto; padding: 3rem 1.5rem 6rem; }
+  header { border-bottom: 1px solid var(--line); padding-bottom: 1.5rem; margin-bottom: 2.5rem; }
+  h1 { font-size: 1.6rem; letter-spacing: -0.01em; margin: 0 0 .4rem; }
+  .meta { color: var(--muted); font: 13px/1.5 var(--mono); }
+  h2 { font-size: 1rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted);
+       margin: 2.75rem 0 .9rem; font-weight: 600; }
+  p { margin: 0 0 1rem; }
+  .northstar { background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+               padding: 1rem 1.15rem; border-radius: 3px; }
+  .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 3px; background: var(--panel); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: .6rem .8rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font: 600 12px/1.4 var(--mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  tr:last-child td { border-bottom: 0; }
+  td.id, td.cp { font-family: var(--mono); white-space: nowrap; }
+  .v { font: 600 12px/1.4 var(--mono); white-space: nowrap; }
+  .v.pass { color: var(--pass); } .v.fail { color: var(--fail); } .v.skip { color: var(--skip); }
+  .obs { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+  figure { margin: 1.25rem 0; }
+  figure img { display: block; max-width: 100%; border: 1px solid var(--line); border-radius: 3px; }
+  figcaption { color: var(--muted); font: 12.5px/1.5 var(--mono); margin-top: .5rem; }
+  .next { background: var(--panel); border: 1px solid var(--line); padding: 1rem 1.15rem; border-radius: 3px; }
+  footer { margin-top: 3.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line);
+           color: var(--muted); font: 12.5px/1.5 var(--mono); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Repository consolidation</h1>
+  <div class="meta">repo-consolidation · lane full · 2026-08-29 · P2 of P5 complete · in progress</div>
+</header>
+
+<h2>North star</h2>
+<p class="northstar">Every concern has exactly one owning repository, and the losing implementations are deleted or archived rather than left running. Four repositories claimed five concerns between them, most of them twice — a lifecycle that existed as a rigorous kernel in one place and a placeholder template in another, orchestration in two, knowledge storage in two, agent definitions in three. Two phases in, the lifecycle kernel ships from <strong>deagy/cadre-kernel</strong> with a released binary, cadre no longer carries it, and the third lifecycle implementation is archived with a forwarding address. A contract change now has one place to make it.</p>
+
+<h2>Phases</h2>
+<div class="scroll">
+<table>
+  <thead><tr><th>Phase</th><th>Scope</th><th>Covers</th><th>State</th></tr></thead>
+  <tbody>
+    <tr><td class="id">P0</td><td>Charter and baseline</td><td class="id">—</td><td class="v pass">done</td></tr>
+    <tr><td class="id">P1</td><td>Extract the lifecycle kernel to its own repository</td><td class="id">AC-01…04</td><td class="v pass">done</td></tr>
+    <tr><td class="id">P2</td><td>Retire agentic-lifecycle</td><td class="id">AC-05</td><td class="v pass">done</td></tr>
+    <tr><td class="id">P3</td><td>Port orchestration to gloop with its corrections</td><td class="id">AC-06, AC-07</td><td class="v skip">not started</td></tr>
+    <tr><td class="id">P4</td><td>Decide and execute the knowledge-store question</td><td class="id">AC-08</td><td class="v skip">not started</td></tr>
+    <tr><td class="id">P5</td><td>Settle cadre's remainder and the catalog's home</td><td class="id">AC-09…11</td><td class="v skip">not started</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>Acceptance criteria</h2>
+<div class="scroll">
+<table>
+  <thead><tr><th>AC</th><th>Criterion</th><th>Phase</th><th>Verdict</th></tr></thead>
+  <tbody>
+    <tr><td class="id">AC-01</td><td>The lifecycle kernel builds and tests standalone from its own repository</td><td class="id">P1</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-02</td><td>cadre carries no kernel source</td><td class="id">P1</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-03</td><td>cadre and the extracted kernel still agree on the dispatch fingerprint</td><td class="id">P1</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-04</td><td>cadre's copies of the lifecycle contracts are held to the kernel's</td><td class="id">P1</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-05</td><td>agentic-lifecycle is retired and no third contract definition survives</td><td class="id">P2</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-06</td><td>Orchestration produces equivalent plans from gloop</td><td class="id">P3</td><td class="v skip">open</td></tr>
+    <tr><td class="id">AC-07</td><td>The accumulated corrections travelled with it</td><td class="id">P3</td><td class="v skip">open</td></tr>
+    <tr><td class="id">AC-08</td><td>Knowledge storage has one owner</td><td class="id">P4</td><td class="v skip">open</td></tr>
+    <tr><td class="id">AC-09</td><td>The role catalog has one publishing home</td><td class="id">P5</td><td class="v skip">open</td></tr>
+    <tr><td class="id">AC-10</td><td>No concern has two owners</td><td class="id">P5</td><td class="v skip">open</td></tr>
+    <tr><td class="id">AC-11</td><td>The split pipeline runs end to end</td><td class="id">P5</td><td class="v skip">open</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>Evidence</h2>
+<p>Every row records what was observed in an artifact, never what a tool returned. The one FAIL is kept rather than overwritten: it is the phase's most useful row.</p>
+<div class="scroll">
+<table>
+  <thead><tr><th>AC</th><th>CP</th><th>Verdict</th><th>Observation</th><th>Artifact</th></tr></thead>
+  <tbody>
+    <tr><td class="id">AC-01</td><td class="cp">CP-5</td><td class="v pass">PASS</td><td class="obs">A fresh clone from GitHub built, tested green and printed 0.14.2; separately a downloaded release asset was unpacked and run</td><td class="obs">git clone; gh release download v0.14.2</td></tr>
+    <tr><td class="id">AC-02</td><td class="cp">CP-5</td><td class="v pass">PASS</td><td class="obs">kernel and internal/kernel absent from the <em>published</em> tree, checked against the GitHub contents API rather than the local checkout</td><td class="obs">gh api repos/deagy/cadre/contents</td></tr>
+    <tr><td class="id">AC-03</td><td class="cp">CP-3v</td><td class="v pass">PASS</td><td class="obs">Both fixtures byte-identical (sha256 cd832b3b…); each repository reproduces sha256:924ca52daf… importing only its own implementation</td><td class="obs">internal/canonicaljson/testdata/</td></tr>
+    <tr><td class="id">AC-03</td><td class="cp">CP-3</td><td class="v pass">PASS</td><td class="obs">Falsified: removing provenance from the selector's exclusion set failed the surviving single-sided test on both plans, without importing the kernel</td><td class="obs">internal/selector/canonical.go</td></tr>
+    <tr><td class="id">AC-04</td><td class="cp">CP-3</td><td class="v pass">PASS</td><td class="obs">Drift check falsified in both directions — perturbing the vendored copy, and pointing it at a divergent source; the error names the resolved source</td><td class="obs">kernel_contracts_drift_test.go</td></tr>
+    <tr><td class="id">AC-05</td><td class="cp">CP-3v</td><td class="v fail">FAIL</td><td class="obs">First pass: schemas/run-record.yaml and gate-result.yaml still existed at HEAD — an independent definition with no test tying it to the authority</td><td class="obs">agentic-lifecycle/schemas/</td></tr>
+    <tr><td class="id">AC-05</td><td class="cp">CP-3v</td><td class="v pass">PASS</td><td class="obs">After fix: only schemas/README.md tracked; no contract file anywhere at HEAD; archived, local and remote both 630bb4f; correcting commit names the earlier false claim</td><td class="obs">git ls-files; gh api</td></tr>
+    <tr><td class="id">AC-05</td><td class="cp">CP-4</td><td class="v pass">PASS</td><td class="obs">No surviving repository depends on the retired one. cadre's seven hits are its own salvage-attribution prose in generated mirrors</td><td class="obs">grep across four repos</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>What the gates caught</h2>
+<p>P1's verifier returned <strong>FAIL:fixable</strong> because cadre still held the kernel — correct against the end state, and the criterion's wording was the lead's fault rather than the work's. P2's verifier returned <strong>FAIL:fixable</strong> on the one clause the lead had read generously in its own favour: an archived file cannot drift, but a file at HEAD reads as current regardless. Both failures were more useful than the passes.</p>
+<p>Cadre's own test suite caught five couplings the extraction plan missed — the provider bundle, the release program model, the release gate's watched components, the engine's kernel-root resolution, and the plugin generator's version shim — each failing with a message naming exactly what broke. Separately, <code>gh repo create</code> refusing a name was the only thing that prevented pushing into an archived repository.</p>
+
+<h2>Next action</h2>
+<p class="next"><strong>P3 — port orchestration to gloop.</strong> AI-1 governs the plan: inventory four things, not two — what imports the code, what names it in prose, <em>what reads its data</em>, and <em>what models it as a releasable component</em>. P1 inventoried the first two and paid with three mid-execution discoveries. AC-07 is the hard one: eight named corrections must each survive the port with a test that fails when the rule is removed.</p>
+
+<footer>
+  Generated by the COG verification harness · evidence bundles 04-projects/repo-consolidation/evidence/P1 and P2 · retros in 04-projects/harness/retro/
+</footer>
+
+</div>
+</body>
+</html>

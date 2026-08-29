@@ -1,0 +1,6 @@
+2026-08-29T05:17:54Z	CP-2	PASS	3 tasks; salvage recommendation made, one open question
+2026-08-29T19:07:30Z	CP-3	PASS	T-01 recorded, T-02 verified; T-03 awaits approval
+2026-08-29T19:29:11Z	CP-3v	PASS	AC-05d failed then fixed and re-verified; 6/6 criteria
+2026-08-29T19:29:11Z	CP-4	PASS	no surviving repo depends on the retired one
+2026-08-29T19:29:11Z	CP-6	PASS	archived, observed on the repository
+2026-08-29T19:29:50Z	CP-7	PASS	retro: harness/retro/2026-08-29-repo-consolidation-p2.md

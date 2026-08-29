@@ -1,0 +1,11 @@
+2026-08-29T03:48:23Z	CP-2	PASS	6 tasks, T-01 blocks T-02
+2026-08-29T03:52:38Z	CP-3v	PASS	T-01 verified, 5/5 AC rows, full suite green
+2026-08-29T03:55:21Z	CP-3	PARTIAL	T-02 builds and runs; provider bundle coupling found
+2026-08-29T04:11:19Z	CP-3v	FAIL	T-02: AC-01 PASS; FAIL:fixable is T-05 scheduled work
+2026-08-29T04:16:51Z	CP-3	PASS	T-03 vendored contracts + both compatibility guards, falsified
+2026-08-29T04:22:01Z	CP-3	PASS	T-04 kernel build+CI; cgo-free confirmed
+2026-08-29T04:38:00Z	CP-3	FAIL	T-05 incomplete: 4 packages red, scope quadrupled, escalated
+2026-08-29T04:43:33Z	CP-3	PASS	T-05 complete: AC-02 closed, suite green
+2026-08-29T04:50:34Z	CP-6	PASS	kernel published at github.com/deagy/cadre-kernel, fresh clone verified
+2026-08-29T05:01:34Z	CP-5	PASS	kernel v0.14.2 released; cadre merged and pushed; kernel absent from published tree
+2026-08-29T05:15:56Z	CP-7	PASS	retro: 04-projects/harness/retro/2026-08-29-repo-consolidation-p1.md
