@@ -158,6 +158,45 @@ else
   record_failure "docs/AGENT-SUPPORT.md is missing"
 fi
 
+# Cline shim surface (thin pointer to the Claude reference implementation):
+# skills load natively from .claude/skills/, policy translates CLAUDE.md, and
+# specialist roles are read-only stubs that redirect to .claude/agents/.
+if [[ -f CLINE.md ]]; then
+  ok "CLINE.md entry note exists"
+else
+  record_failure "CLINE.md is missing — the Cline shim entry note is absent"
+fi
+
+if [[ -f .cline/rules/cog.md ]]; then
+  ok ".cline/rules/cog.md policy translation exists"
+else
+  record_failure ".cline/rules/cog.md is missing — the Cline policy translation is absent"
+fi
+
+if [[ -d .cline/agents ]]; then
+  for stub in task-verifier integration-verifier harvest-curator; do
+    if [[ -f ".cline/agents/$stub.md" ]] && grep -Fq ".claude/agents/$stub.md" ".cline/agents/$stub.md"; then
+      ok ".cline/agents/$stub.md redirects to .claude/agents/$stub.md"
+    else
+      record_failure ".cline/agents/$stub.md is missing or does not redirect to .claude/agents/$stub.md"
+    fi
+  done
+else
+  record_warning ".cline/agents/ directory is missing (specialist-role stubs not present)"
+fi
+
+if [[ -f .cline/skills/.gitkeep ]]; then
+  ok ".cline/skills/.gitkeep marker exists"
+else
+  record_failure ".cline/skills/.gitkeep marker is missing"
+fi
+
+if grep -q '"CLINE.md"' cog-update.sh && grep -q '".cline/rules/cog.md"' cog-update.sh && grep -q '".cline/skills/.gitkeep"' cog-update.sh; then
+  ok "cog-update.sh registers the Cline shim in FRAMEWORK_FILES"
+else
+  record_failure "cog-update.sh does not register the Cline shim files in FRAMEWORK_FILES"
+fi
+
 if [[ $failures -gt 0 ]]; then
   echo
   err "Validation failed with $failures error(s) and $warnings warning(s)"
