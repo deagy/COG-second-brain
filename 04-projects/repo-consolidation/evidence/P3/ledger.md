@@ -101,3 +101,58 @@ The distinction from P2's failure is deliberate and worth keeping visible: there
 The P3 finding and the ownership decision both describe gloop's selector as dispatching "the single primary role". That came from `doc.go`. `selector.go`'s own comment is more complete: it plans reviewer and support presets after the primary when the route declares them.
 
 The conclusion is unchanged — gloop's selector has no concept of risk rules, quality gates, human gates, fingerprints or schema versioning, so it remains an execution planner rather than a governed selector. But the characterisation was wrong in a way that undersold it, and the deprecation notice says "the difference is governance rather than capability" for that reason.
+
+## T-05 corrected (gloop `9fbcbff`, `348cb2d`)
+
+`9ce408b` shipped a deprecation that was both wrong and incomplete. Both defects are fixed; the ledger keeps the original rather than rewriting it.
+
+| AC | CP | Result | Observation |
+|---|---|---|---|
+| AC-07 | CP-3 | PASS | `catalog.MatchRoutes` un-deprecated. It is the shared matching engine and `pkg/roster` and `pkg/tenant` both call it; marking it told their readers they were built on something scheduled for removal. Only `selector.Select` was ever meant to be marked. |
+| AC-07 | CP-3 | PASS | `roster.Select` and `gloop roster plan` deprecated on the same timeline, pointing at `pkg/govplan`. Now no undeprecated path in gloop produces a plan from route matching. |
+| — | CP-3 | PASS | The `exclude_paths` divergence is documented in the deprecation notice, `CHANGELOG.md` and `docs/ROSTER.md`. |
+| — | CP-3 | PASS | Build, vet, full suite green. |
+
+### The defect, and how it was found
+
+T-05's inventory was `grep ... | head -10` against eleven hits. Two production callers were below the cut, and the truncation was invisible in the output. The deprecation was designed against a partial list, committed, and pushed.
+
+T-06 found it — writing prose about what gloop no longer does required checking what gloop still does.
+
+**Practice item (AI-10): an inventory piped through `head` is not an inventory.** Count first, then read all of it. AI-1 required four axes; this ran them and then truncated the first.
+
+### What the complete inventory found
+
+`pkg/roster.Select` is a third plan-producing path, and the one that actually duplicates cadre — it reads a cadre-format roster and re-implements cadre's `keyword_groups` and `exclude_paths`.
+
+**And it has already diverged.** `exclude_paths` here drops the whole route when any request file matches; cadre subtracts at the *file* level and the route keeps matching on other files. Verified in both sources. Given `[internal/api/handler.go, vendor/lib.go]` against `paths: ["**/*.go"]` and `exclude_paths: ["vendor/**"]`, cadre matches on `handler.go` and gloop drops the route.
+
+`exclude_paths` polarity is **correction #2 in AC-07's own list** — the ultragoal had already named this rule as one that must not be lost, and a second implementation had already lost it.
+
+### Documented rather than fixed, deliberately
+
+Correcting the divergence would mean maintaining a faithful second implementation of cadre's routing indefinitely, which is what retiring the path exists to avoid. A silent fix would entrench the duplicate for another release cycle while looking like diligence.
+
+The cost is real and stated: until removal lands, `roster plan` users get plans cadre would not produce. That is now said in the deprecation notice, the changelog and the roster guide — where a user of it will actually read it.
+
+## T-06 — prose (gloop `2067025`)
+
+| AC | CP | Result | Observation |
+|---|---|---|---|
+| AC-07 | CP-3 | PASS | `go doc ./pkg/selector` leads with the deprecation and the replacement — observed from the tool's output, not the source, since pkg.go.dev renders the same thing. |
+| AC-07 | CP-3 | PASS | README lists `pkg/govplan`, marks `pkg/selector` deprecated, and its headline feature line now says governed selection comes from cadre while gloop executes what it produces. |
+| — | CP-3 | PASS | Build and full suite green. |
+
+### The plan's cadre half did not exist
+
+CP-2 said T-06 would update "cadre's `RUNBOOK.md` and the `run-agent-orchestration` skill where they describe gloop as selecting". **cadre makes no mention of gloop anywhere** — not in any `.md` or `.go` file. The task was written from an assumption, not a search.
+
+Nothing was added there either. A pointer would describe an integration that is not wired: `govplan` can read a plan, but nothing pipes cadre's output into it. That belongs with the wiring, not ahead of it.
+
+### A correction that closes a loop
+
+`doc.go` said "the matched route dispatches its preset as the single primary role". It does not — further primary, reviewer and support presets are planned after it.
+
+That single line is where this phase's recurring mischaracterisation came from. It was read early, believed, and repeated into the P3 finding and the ownership decision before `selector.go`'s own comment contradicted it. Both downstream documents were corrected earlier; the source is corrected now, so the next reader does not inherit it.
+
+**Worth naming: the doc comment was wrong and the code was right, and every check that would have caught it was a code check.** Prose is not covered by the suite, and a package doc is the first thing a new reader trusts.

@@ -13,4 +13,5 @@ Action items from retros. `AI-n` ids are scoped to their retro.
 | AI-7 | [2026-08-29 P2](retro/2026-08-29-repo-consolidation-p2.md) | Never put a file write and the commit describing it in one compound command. Write, confirm, then commit. | working practice | open |
 | AI-8 | [2026-08-29 P2](retro/2026-08-29-repo-consolidation-p2.md) | Assess salvage value from the working tree as well as history. | working practice | open |
 | AI-9 | [2026-08-29 P2](retro/2026-08-29-repo-consolidation-p2.md) | Check repository visibility before reasoning about who its documentation reaches. | working practice | open |
+| AI-10 | [P3 T-05 defect](../repo-consolidation/evidence/P3/CP-3-T05-defect.md) | An inventory piped through `head` is not an inventory. Count the hits first, then read all of them. Truncation is invisible in the output and reads as completeness. | working practice | open |
 

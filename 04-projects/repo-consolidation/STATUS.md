@@ -10,7 +10,7 @@ Current phase: P3 · Overall: in-progress
 | P0 | — | done | evidence/P0/ | Charter + boundary baseline measured at cadre `180a00ca` |
 | P1 | AC-01,02,03,04 | **done** | evidence/P1/ | Kernel published and released; cadre merged and pushed. All four AC verified. Retro: harness/retro/2026-08-29-repo-consolidation-p1.md |
 | P2 | AC-05 | **done** | evidence/P2/ | Archived; intent-brief template salvaged into cadre. Retro: harness/retro/2026-08-29-repo-consolidation-p2.md |
-| P3 | AC-06,07 | in-progress | evidence/P3/ | AC-06 and AC-07 complete. Next: T-06 prose. AC-07b deferred to gloop's next major |
+| P3 | AC-06,07 | in-progress | evidence/P3/ | All six tasks done. Next: gate the phase — CP-3v, CP-4, CP-5, report, retro |
 | P4 | AC-08 | not started | — | Knowledge store: cadre's or recall's, not both |
 | P5 | AC-09,10 | not started | — | Catalog home and cadre's remainder |
 
@@ -29,14 +29,15 @@ Current phase: P3 · Overall: in-progress
 
 ## Next action (resume cold from here)
 
-**P3 T-06 — the last task in the phase.** Prose in both repositories: cadre's `RUNBOOK.md` and the `run-agent-orchestration` skill where they describe gloop as selecting, and gloop's `README.md` and `pkg/selector/doc.go` where they describe selection as gloop's job.
+**Gate P3.** All six tasks are done. The phase now needs CP-3v (fresh-context verification of AC-06 and AC-07), CP-4 (integration against P1 and P2), CP-5, a regenerated `report.html`, and the CP-7 retro.
 
-Then P3 gates: CP-3v verification, CP-4 integration against P1 and P2, CP-5, the report regenerated, and CP-7 retro.
+The retro has real material: T-05 shipped a wrong deprecation because its inventory was truncated by `head -10`, and T-06 found it. AI-10 is already in the backlog.
 
-AC-06 and AC-07 both have complete evidence. **AC-07b** — removing the deprecated functions — is deferred to gloop's next major and tracked in the spec matrix, so P3 can gate without it.
+**AC-07b** — removing the deprecated functions — is deferred to gloop's next major and tracked in the spec matrix, so P3 gates without it.
 
-Unpushed: gloop `85a5c55`, `5dc28ac`, `9ce408b`.
+Unpushed: gloop `9fbcbff`, `348cb2d`, `2067025` (plus `85a5c55`, `5dc28ac`, `9ce408b` if not yet pushed).
 
+## Repositories
 ## Repositories
 ## Repositories
 ## Repositories
