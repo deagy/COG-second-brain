@@ -28,7 +28,7 @@ When this is done, a change to a contract has one place to make it, and no secon
 | AC-04 | cadre's copies of the lifecycle contracts are held to the kernel's | The vendored copies carry a drift check that fails both when a copy is hand-edited and when pointed at a divergent source |
 | AC-05 | `agentic-lifecycle` is retired and no third contract definition survives | Repository archived; anything salvaged exists in exactly one other repository; no `run-record` definition exists outside the kernel |
 | AC-06 | gloop executes from cadre's governed plan | For each case in cadre's golden corpus, gloop consumes the plan cadre emits and produces an execution plan whose roles are exactly the plan's `agents` (primary, reviewers, support), in a stated pattern |
-| AC-07 | Only one selection implementation survives | gloop's `Select()` and `catalog.MatchRoutes` are gone; no route-matching or plan-producing code remains in gloop, and cadre's corrections are untouched because nothing was ported |
+| AC-07 | Only one selection implementation is reachable by new code | gloop's `Select()` and `catalog.MatchRoutes` carry Go `Deprecated:` markers naming `pkg/govplan` as the replacement; the CHANGELOG records the migration and the release they are removed in; no code path in gloop other than the deprecated ones produces a plan. **Removal completes at gloop's next major**, tracked as AC-07b |
 | AC-08 | Knowledge storage has one owner | Exactly one of cadre's `internal/knowledge` or recall survives; the retired one is deleted or archived; the surviving one passes a documented parity check |
 | AC-09 | The role catalog has one publishing home | The catalog exists in exactly one repository; each consuming runtime resolves it from there with no vendored second copy lacking a drift check |
 | AC-10 | No concern has two owners | The ownership table in `04-projects/agentic-sdlc/planning/repository-ownership-decision.md` names one repository per concern, and for each losing claimant the implementation is absent from its tree |
@@ -73,10 +73,19 @@ They are kept, not deleted, because they remain the list of things that must not
 | AC-05 | P2 | | pending |
 | AC-06 | P3 | | pending |
 | AC-07 | P3 | | pending |
+| AC-07b | post-P3, at gloop's next major | | deferred |
 | AC-08 | P4 | | pending |
 | AC-09 | P5 | | pending |
 | AC-10 | P5 | | pending |
 | AC-11 | P5 | | pending |
+
+### AC-07 amended 2026-08-29 — deprecate, then remove
+
+AC-07 originally required `Select()` and `catalog.MatchRoutes` to be gone. Inventorying dependents before deleting showed gloop is a published Go module — `v0.1.0` and `v0.2.0` tagged, MIT-licensed, on pkg.go.dev — and both functions are exported. Removing them is a breaking change for any importer.
+
+The criterion measured the wrong moment. What matters is that only one implementation is **reachable by new code**; a deprecated function whose doc comment names its replacement is a migration path with an expiry date, not a competing implementation. So AC-07 now closes on deprecation, and **AC-07b** carries the removal to gloop's next major.
+
+This is an amendment made in the open before the gate, not a claim that the original criterion was already met. The distinction matters because P2's failure was exactly the second thing.
 
 ## Risks and open questions
 

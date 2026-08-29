@@ -110,7 +110,7 @@ The unresolved part is 10 against 159. `agentic-lifecycle`'s README describes a 
 
 **Amended 2026-08-29.** This section originally assigned "selection and dispatch" to gloop on the reasoning that it is orchestration by definition. Reading gloop's selector showed the concern was drawn wrong.
 
-Gloop's `pkg/selector` produces an **execution plan**: ordered roles with a sequential or fan-out pattern, disposition `proceed | modify | reject`, ready to hand a runner. Its doc comment is explicit that the matched route dispatches its preset as the single primary role.
+Gloop's `pkg/selector` produces an **execution plan**: ordered roles with a sequential or fan-out pattern, disposition `proceed | modify | reject`, ready to hand a runner. It matches a route and plans that route's primary, reviewer and support presets. (An earlier draft of this section said it plans a single primary role, taken from `doc.go`; `selector.go`'s own comment is more complete. Corrected 2026-08-29 — the difference between the two engines is governance, not capability.)
 
 cadre's produces a **governed selection record**: every route that matched and why, which risk rules fired, required *and ignored* quality gates, human gates, teams, context packs, lifecycle tracking, a fingerprint proving the document matches its own content, all against a closed schema versioned so a consumer pinned at an older release fails loudly.
 

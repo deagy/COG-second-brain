@@ -1,3 +1,6 @@
 2026-08-29T20:04:40Z	CP-2	PASS	6 tasks; four-axis inventory found the shipped schema only axis 4 sees
 2026-08-29T22:27:00Z	CP-2	PASS	revised: compose not port; AC-06/07 rewritten
 2026-08-29T22:32:20Z	CP-3	PASS	T-01, T-02 built and falsified
+2026-08-29T22:41:56Z	CP-3	PASS	T-03: gate refusal implemented and falsified
+2026-08-29T22:45:48Z	CP-3	PASS	T-04: 25/25 corpus cases, 20 converted 4 gated 1 unstaffed
+2026-08-29T22:55:41Z	CP-3	PASS	T-05: deprecated, AC-07 closed, AC-07b deferred

@@ -10,7 +10,7 @@ Current phase: P3 · Overall: in-progress
 | P0 | — | done | evidence/P0/ | Charter + boundary baseline measured at cadre `180a00ca` |
 | P1 | AC-01,02,03,04 | **done** | evidence/P1/ | Kernel published and released; cadre merged and pushed. All four AC verified. Retro: harness/retro/2026-08-29-repo-consolidation-p1.md |
 | P2 | AC-05 | **done** | evidence/P2/ | Archived; intent-brief template salvaged into cadre. Retro: harness/retro/2026-08-29-repo-consolidation-p2.md |
-| P3 | AC-06,07 | in-progress | evidence/P3/ | T-01, T-02 done. Next: T-03, the human-gate decision |
+| P3 | AC-06,07 | in-progress | evidence/P3/ | AC-06 and AC-07 complete. Next: T-06 prose. AC-07b deferred to gloop's next major |
 | P4 | AC-08 | not started | — | Knowledge store: cadre's or recall's, not both |
 | P5 | AC-09,10 | not started | — | Catalog home and cadre's remainder |
 
@@ -29,16 +29,18 @@ Current phase: P3 · Overall: in-progress
 
 ## Next action (resume cold from here)
 
-**P3 T-03 — and it opens with a design decision, not a mapping.**
+**P3 T-06 — the last task in the phase.** Prose in both repositories: cadre's `RUNBOOK.md` and the `run-agent-orchestration` skill where they describe gloop as selecting, and gloop's `README.md` and `pkg/selector/doc.go` where they describe selection as gloop's job.
 
-Map a governed plan's `agents` (primary, reviewers, support) onto gloop's `roles` and an execution `pattern`. The mapping is mechanical. What is not: a governed plan carries `human_gates`, and gloop's executor has no concept of one. `pkg/govplan` already carries them rather than dropping them, precisely so this decision cannot be made by omission.
+Then P3 gates: CP-3v verification, CP-4 integration against P1 and P2, CP-5, the report regenerated, and CP-7 retro.
 
-Three answers, and it is a scope decision for gloop: refuse to execute past the gate and return; execute up to the gate and park; or execute everything and report the gate unmet. The first is the only one consistent with cadre's rule that an agent may not proceed on presumed consent — but it makes gloop's executor gate-aware, which genuinely widens what gloop is.
+AC-06 and AC-07 both have complete evidence. **AC-07b** — removing the deprecated functions — is deferred to gloop's next major and tracked in the spec matrix, so P3 can gate without it.
 
-Then T-04 (equivalence across the 25 corpus cases), T-05 (retire gloop's `Select()` and `catalog.MatchRoutes`), T-06 (prose in both repositories).
+Unpushed: gloop `85a5c55`, `5dc28ac`, `9ce408b`.
 
-Unpushed: cadre `984314fe`, gloop `bb1fd81`.
-
+## Repositories
+## Repositories
+## Repositories
+## Repositories
 ## Repositories
 ## Repositories
 ## Repositories
