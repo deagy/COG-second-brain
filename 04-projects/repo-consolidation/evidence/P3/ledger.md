@@ -156,3 +156,64 @@ Nothing was added there either. A pointer would describe an integration that is 
 That single line is where this phase's recurring mischaracterisation came from. It was read early, believed, and repeated into the P3 finding and the ownership decision before `selector.go`'s own comment contradicted it. Both downstream documents were corrected earlier; the source is corrected now, so the next reader does not inherit it.
 
 **Worth naming: the doc comment was wrong and the code was right, and every check that would have caught it was a code check.** Prose is not covered by the suite, and a package doc is the first thing a new reader trusts.
+
+## CP-3v — fresh-context verification
+
+Returned **FAIL:fixable** on three findings, all in prose rather than code. Fixed in gloop `fd05a32`.
+
+| AC | CP | Result | Observation |
+|---|---|---|---|
+| AC-06 | CP-3v | PASS | 11 tests pass. Corpus: 25 cases, 20 converted, 4 gated (all four risk routes — destructive, identity-privilege, production-deploy, sensitive-data), 1 unstaffed (needs-triage). Roles verified as exactly `Agents.Primary` then `Reviewers` then `Support`. |
+| AC-07 | CP-3v | FAIL → fixed | Searched all 147 non-test files. Exactly three functions construct a `DispatchPlan`; two are deprecated and the third is the replacement. But `pkg/tenant`'s `RouteMatches` is an exported, unmarked route-matching path. |
+| AC-07-doc | CP-3v | FAIL → fixed | `CHANGELOG.md` still claimed `catalog.MatchRoutes` would be removed, contradicting the source. `go doc ./pkg/roster` showed no deprecation at package level. |
+| AC-regression | CP-3v | PASS | Both full suites green. |
+
+### The changelog contradicted the code, and that is the same failure twice
+
+`9fbcbff` un-deprecated `catalog.MatchRoutes` in the source and left the changelog entry saying it would be removed. A reader of one artifact and a reader of the other were told opposite things.
+
+This is the second time in this ultragoal that a correction was applied to code and not to the prose describing it — the first was a commit message describing a file the commit did not contain. **Both were caught by a verifier, neither by a test**, because prose is not covered by any suite.
+
+### On the tenant helper: exempt, and now it says so
+
+The fix hint suggested deprecating it. It was documented as exempt instead, with the reasoning in the source: it returns route matches and nothing else — no plan, no disposition, no roles, no gates — over an engine that is itself staying. The distinction being drawn is **plan production**, not route matching. Deprecating an introspection helper because something it does not do moved elsewhere would be marking the wrong thing, which is exactly the error `9ce408b` made with `MatchRoutes`.
+
+The fix hint on `pkg/roster` was also deviated from: it suggested a package-level deprecation, which would deprecate loading, validating and inspecting a roster in order to retire the planning path. The package doc names the deprecated method instead.
+
+## CP-4 — integration against P1 and P2
+
+**VERDICT PASS**, with one caveat worth more than the pass.
+
+| INT | CP | Result | Observation |
+|---|---|---|---|
+| INT-1 | CP-4 | PASS | P1's fingerprint agreement holds. Both repositories' fixtures independently hashed: `sha256 cd832b3b…` on each. Byte-identical, verified outside the test harness. |
+| INT-2 | CP-4 | PASS | Contract drift guards ran a real comparison, not the skip path. All three vendored contracts `diff`'d identical outside the harness. |
+| INT-3 | CP-4 | PASS | cadre's full suite and all three generator checks current. P2's salvaged template survives P3 and is counted in the 321 role-metadata files. |
+| INT-4 | CP-4 | PASS | gloop's two cross-repo guards ran and compared — confirmed `PASS` not `SKIP`, against real fixtures of 277 and 1,986 lines. |
+| INT-5 | CP-4 | PASS with caveat | Pin `0.14.2`, tag `v0.14.2`, built binary reports `0.14.2`, window `[0.13.2, 1.0.0)`. All three agree, verified by independent build rather than by the test. |
+
+### The caveat: a guard passing while checking the wrong artifact
+
+`TestOurProviderBundleAcceptsTheKernelWeDependOn` resolves `agentic-sdlc` from `PATH` when `AGENTIC_SDLC_BIN` is unset. On this machine that is a pipx-installed **legacy Python CLI reporting 0.13.2**, not a build of the extracted kernel at 0.14.2. It passed only because 0.13.2 sits exactly on the window's inclusive minimum.
+
+The environment note recording "installed 0.13.2, repository 0.14.2" was written in P1 and treated as trivia. It was not: it meant the guard had never exercised the kernel the repository depends on.
+
+Fixed in cadre `13dd16a2` by making the guard log which binary and version answered. The check is still the right one — "would a consumer's installed kernel accept this bundle" is a question about what is installed — but a passing run is now legible, so a stale binary shadowing the name is visible rather than silent.
+
+## CP-5 — acceptance, observed on the artifact
+
+The pipeline run end to end for the first time: a live `cadre select` piped into gloop's `govplan`, not a vendored fixture. A throwaway program read stdin, parsed, converted, and printed; it was deleted afterwards and the tree left clean.
+
+| AC | CP | Result | Observation |
+|---|---|---|---|
+| AC-06 | CP-5 | PASS | `cadre select --task "add a new HTTP handler to the go service" --files internal/api/handler.go --classification internal` piped into gloop produced an execution plan: `status: pending`, `disposition: proceed`, roles led by `backend-engineer` and `go-service-implementer` as `role_type: primary`. Exit 0. |
+| AC-06 | CP-5 | PASS | `--task "deploy to production the new release build" --files deploy/prod.yaml --classification confidential` → `REFUSED: govplan: the plan requires a human decision: 1 gate(s) on task local-2672a511813f must be decided by a named human first`. Exit 2, no plan emitted. |
+| AC-06 | CP-5 | PASS | `--task "drop table sessions and delete namespace staging" --files db/migrations/003_drop.sql --classification confidential` → `REFUSED: … 2 gate(s) …`. Exit 2, no plan emitted. |
+
+### Why this is different from what the tests proved
+
+Every prior check ran against a fixture vendored from cadre. This is cadre's producer running live, its output crossing the repository boundary, and gloop refusing it — with the gates cadre's own risk rules fired for a production deployment and a destructive migration, not gates written into a test.
+
+The refusal is also observable as a **process exit code**, not just a message: exit 2, nothing on stdout. A caller piping this into a runner gets nothing to run, which is the property the design chose over returning a plan with a blocked status.
+
+Two commands that would deploy to production and drop a database table each produced no executable plan, because a human has not decided. That is the whole point of the phase, observed rather than asserted.

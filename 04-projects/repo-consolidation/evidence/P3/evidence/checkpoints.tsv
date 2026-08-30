@@ -5,3 +5,7 @@
 2026-08-29T22:45:48Z	CP-3	PASS	T-04: 25/25 corpus cases, 20 converted 4 gated 1 unstaffed
 2026-08-29T22:55:41Z	CP-3	PASS	T-05: deprecated, AC-07 closed, AC-07b deferred
 2026-08-29T23:20:18Z	CP-3	PASS	T-06 prose; all six tasks done
+2026-08-30T00:04:11Z	CP-3v	PASS	3 findings fixed in fd05a32
+2026-08-30T00:04:11Z	CP-4	PASS	P1 and P2 intact; guard legibility fixed in 13dd16a2
+2026-08-30T00:16:24Z	CP-5	PASS	live cadre plan piped into gloop; gated plans refused with exit 2
+2026-08-30T00:21:47Z	CP-7	PASS	retro: harness/retro/2026-08-29-repo-consolidation-p3.md

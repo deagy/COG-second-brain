@@ -57,11 +57,11 @@
 
 <header>
   <h1>Repository consolidation</h1>
-  <div class="meta">repo-consolidation · lane full · 2026-08-29 · P2 of P5 complete · in progress</div>
+  <div class="meta">repo-consolidation · lane full · 2026-08-29 · P3 of P5 complete · in progress</div>
 </header>
 
 <h2>North star</h2>
-<p class="northstar">Every concern has exactly one owning repository, and the losing implementations are deleted or archived rather than left running. Four repositories claimed five concerns between them, most of them twice — a lifecycle that existed as a rigorous kernel in one place and a placeholder template in another, orchestration in two, knowledge storage in two, agent definitions in three. Two phases in, the lifecycle kernel ships from <strong>deagy/cadre-kernel</strong> with a released binary, cadre no longer carries it, and the third lifecycle implementation is archived with a forwarding address. A contract change now has one place to make it.</p>
+<p class="northstar">Every concern has exactly one owning repository, and the losing implementations are deleted or archived rather than left running. Four repositories claimed five concerns between them, most of them twice. Three phases in: the lifecycle kernel ships from <strong>deagy/cadre-kernel</strong> with a released binary and cadre no longer carries it; the third lifecycle implementation is archived with a forwarding address; and gloop now executes from cadre's governed plan rather than selecting on its own. A contract change has one place to make it.</p>
 
 <h2>Phases</h2>
 <div class="scroll">
@@ -71,7 +71,7 @@
     <tr><td class="id">P0</td><td>Charter and baseline</td><td class="id">—</td><td class="v pass">done</td></tr>
     <tr><td class="id">P1</td><td>Extract the lifecycle kernel to its own repository</td><td class="id">AC-01…04</td><td class="v pass">done</td></tr>
     <tr><td class="id">P2</td><td>Retire agentic-lifecycle</td><td class="id">AC-05</td><td class="v pass">done</td></tr>
-    <tr><td class="id">P3</td><td>Port orchestration to gloop with its corrections</td><td class="id">AC-06, AC-07</td><td class="v skip">not started</td></tr>
+    <tr><td class="id">P3</td><td>Compose: gloop executes from cadre's governed plan</td><td class="id">AC-06, AC-07</td><td class="v pass">done</td></tr>
     <tr><td class="id">P4</td><td>Decide and execute the knowledge-store question</td><td class="id">AC-08</td><td class="v skip">not started</td></tr>
     <tr><td class="id">P5</td><td>Settle cadre's remainder and the catalog's home</td><td class="id">AC-09…11</td><td class="v skip">not started</td></tr>
   </tbody>
@@ -85,11 +85,12 @@
   <tbody>
     <tr><td class="id">AC-01</td><td>The lifecycle kernel builds and tests standalone from its own repository</td><td class="id">P1</td><td class="v pass">PASS</td></tr>
     <tr><td class="id">AC-02</td><td>cadre carries no kernel source</td><td class="id">P1</td><td class="v pass">PASS</td></tr>
-    <tr><td class="id">AC-03</td><td>cadre and the extracted kernel still agree on the dispatch fingerprint</td><td class="id">P1</td><td class="v pass">PASS</td></tr>
-    <tr><td class="id">AC-04</td><td>cadre's copies of the lifecycle contracts are held to the kernel's</td><td class="id">P1</td><td class="v pass">PASS</td></tr>
-    <tr><td class="id">AC-05</td><td>agentic-lifecycle is retired and no third contract definition survives</td><td class="id">P2</td><td class="v pass">PASS</td></tr>
-    <tr><td class="id">AC-06</td><td>Orchestration produces equivalent plans from gloop</td><td class="id">P3</td><td class="v skip">open</td></tr>
-    <tr><td class="id">AC-07</td><td>The accumulated corrections travelled with it</td><td class="id">P3</td><td class="v skip">open</td></tr>
+    <tr><td class="id">AC-03</td><td>cadre and the extracted kernel agree on the dispatch fingerprint</td><td class="id">P1</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-04</td><td>cadre's contract copies are held to the kernel's</td><td class="id">P1</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-05</td><td>agentic-lifecycle retired; no third contract definition survives</td><td class="id">P2</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-06</td><td>gloop executes from cadre's governed plan</td><td class="id">P3</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-07</td><td>Only one selection implementation is reachable by new code</td><td class="id">P3</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-07b</td><td>The deprecated selectors are removed</td><td class="id">gloop's next major</td><td class="v skip">deferred</td></tr>
     <tr><td class="id">AC-08</td><td>Knowledge storage has one owner</td><td class="id">P4</td><td class="v skip">open</td></tr>
     <tr><td class="id">AC-09</td><td>The role catalog has one publishing home</td><td class="id">P5</td><td class="v skip">open</td></tr>
     <tr><td class="id">AC-10</td><td>No concern has two owners</td><td class="id">P5</td><td class="v skip">open</td></tr>
@@ -99,32 +100,37 @@
 </div>
 
 <h2>Evidence</h2>
-<p>Every row records what was observed in an artifact, never what a tool returned. The one FAIL is kept rather than overwritten: it is the phase's most useful row.</p>
+<p>Every row records what was observed in an artifact, never what a tool returned. The FAIL rows are kept rather than overwritten by their eventual passes — in two of three phases the failure taught more than the pass.</p>
 <div class="scroll">
 <table>
   <thead><tr><th>AC</th><th>CP</th><th>Verdict</th><th>Observation</th><th>Artifact</th></tr></thead>
   <tbody>
-    <tr><td class="id">AC-01</td><td class="cp">CP-5</td><td class="v pass">PASS</td><td class="obs">A fresh clone from GitHub built, tested green and printed 0.14.2; separately a downloaded release asset was unpacked and run</td><td class="obs">git clone; gh release download v0.14.2</td></tr>
-    <tr><td class="id">AC-02</td><td class="cp">CP-5</td><td class="v pass">PASS</td><td class="obs">kernel and internal/kernel absent from the <em>published</em> tree, checked against the GitHub contents API rather than the local checkout</td><td class="obs">gh api repos/deagy/cadre/contents</td></tr>
-    <tr><td class="id">AC-03</td><td class="cp">CP-3v</td><td class="v pass">PASS</td><td class="obs">Both fixtures byte-identical (sha256 cd832b3b…); each repository reproduces sha256:924ca52daf… importing only its own implementation</td><td class="obs">internal/canonicaljson/testdata/</td></tr>
-    <tr><td class="id">AC-03</td><td class="cp">CP-3</td><td class="v pass">PASS</td><td class="obs">Falsified: removing provenance from the selector's exclusion set failed the surviving single-sided test on both plans, without importing the kernel</td><td class="obs">internal/selector/canonical.go</td></tr>
-    <tr><td class="id">AC-04</td><td class="cp">CP-3</td><td class="v pass">PASS</td><td class="obs">Drift check falsified in both directions — perturbing the vendored copy, and pointing it at a divergent source; the error names the resolved source</td><td class="obs">kernel_contracts_drift_test.go</td></tr>
-    <tr><td class="id">AC-05</td><td class="cp">CP-3v</td><td class="v fail">FAIL</td><td class="obs">First pass: schemas/run-record.yaml and gate-result.yaml still existed at HEAD — an independent definition with no test tying it to the authority</td><td class="obs">agentic-lifecycle/schemas/</td></tr>
-    <tr><td class="id">AC-05</td><td class="cp">CP-3v</td><td class="v pass">PASS</td><td class="obs">After fix: only schemas/README.md tracked; no contract file anywhere at HEAD; archived, local and remote both 630bb4f; correcting commit names the earlier false claim</td><td class="obs">git ls-files; gh api</td></tr>
-    <tr><td class="id">AC-05</td><td class="cp">CP-4</td><td class="v pass">PASS</td><td class="obs">No surviving repository depends on the retired one. cadre's seven hits are its own salvage-attribution prose in generated mirrors</td><td class="obs">grep across four repos</td></tr>
+    <tr><td class="id">AC-01</td><td class="cp">CP-5</td><td class="v pass">PASS</td><td class="obs">A fresh clone from GitHub built, tested green and printed 0.14.2; a downloaded release asset was unpacked and run</td><td class="obs">git clone; gh release download v0.14.2</td></tr>
+    <tr><td class="id">AC-02</td><td class="cp">CP-5</td><td class="v pass">PASS</td><td class="obs">kernel and internal/kernel absent from the <em>published</em> tree, via the GitHub contents API rather than the local checkout</td><td class="obs">gh api repos/deagy/cadre/contents</td></tr>
+    <tr><td class="id">AC-03</td><td class="cp">CP-4</td><td class="v pass">PASS</td><td class="obs">Both repositories' fingerprint fixtures hashed independently: sha256 cd832b3b… on each, byte-identical outside the test harness</td><td class="obs">sha256sum, both repos</td></tr>
+    <tr><td class="id">AC-04</td><td class="cp">CP-4</td><td class="v pass">PASS</td><td class="obs">Drift guards ran a real comparison, not the skip path; all three vendored contracts diff'd identical outside the harness</td><td class="obs">go test -run Vendored; diff</td></tr>
+    <tr><td class="id">AC-05</td><td class="cp">CP-3v</td><td class="v fail">FAIL</td><td class="obs">First pass: schemas/run-record.yaml still existed at HEAD in the archived repository — an unguarded independent definition</td><td class="obs">agentic-lifecycle/schemas/</td></tr>
+    <tr><td class="id">AC-05</td><td class="cp">CP-3v</td><td class="v pass">PASS</td><td class="obs">After fix: only schemas/README.md tracked, archived, local and remote both 630bb4f, and the correcting commit names the earlier false claim</td><td class="obs">git ls-files; gh api</td></tr>
+    <tr><td class="id">AC-06</td><td class="cp">CP-5</td><td class="v pass">PASS</td><td class="obs">Live <code>cadre select</code> piped into gloop produced an execution plan led by backend-engineer and go-service-implementer. Exit 0</td><td class="obs">cadre select | govplan</td></tr>
+    <tr><td class="id">AC-06</td><td class="cp">CP-5</td><td class="v pass">PASS</td><td class="obs">"deploy to production the new release build" → REFUSED, 1 human gate, exit 2, nothing on stdout</td><td class="obs">cadre select | govplan</td></tr>
+    <tr><td class="id">AC-06</td><td class="cp">CP-5</td><td class="v pass">PASS</td><td class="obs">"drop table sessions and delete namespace staging" → REFUSED, 2 human gates, exit 2, nothing on stdout</td><td class="obs">cadre select | govplan</td></tr>
+    <tr><td class="id">AC-06</td><td class="cp">CP-3v</td><td class="v pass">PASS</td><td class="obs">25 corpus cases: 20 converted, 4 gated (all four risk routes), 1 unstaffed. Roles are exactly the plan's agents</td><td class="obs">go test ./pkg/govplan/</td></tr>
+    <tr><td class="id">AC-07</td><td class="cp">CP-3v</td><td class="v fail">FAIL</td><td class="obs">All 147 non-test files searched: pkg/tenant's RouteMatches was an unmarked route-matching path, and CHANGELOG contradicted the source about MatchRoutes</td><td class="obs">gloop, whole module</td></tr>
+    <tr><td class="id">AC-07</td><td class="cp">CP-3v</td><td class="v pass">PASS</td><td class="obs">After fix: three plan-producing functions, two deprecated and the third the replacement; the tenant helper documented as exempt with its reasoning</td><td class="obs">fd05a32</td></tr>
   </tbody>
 </table>
 </div>
 
 <h2>What the gates caught</h2>
-<p>P1's verifier returned <strong>FAIL:fixable</strong> because cadre still held the kernel — correct against the end state, and the criterion's wording was the lead's fault rather than the work's. P2's verifier returned <strong>FAIL:fixable</strong> on the one clause the lead had read generously in its own favour: an archived file cannot drift, but a file at HEAD reads as current regardless. Both failures were more useful than the passes.</p>
-<p>Cadre's own test suite caught five couplings the extraction plan missed — the provider bundle, the release program model, the release gate's watched components, the engine's kernel-root resolution, and the plugin generator's version shim — each failing with a message naming exactly what broke. Separately, <code>gh repo create</code> refusing a name was the only thing that prevented pushing into an archived repository.</p>
+<p>Each phase's verifier returned <strong>FAIL:fixable</strong> at least once, and each failure was a real defect rather than a formality. P1: cadre still held the kernel. P2: a criterion read generously in its own author's favour — an archived file cannot drift, but a file at HEAD reads as current. P3: an unmarked route-matching path, and a changelog asserting the opposite of the code it described.</p>
+<p>Two failures were prose, not code, and no test covers prose. A commit message described a file the commit did not contain; a changelog said a function would be removed after the source had un-deprecated it. Both were found by a verifier reading artifacts, which is the only check that looks at what a document claims rather than what a program does.</p>
+<p>P3's integration pass found a guard that had been passing while checking the wrong artifact: it resolved a legacy CLI on <code>PATH</code> reporting 0.13.2 rather than the kernel the repository pins at 0.14.2, and passed only because 0.13.2 sits exactly on the compatibility window's inclusive minimum.</p>
 
 <h2>Next action</h2>
-<p class="next"><strong>P3 — port orchestration to gloop.</strong> AI-1 governs the plan: inventory four things, not two — what imports the code, what names it in prose, <em>what reads its data</em>, and <em>what models it as a releasable component</em>. P1 inventoried the first two and paid with three mid-execution discoveries. AC-07 is the hard one: eight named corrections must each survive the port with a test that fails when the rule is removed.</p>
+<p class="next"><strong>P4 — the knowledge store: cadre's or recall's, not both.</strong> It has an unmet prerequisite recorded at charter and still open: recall's parity is unverified. cadre's store does classification filtering, source scoping with a canonical-path-hash fallback, audit metadata and a shared-global-store fallback. Whether recall covers those decides the phase, and it is a read rather than a debate.</p>
 
 <footer>
-  Generated by the COG verification harness · evidence bundles 04-projects/repo-consolidation/evidence/P1 and P2 · retros in 04-projects/harness/retro/
+  Generated by the COG verification harness · evidence bundles 04-projects/repo-consolidation/evidence/P1–P3 · retros in 04-projects/harness/retro/
 </footer>
 
 </div>

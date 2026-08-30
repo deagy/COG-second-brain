@@ -14,4 +14,7 @@ Action items from retros. `AI-n` ids are scoped to their retro.
 | AI-8 | [2026-08-29 P2](retro/2026-08-29-repo-consolidation-p2.md) | Assess salvage value from the working tree as well as history. | working practice | open |
 | AI-9 | [2026-08-29 P2](retro/2026-08-29-repo-consolidation-p2.md) | Check repository visibility before reasoning about who its documentation reaches. | working practice | open |
 | AI-10 | [P3 T-05 defect](../repo-consolidation/evidence/P3/CP-3-T05-defect.md) | An inventory piped through `head` is not an inventory. Count the hits first, then read all of them. Truncation is invisible in the output and reads as completeness. | working practice | open |
-
+| AI-11 | [2026-08-29 P3](retro/2026-08-29-repo-consolidation-p3.md) | Add a fifth inventory axis: what does the destination already do? AI-1's four describe what moves; none look at what it moves into. | migration plans | open |
+| AI-12 | [2026-08-29 P3](retro/2026-08-29-repo-consolidation-p3.md) | When a correction lands in code, find its twin in prose in the same change — changelog, doc comment, commit message, README. | working practice | open |
+| AI-13 | [2026-08-29 P3](retro/2026-08-29-repo-consolidation-p3.md) | A guard resolving an external tool must report which one it resolved. A pass that does not say what it checked is not evidence. | working practice | open |
+| AI-14 | [2026-08-29 P3](retro/2026-08-29-repo-consolidation-p3.md) | Treat an environment note as a finding until shown otherwise. | working practice | open |
