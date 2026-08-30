@@ -29,7 +29,7 @@ When this is done, a change to a contract has one place to make it, and no secon
 | AC-05 | `agentic-lifecycle` is retired and no third contract definition survives | Repository archived; anything salvaged exists in exactly one other repository; no `run-record` definition exists outside the kernel |
 | AC-06 | gloop executes from cadre's governed plan | For each case in cadre's golden corpus, gloop consumes the plan cadre emits and produces an execution plan whose roles are exactly the plan's `agents` (primary, reviewers, support), in a stated pattern |
 | AC-07 | Only one selection implementation is reachable by new code | gloop's `Select()` and `catalog.MatchRoutes` carry Go `Deprecated:` markers naming `pkg/govplan` as the replacement; the CHANGELOG records the migration and the release they are removed in; no code path in gloop other than the deprecated ones produces a plan. **Removal completes at gloop's next major**, tracked as AC-07b |
-| AC-08 | Knowledge storage has one owner | Exactly one of cadre's `internal/knowledge` or recall survives; the retired one is deleted or archived; the surviving one passes a documented parity check |
+| AC-08 | Knowledge storage has one owner, and it keeps the fail-closed contract | recall survives and cadre's `internal/knowledge` retrieval engine is deleted. The surviving path preserves every refusal cadre's store makes: a search with no classification is refused; a search with no explicit source-scope decision is refused; spanning every source must be asked for by name; both-at-once is refused as ambiguous; every retrieval is recorded. **Each refusal has a test that fails when its check is removed.** |
 | AC-09 | The role catalog has one publishing home | The catalog exists in exactly one repository; each consuming runtime resolves it from there with no vendored second copy lacking a drift check |
 | AC-10 | No concern has two owners | The ownership table in `04-projects/agentic-sdlc/planning/repository-ownership-decision.md` names one repository per concern, and for each losing claimant the implementation is absent from its tree |
 | AC-11 | The split pipeline runs end to end | A plan from `cadre select` is accepted by an installed released kernel's `agentic-sdlc validate` (exit 0), with that kernel wired to cadre's provider bundle |
@@ -78,6 +78,18 @@ They are kept, not deleted, because they remain the list of things that must not
 | AC-09 | P5 | | pending |
 | AC-10 | P5 | | pending |
 | AC-11 | P5 | | pending |
+
+### AC-08 amended 2026-08-29 — one owner, and the contract it must carry
+
+AC-08 originally said "exactly one of cadre's `internal/knowledge` or recall survives" and asked for a documented parity check. Reading recall showed the criterion was forcing a choice between two things that are not alternatives.
+
+recall has the primitives — `Source` and `Namespace` are first-class on `Document`, `query` has `Filter` and `TermFilter` — so all four of cadre's features are expressible. What it does not have is the **posture**. `store.Search(ctx, query, opts)` takes filters a caller may omit, and `Namespace`'s own documentation says search "spans all namespaces present in a store". cadre's `Store.Search` refuses a search with no classification, refuses one with no explicit source scope, refuses both-at-once as ambiguous, requires `AllSources` to be asked for by name, and records every retrieval.
+
+**cadre's store fails closed. recall's library searches everything if you say nothing.**
+
+The tempting move was to split the concern in two, as P3 correctly did for execution and governed selection. That was rejected as pattern-matching. P3's split was right because the two repositories held genuinely different *artifacts* — an execution plan and a governed selection record, neither a subset of the other. Here there is one artifact: a retrieval interface. cadre's happens to contain both an engine recall does better and a refusal layer recall lacks. That is one concern with a requirement attached, not two concerns.
+
+So AC-08 keeps its single owner and names the contract the survivor must carry. The refusals are listed individually and each needs a test that fails when its check is removed, for the same reason AC-07's corrections list was written that way: a posture that survives only as prose does not survive.
 
 ### AC-07 amended 2026-08-29 — deprecate, then remove
 

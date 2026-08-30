@@ -18,7 +18,7 @@ The rule being applied is the one three separate defects taught on 2026-08-28: *
 | Concern | Current claimants | Recommended owner | Confidence |
 |---|---|---|---|
 | Lifecycle contracts | `cadre/kernel/` (real), `agentic-lifecycle/schemas/` (template) | `cadre/kernel`, extracted to its own repo | high |
-| Knowledge storage and retrieval | `cadre/internal/knowledge` (8,123 lines), `recall` (183 files) | `recall` | medium |
+| Knowledge storage and retrieval | `cadre/internal/knowledge` (8,123 lines), `recall` (183 files) | `recall`, carrying cadre's fail-closed contract | high |
 | Knowledge governance | `cadre/internal/knowledge/staged_*.go`, `recall/hitl` | separate concerns, do not merge | medium |
 | Agent definitions | `cadre/roster` (159), `agentic-lifecycle/agents` (10), `gloop/pkg/roster` | `agentic-lifecycle`, as data | medium |
 | Governed selection | `cadre/internal/selector` | `cadre` (with the catalog) | high |
@@ -59,6 +59,20 @@ Three reasons. It uses `modernc.org/sqlite`, pure Go, which removes the cgo degr
 The caveat: **parity is unverified.** cadre's store does exact-match classification filtering, source scoping by repository slug with a canonical-path-hash fallback, audit metadata on retrieval, and a shared-global-store fallback for projects without their own partition. Whether recall covers those is unknown and has to be established before deleting anything.
 
 A separate observation worth weighing. cadre's store carries `sharding.go`, `federation.go`, `rebalancing.go`, `disaster_recovery.go`, and `database_repair.go`. Those are capabilities a single-operator knowledge store does not need, and their presence is evidence the component grew past its purpose. recall has `distributed/` and `analytics/`, so it is not obviously immune to the same. Whichever survives, the question of how much of it is load-bearing is worth asking once.
+
+## Knowledge storage — settled 2026-08-29
+
+recall owns it, and the confidence moved from medium to high once its parity was actually read rather than assumed.
+
+The parity question was never "does recall have these features". `Source` and `Namespace` are first-class on `core.Document`, `query` carries `Filter` and `TermFilter`, so classification filtering, source scoping and partitioning are all expressible. The question is posture, and there the two differ completely.
+
+`store.Search(ctx, query, opts)` takes its filters in `opts`, which a caller may leave empty, and `Namespace`'s own documentation says search "spans all namespaces present in a store". cadre's `Store.Search` opens by refusing: no classification is an error, no explicit source scope is an error, both-at-once is ambiguous and refused, spanning everything must be requested by name, and every retrieval is recorded.
+
+**cadre's store fails closed; recall's library searches everything if you say nothing.** That posture is the part worth keeping, and it currently exists only inside the component being retired.
+
+So the migration is not "swap the store". It is: recall becomes the engine, and the refusal contract is rebuilt over it as a requirement of the surviving path — with a test per refusal, because a posture that survives only as prose does not survive.
+
+The earlier caveat in this document — that parity was unverified and gated the decision — is discharged. What it found was not a missing feature but a missing default.
 
 ## Knowledge governance
 

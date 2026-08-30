@@ -31,14 +31,15 @@ Current phase: P4 · Overall: in-progress
 
 ## Next action (resume cold from here)
 
-**P4 — the knowledge store: cadre's or recall's, not both.** Closes AC-08.
+**P4 — CP-2 plan.** AC-08 is settled: **recall owns knowledge storage, and the surviving path must carry cadre's fail-closed contract.**
 
-It has a prerequisite recorded at charter and still unmet: **recall's parity is unverified.** cadre's `internal/knowledge` does exact-match classification filtering, source scoping by repository slug with a canonical-path-hash fallback, audit metadata on retrieval, and a shared-global-store fallback for projects with no partition of their own. Whether recall covers those decides the phase.
+The parity read is done (`evidence/P4/CP-2-finding-recall-parity.md`). recall has every primitive — `Source` and `Namespace` on `Document`, `Filter`/`TermFilter` in `query` — and none of the posture: its `Search` takes filters a caller may omit and spans all namespaces by default, where cadre's refuses a search with no classification and no explicit source scope, and records every retrieval.
 
-Read recall before planning P4. AI-11 exists because P3 was planned as a port against a destination nobody had opened, and P4's destination is a 183-file platform.
+So P4 is not a swap. It is: recall as the engine, cadre's refusals rebuilt over it, each with a test that fails when its check is removed. Five refusals are named in the amended AC-08.
 
-Read `04-projects/harness/BACKLOG.md` first: fourteen action items now, four of them from P3.
+Open before planning: what happens to `sharding.go`, `federation.go`, `rebalancing.go` and `disaster_recovery.go` in cadre's store. They are capabilities a single-operator store does not need, and they are evidence the component grew past its purpose — deleting them is part of the migration, not collateral.
 
+## Repositories
 ## Repositories
 ## Repositories
 ## Repositories
