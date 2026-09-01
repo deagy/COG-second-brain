@@ -45,7 +45,7 @@ The ten absences fall into two kinds, and the difference decides the fix:
 | Phase | Goal | AC covered | State |
 |---|---|---|---|
 | P0 | Charter and inventory | — | **done** |
-| P1 | The CLI stops saying nothing: every documented verb answers by name, and a drift check enforces it | AC-1, AC-7 | not started |
+| P1 | The CLI stops saying nothing: every documented verb answers by name, and a drift check enforces it | AC-1, AC-7 | **done** |
 | P2 | The documents describe what exists | AC-2, AC-6 | not started |
 | P3 | Retention and deletion: build or declare | AC-3, AC-4 | not started |
 | P4 | The asserted enforcements get mutation-proven tests | AC-5 | not started |
@@ -58,10 +58,10 @@ P3 carries the only decisions: whether retention and ingested-content deletion a
 
 | AC | Phase | Evidence | Status |
 |---|---|---|---|
-| AC-1 | P1 | | pending |
+| AC-1 | P1 | evidence/P1/CP-5-acceptance.md · cadre `e752376e`, run 33557815235 | verified |
 | AC-2 | P2 | | pending |
 | AC-3 | P3 | | pending |
 | AC-4 | P3 | | pending |
 | AC-5 | P4 | | pending |
 | AC-6 | P2 | | pending |
-| AC-7 | P1 | | pending |
+| AC-7 | P1 | evidence/P1/CP-5-acceptance.md — falsified 8 ways | verified |

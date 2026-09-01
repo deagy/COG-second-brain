@@ -38,3 +38,29 @@ An independent verifier was asked to attack the thing I was least sure of: repla
 **A wrong pointer is worse than no pointer**, because it costs a reader a detour before they discover the capability is not there either — and I wrote all five from memory of a codebase I had been changing all day. That is the specific failure this session has produced twice: reliable when verifying deliberately, unreliable when explaining in passing.
 
 Fixed in `20119003`: the six are answered as *shipped in the Python CLI, removed in the Go rewrite (`b418031e`), never rebuilt*; the three pointers corrected against the binary; both hand-authored roots scanned. Round-two verification is what decides whether AC-1 and AC-7 earn their PASS rows — **they do not have them yet.**
+
+## CP-3v — round two
+
+An independent re-verification of the four round-one findings, plus an instruction to *look* for further unscanned surfaces rather than assume the set complete. Report: `CP-3v-round2.md`.
+
+| AC | CP | Result | Observation |
+|---|---|---|---|
+| AC-1 | CP-3v | PASS | The reclassification holds. All six verbs' Go history walked independently; the Python-era claim and the `b418031e` attribution check out, and none was rebuilt in Go at any commit. |
+| AC-1 | CP-3v | PASS | All three corrected pointers re-tested against the binary, not read: a real record staged and deleted to confirm the deletion-evidence sentence, `ListStagedRecords`'s four claimed properties checked in code, recall's CLI rebuilt to confirm it exposes no delete command. |
+| AC-1 | CP-3v | PASS | The `.agents/skills/` widening holds, and a phantom verb in that root is caught. |
+| AC-7 | CP-3v | PASS | Guard falsifies in every direction tested; `AnswerableKnowledgeVerbs()` matches the dispatcher across all 34 verbs. |
+| — | CP-3v | PASS | CI green at `20119003`; full local gate clean. |
+| AC-1 | CP-3v | **FAIL** | `CHANGELOG.md:166` — a third hand-authored surface naming the dead `context` verb, outside the widened scan. |
+| AC-7 | CP-3v | **FAIL** | The guard's own failure message still named `neverShippedVerbs`, a symbol the previous commit had renamed everywhere else. |
+
+### The exclusion I nearly talked myself into
+
+My first instinct on the CHANGELOG finding was to exclude it as history, on the same principle that keeps `roster/orchestration/runs/` out of the scan. Checking the heading settled it the other way: the mention is under `## [Unreleased]`, not a dated release.
+
+That distinction is now the rule. A dated section records what was true when it shipped, and rewriting it would falsify the changelog. `[Unreleased]` is a claim about what the next release contains, read as current — so an entry describing `--source` as repeatable on a command the binary no longer has is live, not historical. The scan reads `[Unreleased]` and stops at the first dated heading, falsified both ways: a phantom inside `[Unreleased]` is caught and cited by line; the same phantom inside `0.21.0` is correctly ignored.
+
+**Twice in one phase I nearly narrowed a guard's scope to make it pass**, and the two cases had opposite correct answers — `runs/` should be excluded, `[Unreleased]` should not. Nothing about the instinct distinguished them; only reading the heading did. A scope exclusion argued from principle is still a scope exclusion, and it deserves the same falsification as the check itself.
+
+### Fixed in `e752376e`, and what that means for these rows
+
+Both residuals are fixed and I falsified the changelog scanner in both directions myself. **That is a weaker standard than the rest of this ledger**, and it is recorded as such: the loop budgets two fix-and-verify cycles before escalating, and both are spent, so the delta between `20119003` and `e752376e` carries my own falsification rather than an independent one. Every substantive finding — the classification, the pointers, the scan roots, the guard's behaviour — was independently verified across two rounds.

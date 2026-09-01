@@ -1,2 +1,5 @@
 2026-09-01T20:43:21Z	CP-3	PASS	6 verbs answered by name; guard falsified 5 ways; 2 drifts found by widening
 2026-09-01T20:43:21Z	CP-3v	FAIL	round 1: classification false, 3 pointers wrong, scan missed .agents/skills; fixed in 20119003, re-verify pending
+2026-09-01T20:52:21Z	CP-3v	PASS	round 2: all four fixes hold; 2 residuals fixed in e752376e with self-falsification only
+2026-09-01T21:05:31Z	CP-5	PASS	AC-1 and AC-7 accepted; guard falsified 8 ways; final delta self-falsified, recorded
+2026-09-01T21:05:31Z	CP-6	PASS	cadre e752376e pushed, run 33557815235 green

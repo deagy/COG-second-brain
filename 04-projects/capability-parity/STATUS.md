@@ -2,25 +2,27 @@
 
 North-star: every capability the roster's governance documents describe exists, or the documents say it does not.
 Spec: 04-projects/capability-parity/spec.md · Registry: 04-projects/harness/ultragoals.md
-Current phase: P1 · Overall: **in progress** — P1 built and pushed, round-two verification in flight
+Current phase: P2 · Overall: **in progress** — P1 done; 2 of 7 criteria verified
 
 ## Phases
 | Phase | AC covered | State | Evidence | Notes |
 |---|---|---|---|---|
 | P0 | — | **done** | evidence/P0/ | 47 claims tested against the binary: 34 exist, 10 absent, 2 partial, 1 untestable |
-| P1 | AC-1, AC-7 | **built, verifying** | evidence/P1/ | Six verbs answered by name; guard falsified five ways. Round one FAILed on the replacement claim itself and is fixed in cadre `20119003`; PASS rows pending round two |
+| P1 | AC-1, AC-7 | **done** | evidence/P1/ | Six verbs answered by name; guard falsified eight ways across three hand-authored surfaces. Round one FAILed on the replacement claim itself; fixed and re-verified. cadre `e752376e`, run 33557815235 |
 | P2 | AC-2, AC-6 | not started | — | The knowledge-store documents describe what exists |
 | P3 | AC-3, AC-4 | not started | — | Retention and ingested-content deletion: build or declare. **Carries the decisions** |
 | P4 | AC-5 | not started | — | Mutation-proven tests for the two asserted-but-unexercised enforcements |
 
 ## Open AC-n (no PASS row yet)
-All seven. AC-1 and AC-7 are built, pushed and CI-green (`run 33556372778`), but neither has a PASS row: round-one verification failed them and round two has not returned. A build is not a criterion.
+AC-2, AC-3, AC-4, AC-5, AC-6. AC-1 and AC-7 closed at P1.
 
 ## Next action (resume cold from here)
 
-**Await round-two CP-3v on AC-1 and AC-7**, then close P1 or fix again. Note the loop's rule: this is attempt two of two before the honest move stops being "patch it" and becomes "escalate the decision".
+**Start P2 — the documents describe what exists** (AC-2, AC-6). Three concrete items are already located:
 
-If it passes, **P2 is next** and its first item is already identified: `.agents/skills/knowledge-ingestion/SKILL.md:37` and `.agents/skills/agent-stores/SKILL.md:53` both instruct an agent to run `cadre knowledge context`, which was removed in the Go rewrite. AC-1 is satisfied — the verb now explains itself — but a live instruction to run a dead command is exactly what AC-2 exists to fix.
+1. `.agents/skills/knowledge-ingestion/SKILL.md:37` and `.agents/skills/agent-stores/SKILL.md:53` instruct an agent to run `cadre knowledge context`, removed in the Go rewrite. AC-1 makes the verb explain itself; a live instruction to run it is still wrong.
+2. `CHANGELOG.md`'s `[Unreleased]` section describes `--source` as newly repeatable on `cadre knowledge context` — a change to a command that no longer exists. It was true when written; it is not now.
+3. `roster/knowledge-store/{README,SECURITY,AGENT}.md` describe the full Python-era surface as current. This is the bulk of AC-2.
 
 ### What P1 established that P2 should not have to rediscover
 
