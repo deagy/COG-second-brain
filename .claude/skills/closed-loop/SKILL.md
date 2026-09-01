@@ -86,6 +86,16 @@ Record: `checkpoint.sh record <run-dir> CP-4 PASS|SKIP`
 
 ## Phase 6 — CP-5 Acceptance (post-condition)
 
+**If the run touched a repository with CI, check its runner before anything else:**
+
+```bash
+bash .claude/lib/ci-status.sh <repo>
+```
+
+A green local suite says nothing about the pushed commit. This has produced a
+false PASS row in a real evidence trail — recorded from a local exit code
+while the runner had been red since that same commit. Cite the run id.
+
 For each mutation, observe artifact (curl, screenshot, re-fetch). Emit:
 
 `EVIDENCE AC-n | CP-5 | PASS | <observation> | <artifact>`

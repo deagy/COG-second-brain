@@ -87,6 +87,29 @@ Merge every verifier's `EVIDENCE` rows into `evidence/P<n>/ledger.md`.
 1. **Per-phase (CP-5):** every `AC-n` this phase claims has a PASS row before the phase is marked done.
 2. **North-star (final):** before the ultragoal is declared complete, spawn a fresh-context verifier whose only job is to check the spec matrix — **every** `AC-n` across all phases has ≥1 PASS evidence row. Any `AC-n` without one is a gap, not a ship. This is the ultragoal-level analogue of CP-5.
 
+### Before either gate: the repositories must be green on their own runners
+
+```bash
+bash .claude/lib/ci-status.sh <each repo the trail makes claims about>
+```
+
+Non-zero means a phase cannot be marked done. A commit with no run, or a run
+still in progress, is not green either — absence of a check is not a pass.
+
+**This is a gate rather than advice because it has already failed silently.**
+The repo-consolidation ultragoal recorded "full suite green" for AC-02 at a
+commit whose runner was red, and stayed wrong for nine more pushes; two of its
+three repositories were red for months, each because a cross-repository guard
+built to refuse to skip under CI had been given no way to run. Every one
+passed locally off a sibling checkout that exists on a developer machine and
+never on a runner.
+
+Pointed at that commit today, this check reports
+`FAILED validate run 33235161357` and exits 1.
+
+**A local test exit code is evidence about a laptop.** Write the run id into
+the ledger, not the word "green".
+
 ```
 North-star acceptance:
   read spec.md matrix (all AC-n)
