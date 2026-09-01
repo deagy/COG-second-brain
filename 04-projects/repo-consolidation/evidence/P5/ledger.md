@@ -209,3 +209,24 @@ The definition is absent from the tip and intact in the record. That is the righ
 Before this phase: cadre red on 10 consecutive pushes, gloop on 4, recall fixed one phase earlier. All three were the same defect — a cross-repository guard, correctly built to refuse to skip under CI, given no way to run.
 
 The run IDs are the point. Four criteria in this trail rested on a local exit code, and two of those were false on the runner at the moment they were written down.
+
+## The outstanding note, closed on cadre's side
+
+The north-star gate's one FAIL was a pipx-installed Python `agentic-sdlc 0.13.2` holding the name on PATH while the kernel that owns that concern was not installed at all. Recorded first as a measurement hazard, then correctly reframed as a **losing implementation left running** — the north star's own words.
+
+Checking the versions turned it from a machine-hygiene note into a defect in this repository:
+
+**deagy/cadre-kernel has released exactly one version, `v0.14.2`. cadre's provider bundle declared a floor of `0.13.2`.** Every version the window admitted below the pin named a kernel that repository never published. And the stale binary is *exactly* `0.13.2` — the inclusive floor — so `cadre select --require-sdlc` accepted it. The mechanism whose whole job is to refuse an unsuitable kernel passed it through by one patch version, and that is why the first AC-11 measurement reported `integrated` and looked right.
+
+Three changes, in `23fe930a`:
+
+| Change | Why it is the control rather than the cleanup |
+|---|---|
+| Floor raised to `0.14.2`, tied to the pin | Converts the stale kernel from *accepted* to *refused*. No compatibility cost: there is no older published kernel to break |
+| `TestTheKernelVersionPinSatisfiesOurOwnProvider` written | **The code already claimed this test existed.** `provider_compatibility_test.go` says the pin is "covered separately and without a binary" by it, and nothing implemented it — so the only guard needed a kernel installed, and that guard had been red on CI for want of one. A comment that makes a gap look covered |
+| `TestTheCompatibilityFloorIsAKernelThatWasActuallyReleased` | Fails if the floor ever drops below the pin again |
+| `cadre doctor` reports the resolved kernel | Path, version, resolution source, every other match on PATH behind it, and a warning when it is below the pin. Doctor existed to report machine state and said nothing about the most consequential thing cadre resolves |
+
+**A consequence worth recording:** the floor change makes the refusal bite real workflows. `cadre generate-plugin` shells to the kernel and now refuses a pre-port one, as does the compatibility guard. Verifying this change required wiring `AGENTIC_SDLC_BIN` at the released kernel. That is the control working, and it turns replacing the binary from optional into required for local work — which is the correct pressure, given the alternative was a silent wrong answer.
+
+**Still open:** the machine itself. Uninstalling the pipx kernel and installing the released one is the user's to run.
