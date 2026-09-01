@@ -196,3 +196,16 @@ Prepared as `853ec2c` in the local checkout: `src/agentic_lifecycle/`, `tests/`,
 The definition is absent from the tip and intact in the record. That is the right shape: the hazard was never that someone would read it, but that they could install it.
 
 **AC-05 closed.**
+
+## Closing state — every owned repository green, with run IDs
+
+| Repo | HEAD | Run | Conclusion |
+|---|---|---|---|
+| cadre | `9bd3fdba` | `33537911588` | success |
+| recall | `3ee2795` | `33537575047` | success |
+| gloop | `b3e32c8` | `33532899185` | success |
+| cadre-kernel | `e53c9bb` | — | docs-only |
+
+Before this phase: cadre red on 10 consecutive pushes, gloop on 4, recall fixed one phase earlier. All three were the same defect — a cross-repository guard, correctly built to refuse to skip under CI, given no way to run.
+
+The run IDs are the point. Four criteria in this trail rested on a local exit code, and two of those were false on the runner at the moment they were written down.

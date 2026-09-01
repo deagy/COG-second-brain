@@ -43,6 +43,17 @@ Before the next ultragoal: **a claim of "green" cites a run ID or it is not evid
 
 Unpushed: none.
 
+**CI on every owned repository's HEAD, cited rather than asserted:**
+
+| Repo | HEAD | Run | Conclusion |
+|---|---|---|---|
+| cadre | `9bd3fdba` | `33537911588` | success |
+| recall | `3ee2795` | `33537575047` | success |
+| gloop | `b3e32c8` | `33532899185` | success |
+| cadre-kernel | `e53c9bb` | — | docs-only commit |
+
+Recorded this way deliberately. The first action out of P5's retro is that a claim of "green" cites a run ID or it is not evidence, and this trail spent five phases proving why.
+
 ## Repositories
 - `~/sdk/cadre` @ `9bd3fdba` on `main` — **pushed, CI green**. Kernel absent from the published tree; knowledge engine deleted
 - `~/sdk/cadre-kernel` @ `24ec47c` on `main` — **https://github.com/deagy/cadre-kernel** (public), released `v0.14.2` with five platform archives
