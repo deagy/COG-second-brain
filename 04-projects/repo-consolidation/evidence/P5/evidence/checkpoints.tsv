@@ -1,0 +1,6 @@
+2026-09-01T14:15:56Z	CP-2	PASS	AC-11 closed, AC-09 verified with mutation-tested drift checks, AC-10 finding: execution orchestration has two implementations
+2026-09-01T14:16:23Z	CP-5	PASS	AC-11: released kernel v0.14.2 enriches cadre's plan (9 gates vs 2) and validates a cadre-profiled project at exit 0
+2026-09-01T14:19:00Z	CP-3	PASS	AC-10 read: overlap is runner=api (2,199 lines) vs gloop's runtime, not the 73-file package
+2026-09-01T15:50:34Z	CP-5	PASS	AC-09, AC-10, AC-11 all verified; ownership table amended on evidence with a revisit trigger
+2026-09-01T15:59:55Z	CP-4	FAIL	north-star ownership: 7 concerns single-owner and both attacked claims held; FAIL on a pipx Python agentic-sdlc 0.13.2 shadowing the kernel on PATH
+2026-09-01T16:22:26Z	CP-4	FAIL	evidence audit: cadre and gloop CI red since the commits their ACs cite; AC-05 executable impl survives; AC-07 false premise; AC-10 amended at the gate

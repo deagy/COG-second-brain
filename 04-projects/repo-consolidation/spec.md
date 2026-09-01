@@ -29,9 +29,9 @@ When this is done, a change to a contract has one place to make it, and no secon
 | AC-05 | `agentic-lifecycle` is retired and no third contract definition survives | Repository archived; anything salvaged exists in exactly one other repository; no `run-record` definition exists outside the kernel |
 | AC-06 | gloop executes from cadre's governed plan | For each case in cadre's golden corpus, gloop consumes the plan cadre emits and produces an execution plan whose roles are exactly the plan's `agents` (primary, reviewers, support), in a stated pattern |
 | AC-07 | Only one selection implementation is reachable by new code | gloop's `Select()` and `catalog.MatchRoutes` carry Go `Deprecated:` markers naming `pkg/govplan` as the replacement; the CHANGELOG records the migration and the release they are removed in; no code path in gloop other than the deprecated ones produces a plan. **Removal completes at gloop's next major**, tracked as AC-07b |
-| AC-08 | Knowledge storage has one owner, and it keeps the fail-closed contract | recall survives and cadre's `internal/knowledge` retrieval engine is deleted. The surviving path preserves every refusal cadre's store makes: a search with no classification is refused; a search with no explicit source-scope decision is refused; spanning every source must be asked for by name; both-at-once is refused as ambiguous; every retrieval is recorded. **Each refusal has a test that fails when its check is removed.** |
+| AC-08 | Knowledge storage has one owner, and it keeps the fail-closed contract | recall survives and cadre's `internal/knowledge` retrieval engine is deleted. The surviving path preserves all **six** refusals cadre's store makes, recorded as cases in `internal/knowledge/testdata/fail-closed-contract.json`: no query, no classification, no embedding provider, no source-scope decision, all-sources together with filters, and a blank filter entry. Every retrieval is recorded. **Each refusal has a test that fails when its check is removed.** |
 | AC-09 | The role catalog has one publishing home | The catalog exists in exactly one repository; each consuming runtime resolves it from there with no vendored second copy lacking a drift check |
-| AC-10 | No concern has two owners | The ownership table in `04-projects/agentic-sdlc/planning/repository-ownership-decision.md` names one repository per concern, and for each losing claimant the implementation is absent from its tree |
+| AC-10 | No concern has two owners | The ownership table in `04-projects/agentic-sdlc/planning/repository-ownership-decision.md` names one repository per concern, and for each losing claimant the implementation is absent from its tree. **Amended 2026-09-01** — the table's rows are themselves subject to the criterion: a row that names two implementations of what reading shows to be two concerns is a defect in the row, not in the code. Two were corrected on that basis, each recording the evidence and, where the split could stop being true, the condition that would reopen it |
 | AC-11 | The split pipeline runs end to end | A plan from `cadre select` is accepted by an installed released kernel's `agentic-sdlc validate` (exit 0), with that kernel wired to cadre's provider bundle |
 
 ### Named corrections list — retained as a regression guard
@@ -67,7 +67,7 @@ They are kept, not deleted, because they remain the list of things that must not
 | AC | Phase | Evidence row | Status |
 |---|---|---|---|
 | AC-01 | P1 | ledger P1 § T-06, release | verified |
-| AC-02 | P1 | ledger P1 § release and merge | verified |
+| AC-02 | P1 | evidence/P1/ledger.md · re-verified on a green runner: `gh run view 33534720412` at cadre `c4447718` | verified |
 | AC-03 | P1 | ledger P1 § T-01, T-02 | verified |
 | AC-04 | P1 | ledger P1 § T-03 | verified |
 | AC-05 | P2 | | pending |
@@ -75,9 +75,9 @@ They are kept, not deleted, because they remain the list of things that must not
 | AC-07 | P3 | | pending |
 | AC-07b | post-P3, at gloop's next major | | deferred |
 | AC-08 | P4 | | pending |
-| AC-09 | P5 | | pending |
-| AC-10 | P5 | | pending |
-| AC-11 | P5 | | pending |
+| AC-09 | P5 | evidence/P5/CP-2-plan.md | verified |
+| AC-10 | P5 | evidence/P5/CP-3-AC10-dispatch-finding.md | verified |
+| AC-11 | P5 | evidence/P5/CP-5-acceptance-AC11.md | verified |
 
 ### AC-08 amended 2026-08-29 — one owner, and the contract it must carry
 

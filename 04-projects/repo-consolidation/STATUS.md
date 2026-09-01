@@ -2,7 +2,7 @@
 
 North-star: every concern has exactly one owning repository, and the losing implementations are deleted or archived rather than left running.
 Spec: 04-projects/repo-consolidation/spec.md · Registry: 04-projects/harness/ultragoals.md
-Current phase: P4 · Overall: in-progress
+Current phase: P4 · Overall: **AC-08 closed** — T-01..T-06 done, CP-4 passed after three fixes; P5 next
 
 ## Phases
 | Phase | AC covered | State | Evidence | Notes |
@@ -11,16 +11,15 @@ Current phase: P4 · Overall: in-progress
 | P1 | AC-01,02,03,04 | **done** | evidence/P1/ | Kernel published and released; cadre merged and pushed. All four AC verified. Retro: harness/retro/2026-08-29-repo-consolidation-p1.md |
 | P2 | AC-05 | **done** | evidence/P2/ | Archived; intent-brief template salvaged into cadre. Retro: harness/retro/2026-08-29-repo-consolidation-p2.md |
 | P3 | AC-06,07 | **done** | evidence/P3/ | Composed rather than ported. CP-3v/CP-4/CP-5 all passed. Retro: harness/retro/2026-08-29-repo-consolidation-p3.md |
-| P4 | AC-08 | not started | — | Knowledge store: cadre's or recall's, not both |
+| P4 | AC-08 | **done** | evidence/P4/ | Engine deleted, retrieval governed over recall `v0.3.1`. CP-3v on T-04 and T-05, CP-4 across the phase. Three CP-4 defects found and fixed. Pushed `f578a0b4`. |
 | P5 | AC-09,10 | not started | — | Catalog home and cadre's remainder |
 
 ## Open AC-n (no PASS row yet)
-- AC-01 through AC-04 — **all closed**, each with an artifact-level observation. See `evidence/P1/ledger.md`.
-- AC-11 — the end-to-end pipeline run. Split out of AC-03 in the 2026-08-28 spec amendment and assigned to P5, where an installed, released, provider-wired kernel exists
-- AC-01 through AC-07 — **all closed**, each with an artifact-level observation.
+- AC-01 through AC-07 — **all closed**, each with an artifact-level observation. See `evidence/P1/ledger.md` and the P2/P3 ledgers.
 - AC-07b — removing gloop's deprecated selectors, deferred to its next major.
-- AC-08 — P4. AC-09, AC-10, AC-11 — P5.
-- AC-05 through AC-10 — phases not started
+- AC-08 — **closed**. T-01..T-06 all carry PASS rows, and CP-4 verified the phase end to end after three defects it found were fixed.
+- AC-09, AC-10 — P5, not started.
+- AC-11 — the end-to-end pipeline run. Split out of AC-03 in the 2026-08-28 spec amendment and assigned to P5, where an installed, released, provider-wired kernel exists.
 
 ## P0 baseline (measured 2026-08-28, cadre @ 180a00ca)
 - All five boundary tests pass: `TestNoRosterSidePackageImportsTheKernel`, `TestTheKernelDoesNotImportRosterSideCode`, `TestANeutralPackageStaysNeutral`, `TestTheKernelShipsAsItsOwnBinary`, `TestThisRepositoryRunsNoLifecycleOverlayOfItsOwn`
@@ -31,30 +30,20 @@ Current phase: P4 · Overall: in-progress
 
 ## Next action (resume cold from here)
 
-**P4 — CP-2 plan.** AC-08 is settled: **recall owns knowledge storage, and the surviving path must carry cadre's fail-closed contract.**
+**AC-08 is closed and P4 is done.** cadre owns no retrieval engine. `cadre knowledge search` runs over a recall store behind `recall/govern` v0.3.1, the six refusals hold at the command line, the staged-record workflow has its own pure-Go database, and `ingest-accepted` writes to recall through the same governed view the read path uses. Evidence: `evidence/P4/CP-4-integration.md` and the per-task acceptance files.
 
-The parity read is done (`evidence/P4/CP-2-finding-recall-parity.md`). recall has every primitive — `Source` and `Namespace` on `Document`, `Filter`/`TermFilter` in `query` — and none of the posture: its `Search` takes filters a caller may omit and spans all namespaces by default, where cadre's refuses a search with no classification and no explicit source scope, and records every retrieval.
+**P5 is next**: AC-09 and AC-10 — the catalog home, and what remains of cadre. AC-11's end-to-end pipeline run belongs there too.
 
-So P4 is not a swap. It is: recall as the engine, cadre's refusals rebuilt over it, each with a test that fails when its check is removed. Five refusals are named in the amended AC-08.
+**Three things P4 opened that P5 has to answer:**
+- **Deletion by retention window, classification, source or age no longer exists** and cannot be rebuilt over recall's interface. `roster/knowledge-store/SECURITY.md` describes a `delete-ingested` verb with deletion evidence that the Go CLI never shipped, so policy was ahead of implementation before this and is further ahead now. Either recall grows metadata-scoped deletion, or the policy is rewritten to describe what exists.
+- **`recall upload` cannot feed cadre's default config.** recall embeds with `mock`/`openai`/`cohere`/`ollama`/`onnx`; cadre's default is `local-hashing`. cadre refuses a mismatched store rather than mis-searching it, but the documented quickstart needs both sides on the same real embedder. The durable fix is recall recording embedder identity in the store, which turns cadre's check from an assertion into a verification.
+- **`ingest-accepted` writes under a fixed `proposed-knowledge` source**, not the `source_scope` an operator declares. Documented rather than changed: making the declared scope the retrieval source is a staging-contract decision.
 
-Open before planning: what happens to `sharding.go`, `federation.go`, `rebalancing.go` and `disaster_recovery.go` in cadre's store. They are capabilities a single-operator store does not need, and they are evidence the component grew past its purpose — deleting them is part of the migration, not collateral.
+Also worth carrying: a whitespace-only query passes `govern`'s exact empty check and produces a score-0 result with an audit row. Behaviour faithfully inherited from the deleted engine, so not a regression — but it belongs in recall's `govern`, not in a ledger note.
+
+Unpushed: none.
 
 ## Repositories
-## Repositories
-## Repositories
-## Repositories
-## Repositories
-## Repositories
-## Repositories
-## Repositories
-## Repositories
-## Repositories
-## Repositories
-## Repositories
-## Repositories
-## Repositories
-## Repositories
-## Repositories
-## Repositories
-- `~/sdk/cadre` @ `1ed3169a` on `main` — **merged and pushed**. Kernel absent from the published tree
+- `~/sdk/cadre` @ `f578a0b4` on `main` — **pushed**. Kernel absent from the published tree; knowledge engine deleted
 - `~/sdk/cadre-kernel` @ `24ec47c` on `main` — **https://github.com/deagy/cadre-kernel** (public), released `v0.14.2` with five platform archives
+- `~/sdk/recall` @ `2c00c05` on `main` — **https://github.com/deagy/recall** (public), tagged `v0.3.1`, CI green including the cross-repo contract guard. Still no GitHub Release for either tag: `tag.yml` pushes with `GITHUB_TOKEN`, which does not fire `release.yml`. recall's own defect, no effect on cadre — module consumers resolve from the tag through the proxy

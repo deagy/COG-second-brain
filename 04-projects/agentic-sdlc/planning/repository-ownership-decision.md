@@ -20,9 +20,11 @@ The rule being applied is the one three separate defects taught on 2026-08-28: *
 | Lifecycle contracts | `cadre/kernel/` (real), `agentic-lifecycle/schemas/` (template) | `cadre/kernel`, extracted to its own repo | high |
 | Knowledge storage and retrieval | `cadre/internal/knowledge` (8,123 lines), `recall` (183 files) | `recall`, carrying cadre's fail-closed contract | high |
 | Knowledge governance | `cadre/internal/knowledge/staged_*.go`, `recall/hitl` | separate concerns, do not merge | medium |
-| Agent definitions | `cadre/roster` (159), `agentic-lifecycle/agents` (10), `gloop/pkg/roster` | `agentic-lifecycle`, as data | medium |
+| Agent definitions | `cadre/roster` (159), `agentic-lifecycle/agents` (10), `gloop/pkg/roster` | **`cadre`** — amended 2026-09-01, see below | high |
 | Governed selection | `cadre/internal/selector` | `cadre` (with the catalog) | high |
-| Execution orchestration | `gloop/pkg/selector`, `gloop/pkg/dispatch` | `gloop` | high |
+| Sandboxed dispatch to agent CLIs | `cadre/internal/orchestration` | `cadre` — no rival implementation exists | high |
+| Governed dispatch to an LLM endpoint | `cadre/internal/orchestration/api_runner_*.go` (2,199 lines) | **`cadre`** — amended 2026-09-01, see below | medium |
+| Unopinionated agent orchestration | `gloop/pkg/dispatch`, `gloop/pkg/runtime` | `gloop` | high |
 
 ## Lifecycle contracts
 
@@ -151,3 +153,36 @@ Packaging, plugin generation, the Cline and Codex ports, and the CLI that wires 
 ## Why this is the first move
 
 Four substantial, actively-developed repositories solving four overlapping problems is itself the signal. Each was likely started because the previous felt wrong in a specific way, and each rebuilt more than the part that was wrong. A fifth start inherits the pattern. Deciding ownership is what breaks it, and unlike a rewrite it costs an afternoon.
+
+
+## Amended 2026-09-01 — two rows that did not survive being read
+
+Both amendments come from P5 of the repository consolidation, and both follow the same pattern as this document's earlier correction to selection: a row written from names rather than from code.
+
+### Agent definitions belong to cadre
+
+The row recommended `agentic-lifecycle`, "as data". That repository was archived on 2026-08-29 (`gh api repos/deagy/agentic-lifecycle` → `archived: true`), so the recommended owner no longer accepts writes.
+
+Where they actually live, verified: `cadre/roster` is the publishing home, and `roster/catalog.yaml` is itself rendered from the per-role sources by `generate-role-metadata`. Every other copy is generated and drift-checked — `provider/agent-catalog.json` (159 agents) and `plugin/suite/roster/catalog.yaml` — and both checks were **mutation-tested**: removing one agent, or appending one line, makes the corresponding `--check` name the file and exit 1.
+
+`gloop/pkg/roster` is not a third claimant. It is a **loader** for an external `roster.json` + `catalog.yaml` supplied by path; its own testdata is a 22-line synthetic fixture.
+
+### "Execution orchestration" was one row describing three things
+
+The original row gave execution orchestration to gloop while cadre held 73 files under `internal/orchestration`. Reading both, the overlap is one runner out of three.
+
+cadre resolves a role, computes an effective sandbox, gates write-capable operations behind a confirmation token, writes an audit row, then spawns **an agent CLI** — Claude Code or Codex — mapping its own sandbox vocabulary onto that CLI's permission flags. gloop drives **LLM provider APIs** through a session manager with retries, rate limits and circuit breakers. `grep -rn "claude\|codex" pkg/dispatch/ pkg/runtime/` returns nothing outside gloop's Anthropic provider: **gloop spawns no agent CLIs and claims none.**
+
+The genuine overlap is cadre's `runner="api"`, which drives a chat endpoint and executes tool calls itself — cadre's own comment says it "serves deployments where there is no coding CLI to spawn", which is gloop's job description.
+
+**It stays in cadre, because the containment is the deliverable.** Its threat model is written down and enforced: `https://` accepted anywhere but `http://` only toward loopback/private/link-local hosts, so a mistyped public endpoint cannot receive a key in the clear; the key handled as the *name* of an env var, never the value; writes off by default as one of four independent conditions; a command allowlist that is empty by default and documented as **advisory, not a containment boundary**; and a fence putting the caller-supplied brief in the user message and the role's instructions in the system message — added to fix a real bug where trusted instructions also sat inside the untrusted slot.
+
+gloop supplies none of that, deliberately. Its `ToolExecutor` is a handler registry: a map from tool name to a closure, with no path confinement, no command allowlist and no URL policy. Whoever registers a handler owns the safety, which is the right design for a general-purpose library. Its only mention of a sandbox is a comment that read-only means offering no tools at all — containment by omission rather than by confinement.
+
+So these are not two owners of one concern. One is a governed runner where confinement is the product; the other is an unopinionated library where confinement is the caller's job.
+
+### The condition under which this is wrong
+
+**If gloop grows filesystem or command confinement — a sandboxed tool executor, a path-confined default, a command allowlist — the duplication becomes real and this row must be revisited.**
+
+Recorded as a trigger rather than left as settled, because a correct decision with no standing reason to look again is how the five stale rationales this consolidation has already corrected came to exist.

@@ -205,3 +205,15 @@ Release before merge, so cadre never landed pinning a kernel version with no rel
 ## P1 — all six tasks complete
 
 AC-01 and AC-02 closed with observed evidence. AC-03's end-to-end half is now **unblocked** rather than met: a released kernel exists, so the run is possible, but it still needs an installed kernel wired to cadre's provider bundle. AC-04 still needs P2.
+
+## Correction, 2026-09-01 — AC-02's PASS was recorded against a red runner
+
+The row above reads "full suite green and all three generator checks current on the merged tree before pushing", at cadre `1ed3169a`. The local half was true. **The push it describes went red**, and `gh run list -R deagy/cadre --workflow validate --branch main` shows that commit as the first of ten consecutive failures.
+
+Two cross-repository guards were failing — `TestVendoredKernelContractsMatchTheKernel` and `TestOurProviderBundleAcceptsTheKernelWeDependOn` — not for divergence but for want of their inputs: the workflow pointed `AGENTIC_SDLC_BIN` at `bin/agentic-sdlc`, the path **this phase deleted**, and never set `KERNEL_CONTRACTS_DIR`. They passed locally off a sibling `../cadre-kernel` checkout that exists on this machine and never on a runner.
+
+So the phase that extracted the kernel also broke the guards that watch it, and the evidence row could not see that because it was written from a local exit code.
+
+**Not rewritten.** The criterion is genuinely satisfied — verified at cadre `c4447718` by run `33534720412`, with the guards executing rather than skipping. What changed is that the row now cites a run ID instead of a laptop.
+
+Recorded here because it is the more useful artifact: a phase can be right about its work and wrong about its evidence, and this is what that looks like from the inside.
