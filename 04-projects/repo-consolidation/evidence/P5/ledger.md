@@ -237,4 +237,19 @@ What is true, verified repeatedly: **`TestOurProviderBundleAcceptsTheKernelWeDep
 
 Recording the error rather than editing it out, because it is this phase's own lesson happening again: a causal claim from one observation, written down without isolating the cause. I made it in the same session as the retro action that says a claim needs the artifact behind it.
 
-**Still open:** the machine itself. Uninstalling the pipx kernel and installing the released one is the user's to run.
+### Closed — the machine now runs the kernel that owns the concern
+
+Done by the user 2026-09-01 10:58. Verified at the artifact rather than from the version string:
+
+| Check | Observation |
+|---|---|
+| Identity | `sha256sum` of `~/.local/bin/agentic-sdlc` is **byte-identical** to the binary from the release archive that was checksum-verified against the release's own `SHA256SUMS` |
+| Predecessor gone | `pipx list` reports no `agentic-sdlc`; `which -a` returns exactly one path |
+| The guard that was failing | `TestOurProviderBundleAcceptsTheKernelWeDependOn` passes **with no override**, logging `asked /home/deagy/.local/bin/agentic-sdlc, which reports 0.14.2` |
+| doctor | `lifecycle kernel: 0.14.2 via PATH`, no warning |
+| Full local suite | `CGO_ENABLED=1 go test -tags sqlite_fts5 ./...` clean with `AGENTIC_SDLC_BIN` and `KERNEL_CONTRACTS_DIR` both unset |
+| Pipeline | `cadre select --require-sdlc`, kernel resolved from `PATH`: `integrated`, 9 gates |
+
+**The north-star gate's one FAIL is resolved.** `agentic-sdlc` on this machine now names the implementation that owns the concern, and no other implementation answers it.
+
+Worth noting what closed it: not the uninstall alone, but the uninstall plus a floor that refuses a pre-port kernel plus a doctor that reports which one answers. The machine was fixed; the reason the machine could be wrong invisibly was fixed too.
