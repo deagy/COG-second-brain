@@ -69,6 +69,12 @@ EVIDENCE <AC-id> | <checkpoint> | PASS|FAIL | <observation> | <artifact-path-or-
 
 Verifier and post-condition steps emit these rows. Consolidate in `evidence/ledger.md` per run.
 
+### Amending a gated criterion
+
+A criterion may be amended only *before* it is gated, in the open, to match a fact its subject has already published. Amending a criterion *after* a finding that would fail it, and *before* the verdict recording it verified, is not an amendment — it is the party being judged editing the test.
+
+This holds **even when the reasoning behind the amendment is independently sound**: soundness does not fix an artifact that is editable by the party it judges. If a verification finding would fail a criterion, let the criterion fail, and open a new deferred criterion for the follow-on work (`AC-07b`-style) rather than relaxing the one that failed.
+
 ## Gate classes
 
 | Class | Examples | Behavior |
