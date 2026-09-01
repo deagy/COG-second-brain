@@ -25,3 +25,11 @@ The second and third are the ones that matter. Each path refuses on its own, and
 The session that produced this trail found two tests of its own that passed for the wrong reason, both caught only by mutation. A test asserting a refusal can pass because a *different* refusal fired first; a test can pass because its setup fails before reaching the code under test. Neither is visible in a green run.
 
 **A green test proves the test ran. Killing the thing it guards proves it was watching.**
+
+## Verification
+
+**EVIDENCE AC-5 | CP-5 | PASS** — three mutations, each run in a clean clone at `1e317729` and reverted; see `CP-5-acceptance-AC-5.md` for the exact failure output of each.
+
+The tests already existed. What was missing was proof that either would fail if its guard were removed — and the predicate's own unit test, which passes whether or not anything calls it, is why the claims were recorded PARTIAL rather than verified.
+
+Open item raised, out of AC-5's scope: **"four separation checks, one predicate" is true of three of them.** `DispositionStagedRecord` carries its own inline comparison because it is asked a structurally different question, so it cannot share the predicate — but nothing would catch the two implementations diverging.

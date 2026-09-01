@@ -2,40 +2,46 @@
 
 North-star: every capability the roster's governance documents describe exists, or the documents say it does not.
 Spec: 04-projects/capability-parity/spec.md · Registry: 04-projects/harness/ultragoals.md
-Current phase: P2–P4 · Overall: **in progress** — all phases built and pushed; one verification pass covers AC-2 through AC-6
+Current phase: north-star gate · Overall: **all seven criteria verified; awaiting the north-star pass**
 
 ## Phases
 | Phase | AC covered | State | Evidence | Notes |
 |---|---|---|---|---|
 | P0 | — | **done** | evidence/P0/ | 47 claims tested against the binary: 34 exist, 10 absent, 2 partial, 1 untestable |
-| P1 | AC-1, AC-7 | **done** | evidence/P1/ | Six verbs answered by name; guard falsified eight ways across three hand-authored surfaces. Round one FAILed on the replacement claim itself; fixed and re-verified. cadre `e752376e`, run 33557815235 |
-| P2 | AC-2, AC-6 | **built, verifying** | evidence/P2/ | 7 files corrected; the Python-era design preserved verbatim as a note rather than deleted. cadre `36ba82d6` |
-| P3 | AC-3, AC-4 | **built, verifying** | evidence/P3/ | Declared, with what would change it and what its absence costs. cadre `7d0b2ea0` |
-| P4 | AC-5 | **built, verifying** | evidence/P4/ | Both call sites mutation-proven independently. The tests existed; the proof did not |
+| P1 | AC-1, AC-7 | **done** | evidence/P1/ | Six verbs answered by name; guard falsified eight ways. cadre `e752376e`, run 33557815235 |
+| P2 | AC-2, AC-6 | **done** | evidence/P2/ | Closed on the fourth verification round. cadre `b534fb27`, run 33572609424 |
+| P3 | AC-3, AC-4 | **done** | evidence/P3/ | Declared, not built, with cost and reversal conditions stated. Same commit and round as P2 |
+| P4 | AC-5 | **done** | evidence/P4/ | Three mutations, each failed its test. The tests existed; the proof did not |
 
 ## Open AC-n (no PASS row yet)
-AC-2, AC-3, AC-4, AC-5, AC-6 — all built and pushed, none verified. AC-1 and AC-7 closed at P1.
 
-A build is not a criterion. Every one of these rests on my own reading until an independent pass says otherwise, and P1's first verification round failed on exactly that: the fix was sound and the claim it made was false.
+None. All seven carry PASS rows traced to observed artifacts, at cadre `b534fb27` with CI run 33572609424 green on the runner.
+
+A fresh-context north-star pass is checking those rows against the artifacts rather than against the traceability table, and its verdict — not this ledger — is what closes the goal.
 
 ## Next action (resume cold from here)
 
-**A single CP-3v pass covers AC-2 through AC-6**, running against cadre `7d0b2ea0`. It was briefed to search for the concept rather than trust the file list in the commits — AC-3 and AC-4 say *every* document, and the phases edited the ones they knew about.
+Await the north-star gate. If it returns COMPLETE: mark the registry row done, regenerate `report.html`, and run `/retro` over `evidence/P2` and `evidence/P4`.
 
-Then the **north-star gate**: a fresh verifier checking that all seven criteria carry PASS rows traced to observed artifacts, briefed not to accept the spec's own traceability table as evidence of itself.
+## Open items carried out of this goal
 
-Three things that pass should be pointed at specifically:
-- **AC-3 and AC-4 were closed by writing a paragraph.** That is the branch the criteria allow, and it is the branch most vulnerable to a document that states a gap without the required elements — what would change it, what it costs.
-- **The design note preserves prose describing a system that does not exist.** The whole question is whether a reader can tell. If it reads as current behaviour anywhere, P2 has moved the defect rather than fixed it.
-- **AC-5 was closed by demonstration, not by new tests.** The proof is reproducible mutations, and mutations are only evidence if someone else can reproduce them.
+Three, none of them blocking, all worth someone's attention:
 
-### What P1 established that P2 should not have to rediscover
+- **The near-duplicate detector lives in scratch, not in the repository.** Four separate times in this goal a stale passage was left standing beside its own correction — `README.md:149/151`, `SECURITY.md:16-17`, `AGENT.md:68`, `AGENT.md:31`. Hand-checking caught none of them reliably; a 30-line similarity check caught all of them at once. It belongs next to `documented_verbs_test.go` as a guard, for exactly the reason AC-7 exists: an action item in a retro was not applied the next day, while the same rule written into a gate was.
+- **"Four separation checks, one predicate" is true of three of them.** `DispositionStagedRecord` (`internal/knowledge/staged_store.go:559`) compares the incoming decider against `staged_by` with its own inline comparison — it cannot share `StagedRecordIsSelfApproved`, because the decider arrives as an argument rather than inside the record. That is correct, but nothing would catch the two implementations diverging, which is the drift the single-predicate design exists to prevent.
+- **Two capabilities are closer than the documents suggest**, carried forward from P1 and still true: `list-staged` is one CLI wire away (`ListStagedRecords(status)` is live, tested and filterable), and staged-record deletion evidence is retained in `staged_record_deletions` with nothing reading it back — a missing reader, not a missing capability.
 
-The six verbs were **not** phantoms. They were real, tested commands in `roster/knowledge-store/src/cli.py`, removed in `b418031e` when Go replaced Python. Every document describing them was accurate when written. That reframes P2 from "delete wrong claims" to "say what happened", which is a different and more careful edit — and it means the documents' *reasoning* is often still worth keeping even where the command is gone.
+## What this goal cost, and why the number is the finding
 
-Two capabilities are closer than the documents suggest, which P3's build-or-declare decision should weigh:
-- `list-staged` is one CLI wire away: `ListStagedRecords(status)` is live, tested and filterable exactly as the documented `--status` flag describes.
-- Staged-record deletion evidence **is** retained in `staged_record_deletions`; nothing reads it back. That is a missing reader, not a missing capability.
+P2 and P3 took **four verification rounds** to close. Each round failed for a different reason, and the sequence is the most useful thing this goal produced:
 
-## Decisions waiting
-None yet. P3 will carry two, and both are real: whether retention enforcement and ingested-content deletion get built or declared absent.
+| Round | Cause |
+|---|---|
+| 1 | Fixed the locations the report named; never enumerated the set |
+| 2 | Same, and introduced a verbatim duplicate paragraph via a bad slice edit |
+| 3 | Enumerated — but by removed-verb **name**. Four documents assert the capabilities without naming any command |
+| 4 | Enumerated by **concept**, plus a mechanical duplicate detector. Passed |
+
+Round 3's fix commit made the name-vs-concept mistake in the same message that diagnosed it as round 2's root cause. Naming a failure mode does not protect against it. The two things that actually worked were mechanical: an enumeration built before any editing, and a similarity check that does not depend on choosing the right search term.
+
+The single worst defect was outside every phase's assumed scope. `RELEASE_NOTES_PHASE4.md` sat at the repository root announcing retention and deletion as COMPLETE and Production Ready — last touched about two hours before the commit that removed those exact commands, never updated, linked from nowhere. AC-3 and AC-4 say *every* document, and that word is what eventually reached it.

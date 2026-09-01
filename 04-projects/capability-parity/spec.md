@@ -59,9 +59,9 @@ P3 carries the only decisions: whether retention and ingested-content deletion a
 | AC | Phase | Evidence | Status |
 |---|---|---|---|
 | AC-1 | P1 | evidence/P1/CP-5-acceptance.md · cadre `e752376e`, run 33557815235 | verified |
-| AC-2 | P2 | | pending |
-| AC-3 | P3 | | pending |
-| AC-4 | P3 | | pending |
-| AC-5 | P4 | | pending |
-| AC-6 | P2 | | pending |
+| AC-2 | P2 | evidence/P2/CP-5-acceptance-AC-2.md · cadre `b534fb27`, run 33572609424 | verified |
+| AC-3 | P3 | evidence/P3/CP-5-acceptance-AC-3-AC-4.md · cadre `b534fb27`, run 33572609424 | verified |
+| AC-4 | P3 | evidence/P3/CP-5-acceptance-AC-3-AC-4.md · cadre `b534fb27`, run 33572609424 | verified |
+| AC-5 | P4 | evidence/P4/CP-5-acceptance-AC-5.md — 3 mutations, each failed its test | verified |
+| AC-6 | P2 | evidence/P2/ledger.md § AC-6 · cadre `b534fb27`, run 33572609424 | verified |
 | AC-7 | P1 | evidence/P1/CP-5-acceptance.md — falsified 8 ways | verified |

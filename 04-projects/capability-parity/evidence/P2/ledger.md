@@ -42,3 +42,19 @@ A verifier described `ci-status.sh` as showing a "stale PENDING snapshot" while 
 Recorded because the obvious response to that report would be to make the script accept an in-flight run — which would turn the control back into the thing it replaced. Its header already says why: *"a run still in progress is NOT green. It has not finished disagreeing."*
 
 Also confirmed while checking: cadre runs one workflow per commit, so there is no risk of an unrelated queued job masking a green `validate`.
+
+## Verification: four rounds
+
+AC-2 and AC-6 were built at `36ba82d6` and did not close until `b534fb27`. Three verification rounds failed first, each on a different cause, and the phase's own record is worth more than its outcome.
+
+| Round | Verdict | Cause |
+|---|---|---|
+| 1 | FAIL | Fixed the named locations; never enumerated the set |
+| 2 | FAIL | Same, and introduced a verbatim duplicate paragraph — the stale copy 19 lines above its own correction |
+| 3 | FAIL | Enumerated, but by removed-verb **name**. Four documents assert the capabilities without naming any command, so no name-based search could reach them |
+| 4 | PASS | Enumerated by capability **concept**, plus a mechanical near-duplicate detector |
+
+Round 3's fix commit made the name-vs-concept mistake in the same message that diagnosed it as the root cause of round 2. That is the durable lesson: naming a failure mode does not protect against it, and the fix has to be mechanical.
+
+**EVIDENCE AC-2 | CP-3v | PASS** — cadre `b534fb27`, CI run 33572609424. See `CP-5-acceptance-AC-2.md`.
+**EVIDENCE AC-6 | CP-3v | PASS** — round 2, `SECURITY.md`: the convention now sits beside the limitation that makes it one, with the four enforced separation rules named so a reader can tell them apart. P4 later proved three of the four fail when their check is removed.
