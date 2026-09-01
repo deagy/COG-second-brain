@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capability parity: run report</title>
+<style>
+  :root {
+    --bg: #fbfbfa; --panel: #ffffff; --ink: #1a1a19; --muted: #6b6b68;
+    --line: #e4e4e1; --pass: #1a7f4b; --fail: #b4232a; --skip: #8a8a86;
+    --accent: #1a1a19;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #131313; --panel: #1b1b1a; --ink: #ececea; --muted: #9a9a96;
+      --line: #2c2c2a; --pass: #4ec281; --fail: #f2777c; --skip: #7d7d79;
+      --accent: #ececea;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #131313; --panel: #1b1b1a; --ink: #ececea; --muted: #9a9a96;
+    --line: #2c2c2a; --pass: #4ec281; --fail: #f2777c; --skip: #7d7d79;
+    --accent: #ececea;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 var(--sans); }
+  .wrap { max-width: 62rem; margin: 0 auto; padding: 3rem 1.5rem 6rem; }
+  header { border-bottom: 1px solid var(--line); padding-bottom: 1.5rem; margin-bottom: 2.5rem; }
+  h1 { font-size: 1.6rem; letter-spacing: -0.01em; margin: 0 0 .4rem; }
+  .meta { color: var(--muted); font: 13px/1.5 var(--mono); }
+  h2 { font-size: 1rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted);
+       margin: 2.75rem 0 .9rem; font-weight: 600; }
+  p { margin: 0 0 1rem; }
+  .northstar { background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+               padding: 1rem 1.15rem; border-radius: 3px; }
+  .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 3px; background: var(--panel); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: .6rem .8rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font: 600 12px/1.4 var(--mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  tr:last-child td { border-bottom: 0; }
+  td.id, td.cp { font-family: var(--mono); white-space: nowrap; }
+  .v { font: 600 12px/1.4 var(--mono); white-space: nowrap; }
+  .v.pass { color: var(--pass); } .v.fail { color: var(--fail); } .v.skip { color: var(--skip); }
+  .obs { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+  figure { margin: 1.25rem 0; }
+  figure img { display: block; max-width: 100%; border: 1px solid var(--line); border-radius: 3px; }
+  figcaption { color: var(--muted); font: 12.5px/1.5 var(--mono); margin-top: .5rem; }
+  .next { background: var(--panel); border: 1px solid var(--line); padding: 1rem 1.15rem; border-radius: 3px; }
+  footer { margin-top: 3.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line);
+           color: var(--muted); font: 12.5px/1.5 var(--mono); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Capability parity</h1>
+  <div class="meta">ultragoal capability-parity · lane full · 2026-09-01 · outcome shipped</div>
+</header>
+
+<h2>North star</h2>
+<p class="northstar">Every capability the roster&rsquo;s governance documents describe now exists, or the documents say it does not. Before this goal, the governance surface promised a retention regime, a deletion-with-evidence lifecycle and seven CLI verbs that a rewrite had removed weeks earlier &mdash; and the CLI answered <em>unknown subcommand</em> to all of them. The binary now answers every documented verb by name with what replaced it, a test fails if a document ever names a verb that does not exist, and the two remaining absences are declared in every document that touches them, with what they cost and what would restore them.</p>
+
+<h2>Phases</h2>
+<div class="scroll">
+<table>
+  <thead><tr><th>Phase</th><th>Scope</th><th>Covers</th><th>State</th></tr></thead>
+  <tbody>
+    <tr><td class="id">P0</td><td>Inventory: test every documented claim against the binary</td><td class="id">—</td><td class="v pass">done</td></tr>
+    <tr><td class="id">P1</td><td>Every documented verb answers by name; a drift check enforces it</td><td class="id">AC-1, AC-7</td><td class="v pass">done</td></tr>
+    <tr><td class="id">P2</td><td>The documents describe what exists</td><td class="id">AC-2, AC-6</td><td class="v pass">done</td></tr>
+    <tr><td class="id">P3</td><td>Retention and deletion: build or declare</td><td class="id">AC-3, AC-4</td><td class="v pass">done</td></tr>
+    <tr><td class="id">P4</td><td>The asserted enforcements get mutation-proven tests</td><td class="id">AC-5</td><td class="v pass">done</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>Acceptance criteria</h2>
+<div class="scroll">
+<table>
+  <thead><tr><th>AC</th><th>Criterion</th><th>Phase</th><th>Verdict</th></tr></thead>
+  <tbody>
+    <tr><td class="id">AC-1</td><td>No governance document names a <code>cadre</code> verb that answers <em>unknown subcommand</em></td><td class="id">P1</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-2</td><td>The knowledge-store documents describe the surface that exists</td><td class="id">P2</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-3</td><td>Retention has a stated owner</td><td class="id">P3</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-4</td><td>Deletion of ingested content has a stated owner</td><td class="id">P3</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-5</td><td>Every enforcement claim is exercised by a test that fails when its check is removed</td><td class="id">P4</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-6</td><td>A convention is not written as a control</td><td class="id">P2</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-7</td><td>The parity property is enforced, not restored</td><td class="id">P1</td><td class="v pass">PASS</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>Evidence</h2>
+<p>Every row below was observed by a fresh-context read-only pass at the north-star gate &mdash; a built binary, live verb runs, a live mutation-and-revert, and full-file reads &mdash; not taken from the traceability matrix, which the same session that did the work had written.</p>
+<div class="scroll">
+<table>
+  <thead><tr><th>AC</th><th>CP</th><th>Verdict</th><th>Observation</th><th>Artifact</th></tr></thead>
+  <tbody>
+    <tr><td class="id">AC-1</td><td class="cp">CP-5</td><td class="v pass">PASS</td><td class="obs">Built the binary and ran each retired and Python-era verb; every one answered by name with what replaced it. A genuinely unknown verb still falls through, so the handler was not simply deleted.</td><td class="obs"><code>cadre knowledge {delete,stats,context,list-staged,export-staged,retention-report,delete-ingested,deletion-evidence}</code></td></tr>
+    <tr><td class="id">AC-7</td><td class="cp">CP-5</td><td class="v pass">PASS</td><td class="obs">Read the guard’s source rather than its description. It walks <code>roster/</code> and <code>.agents/skills/</code> plus the CHANGELOG’s <code>[Unreleased]</code> section only, matching inside backtick spans and fenced blocks. A second test closes the gap where a verb could be declared answerable without the dispatcher answering it. Falsified eight ways.</td><td class="obs"><code>internal/cli/documented_verbs_test.go</code></td></tr>
+    <tr><td class="id">AC-2</td><td class="cp">CP-3v</td><td class="v pass">PASS</td><td class="obs">Every governance document cited was read in full, not at the cited line — the check three earlier rounds failed. No stale passage survives beside a correction.</td><td class="obs"><code>roster/knowledge-store/{README,SECURITY,AGENT}.md</code>, <code>roster/workflows/knowledge-ingestion.md</code></td></tr>
+    <tr><td class="id">AC-3</td><td class="cp">CP-3v</td><td class="v pass">PASS</td><td class="obs">Concept-based sweep of the whole tracked tree. Every document describing retention states it is an unenforced paper record and says what would restore it.</td><td class="obs"><code>SECURITY.md:38-44</code>, <code>AGENT.md:53</code>, <code>knowledge-use-policy.md:24-30</code>, <code>knowledge-ingestion.md:15</code></td></tr>
+    <tr><td class="id">AC-4</td><td class="cp">CP-3v</td><td class="v pass">PASS</td><td class="obs">Same sweep. Every document states cadre holds no capability and no evidence trail over ingested content, and what that absence costs.</td><td class="obs"><code>SECURITY.md:38,46</code>, <code>AGENT.md:51,67</code>, <code>dispatch-contract.md:25</code>, <code>README_CLI.md:172-186</code></td></tr>
+    <tr><td class="id">AC-5</td><td class="cp">CP-5</td><td class="v pass">PASS</td><td class="obs">Three mutations in a clean clone. Removing the import call site fails its test; removing the ingest branch fails on the record <em>reaching the corpus</em>, not merely on a missing error; neutering the shared predicate fails all three predicate-dependent tests. The gate re-ran the third live rather than trusting the record.</td><td class="obs"><code>evidence/P4/CP-5-acceptance-AC-5.md</code></td></tr>
+    <tr><td class="id">AC-6</td><td class="cp">CP-3v</td><td class="v pass">PASS</td><td class="obs">The steward-only rule is labelled a convention in the same paragraph, naming the limitation that makes it one: the CLI has no caller identity, and every <code>--*-by</code> flag is free text authenticated by nobody.</td><td class="obs"><code>roster/knowledge-store/SECURITY.md</code> § Retrieval rules</td></tr>
+    <tr><td class="id">—</td><td class="cp">CP-6</td><td class="v pass">PASS</td><td class="obs">CI green on the runner at the exact commit under test, not locally. <code>ci-status.sh</code> treats a missing or in-flight run as not-green.</td><td class="obs"><code>deagy/cadre b534fb27 — success run 33572609424</code></td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>Four rounds</h2>
+<p>P2 and P3 were built once and verified four times. Each failure had a different cause, and the sequence is the most useful thing this goal produced.</p>
+<div class="scroll">
+<table>
+  <thead><tr><th>Round</th><th>Verdict</th><th>Cause</th></tr></thead>
+  <tbody>
+    <tr><td class="id">1</td><td class="v fail">FAIL</td><td>Fixed the locations the report named; never enumerated the set.</td></tr>
+    <tr><td class="id">2</td><td class="v fail">FAIL</td><td>The same, and introduced a verbatim duplicate paragraph through a slice-order edit &mdash; the stale copy standing 19 lines above its own correction.</td></tr>
+    <tr><td class="id">3</td><td class="v fail">FAIL</td><td>Enumerated, but by removed-verb <em>name</em>. Four documents assert the capabilities without naming any command &mdash; &ldquo;TTL-based expiration&rdquo;, &ldquo;does have deletion capability&rdquo; &mdash; so no name-based search could reach them.</td></tr>
+    <tr><td class="id">4</td><td class="v pass">PASS</td><td>Enumerated by capability <em>concept</em>, plus a mechanical near-duplicate detector.</td></tr>
+  </tbody>
+</table>
+</div>
+<p>Round 3&rsquo;s fix commit made the name-versus-concept mistake in the same message that diagnosed it as round 2&rsquo;s root cause. Naming a failure mode did not protect against it. The two things that worked were both mechanical: an enumeration built before any editing, and a similarity check that does not depend on choosing the right search term &mdash; it found all four duplicate-paragraph instances at once, after hand-checking had missed each of them in turn.</p>
+<p>The worst single defect sat outside every phase&rsquo;s assumed scope. <code>RELEASE_NOTES_PHASE4.md</code> was at the repository root announcing retention and deletion as COMPLETE and Production Ready, last touched roughly two hours before the commit that removed those exact commands, updated never, linked from nowhere. AC-3 and AC-4 say <em>every</em> document, and that word is what eventually reached it.</p>
+
+<h2>Carried forward</h2>
+<div class="scroll">
+<table>
+  <thead><tr><th>Item</th><th>Why it matters</th></tr></thead>
+  <tbody>
+    <tr><td>The near-duplicate detector lives in the evidence bundle, not in the repository</td><td>It caught four instances that hand-checking missed. AC-7&rsquo;s own argument applies: a rule written into a gate held, while the same rule written into a retro was not applied the next day.</td></tr>
+    <tr><td>&ldquo;Four separation checks, one predicate&rdquo; is true of three of them</td><td><code>DispositionStagedRecord</code> carries its own inline comparison because it is asked a structurally different question. Correct, but nothing would catch the two implementations diverging &mdash; the drift the shared predicate exists to prevent.</td></tr>
+    <tr><td><code>list-staged</code> and a staged-deletion-evidence reader are closer than the documents suggest</td><td><code>ListStagedRecords(status)</code> is live, tested and filterable; deletion evidence is retained in <code>staged_record_deletions</code> with nothing reading it back. Both are a missing wire, not a missing capability.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>Next action</h2>
+<p class="next">None: goal closed. The three items above are recorded, not blocking.</p>
+
+<footer>
+  COG verification harness &middot; evidence bundle <code>04-projects/capability-parity/evidence/</code> &middot; north-star gate <code>evidence/northstar-gate.md</code>
+</footer>
+
+</div>
+</body>
+</html>

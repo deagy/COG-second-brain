@@ -2,7 +2,7 @@
 
 North-star: every capability the roster's governance documents describe exists, or the documents say it does not.
 Spec: 04-projects/capability-parity/spec.md · Registry: 04-projects/harness/ultragoals.md
-Current phase: north-star gate · Overall: **all seven criteria verified; awaiting the north-star pass**
+Current phase: — · Overall: **DONE**. North-star gate returned COMPLETE at cadre `b534fb27`, CI run 33572609424
 
 ## Phases
 | Phase | AC covered | State | Evidence | Notes |
@@ -15,13 +15,15 @@ Current phase: north-star gate · Overall: **all seven criteria verified; awaiti
 
 ## Open AC-n (no PASS row yet)
 
-None. All seven carry PASS rows traced to observed artifacts, at cadre `b534fb27` with CI run 33572609424 green on the runner.
+None. All seven verified — `evidence/northstar-gate.md`.
 
-A fresh-context north-star pass is checking those rows against the artifacts rather than against the traceability table, and its verdict — not this ledger — is what closes the goal.
+The gate did not take the traceability table's word for any of them. It built the binary and ran the verbs for AC-1, read the drift guard's source for AC-7, re-ran the T-03 mutation live and reverted it for AC-5, and read every governance document cited by the round-4 report **in full** rather than at the cited lines — the check that three earlier rounds had failed. It also confirmed the generated plugin and Cline trees are exact copies of the corrected policy rather than independently drifted claims.
+
+One exclusion it examined and accepted: the drift guard skips `roster/orchestration/runs/`, which holds dated run records rather than present-tense claims.
 
 ## Next action (resume cold from here)
 
-Await the north-star gate. If it returns COMPLETE: mark the registry row done, regenerate `report.html`, and run `/retro` over `evidence/P2` and `evidence/P4`.
+Nothing. The goal is closed. The three open items below were carried out deliberately and are not blockers.
 
 ## Open items carried out of this goal
 
