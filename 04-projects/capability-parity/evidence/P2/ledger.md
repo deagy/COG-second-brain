@@ -34,3 +34,11 @@ The admission now sits next to the claim, with the four separation-of-duties rul
 - Editing a role's `AGENT.md` cascades: role metadata, then the plugin, then the Cline mirror, in that order.
 - `port-cline-agents` takes `--source plugin`; defaulting it to `--root` fails with a missing-directory error that does not explain why.
 - **The plugin generator packages only tracked files.** A new design note was invisible to it until staged — and `knowledgeStoreExtras` then had to name it, for the reason that allowlist's own comment already gives: shipping documents that cite a file the reader cannot open is the defect this phase exists to remove.
+
+## A note on the CI control, since it was questioned
+
+A verifier described `ci-status.sh` as showing a "stale PENDING snapshot" while GitHub reported green. Checked: it was neither stale nor wrong. The run genuinely had not finished when the script was asked, and it reported `PENDING ... not finished, so not green`. Once the run landed, the same command returned `success run 33570800837`, exit 0.
+
+Recorded because the obvious response to that report would be to make the script accept an in-flight run — which would turn the control back into the thing it replaced. Its header already says why: *"a run still in progress is NOT green. It has not finished disagreeing."*
+
+Also confirmed while checking: cadre runs one workflow per commit, so there is no risk of an unrelated queued job masking a green `validate`.
