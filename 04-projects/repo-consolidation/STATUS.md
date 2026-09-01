@@ -2,7 +2,7 @@
 
 North-star: every concern has exactly one owning repository, and the losing implementations are deleted or archived rather than left running.
 Spec: 04-projects/repo-consolidation/spec.md · Registry: 04-projects/harness/ultragoals.md
-Current phase: P4 · Overall: **AC-08 closed** — T-01..T-06 done, CP-4 passed after three fixes; P5 next
+Current phase: P5 · Overall: **closing** — 9 of 11 criteria verified; AC-07 and AC-10 open with their work tracked as AC-07b and AC-10b
 
 ## Phases
 | Phase | AC covered | State | Evidence | Notes |
@@ -12,7 +12,7 @@ Current phase: P4 · Overall: **AC-08 closed** — T-01..T-06 done, CP-4 passed 
 | P2 | AC-05 | **done** | evidence/P2/ | Archived; intent-brief template salvaged into cadre. Retro: harness/retro/2026-08-29-repo-consolidation-p2.md |
 | P3 | AC-06,07 | **done** | evidence/P3/ | Composed rather than ported. CP-3v/CP-4/CP-5 all passed. Retro: harness/retro/2026-08-29-repo-consolidation-p3.md |
 | P4 | AC-08 | **done** | evidence/P4/ | Engine deleted, retrieval governed over recall `v0.3.1`. CP-3v on T-04 and T-05, CP-4 across the phase. Three CP-4 defects found and fixed. Pushed `f578a0b4`. |
-| P5 | AC-09,10 | not started | — | Catalog home and cadre's remainder |
+| P5 | AC-09,10,11 | **done** | evidence/P5/ | Pipeline verified end to end against the released kernel. North-star gate failed the *trail*: CI red in two repositories since the commits their criteria cite, AC-05 closed on a filename search, AC-10 amended at its own gate. All repaired. Retro: harness/retro/2026-09-01-repo-consolidation-p5.md |
 
 ## Open AC-n (no PASS row yet)
 - AC-01 through AC-07 — **all closed**, each with an artifact-level observation. See `evidence/P1/ledger.md` and the P2/P3 ledgers.
@@ -30,20 +30,20 @@ Current phase: P4 · Overall: **AC-08 closed** — T-01..T-06 done, CP-4 passed 
 
 ## Next action (resume cold from here)
 
-**AC-08 is closed and P4 is done.** cadre owns no retrieval engine. `cadre knowledge search` runs over a recall store behind `recall/govern` v0.3.1, the six refusals hold at the command line, the staged-record workflow has its own pure-Go database, and `ingest-accepted` writes to recall through the same governed view the read path uses. Evidence: `evidence/P4/CP-4-integration.md` and the per-task acceptance files.
+**Nine of eleven criteria verified.** Two are open, both with their work tracked rather than dissolved:
 
-**P5 is next**: AC-09 and AC-10 — the catalog home, and what remains of cadre. AC-11's end-to-end pipeline run belongs there too.
+- **AC-07** — pending. `selector.Select` and `roster.Select` carry their markers; removal completes at gloop's next major as **AC-07b**. Its wording was corrected 2026-09-01: `catalog.MatchRoutes` left scope (gloop's CHANGELOG retracts its deprecation in public) and the amendment's claim that gloop is "MIT-licensed, on pkg.go.dev" was false — it is private and unlicensed.
+- **AC-10** — open. The reading holds: cadre spawns agent CLIs, gloop drives LLM endpoints, only `runner="api"` overlaps. **AC-10b** carries the resolution — gloop gains containment for its tool executor (path confinement, command allowlist, untrusted-brief fence), and cadre's `api_runner_*.go` retires onto it. That is the AC-08 shape: port the requirement, do not keep two implementations.
 
-**Three things P4 opened that P5 has to answer:**
-- **Deletion by retention window, classification, source or age no longer exists** and cannot be rebuilt over recall's interface. `roster/knowledge-store/SECURITY.md` describes a `delete-ingested` verb with deletion evidence that the Go CLI never shipped, so policy was ahead of implementation before this and is further ahead now. Either recall grows metadata-scoped deletion, or the policy is rewritten to describe what exists.
-- **`recall upload` cannot feed cadre's default config.** recall embeds with `mock`/`openai`/`cohere`/`ollama`/`onnx`; cadre's default is `local-hashing`. cadre refuses a mismatched store rather than mis-searching it, but the documented quickstart needs both sides on the same real embedder. The durable fix is recall recording embedder identity in the store, which turns cadre's check from an assertion into a verification.
-- **`ingest-accepted` writes under a fixed `proposed-knowledge` source**, not the `source_scope` an operator declares. Documented rather than changed: making the declared scope the retrieval source is a staging-contract decision.
+**One item is the user's**, and it is a live north-star failure rather than a nuisance: a pipx-installed Python `agentic-sdlc 0.13.2` is the only `agentic-sdlc` on this machine's PATH, and the kernel that owns that concern is not installed at all. Either `pipx uninstall agentic-sdlc` and install the kernel under that name, or accept a losing implementation that is still running.
 
-Also worth carrying: a whitespace-only query passes `govern`'s exact empty check and produces a score-0 result with an audit row. Behaviour faithfully inherited from the deleted engine, so not a regression — but it belongs in recall's `govern`, not in a ledger note.
+**What this phase changed about the trail itself.** cadre and gloop had been red on every push since their consolidation work began — cadre since the exact commit its AC-02 row cites as "full suite green". Both are green now, with the guards executing rather than skipping, and AC-02 is restated against run `33534720412`. Four criteria in this trail had rested on local exit codes; two were false where it counted.
+
+Before the next ultragoal: **a claim of "green" cites a run ID or it is not evidence**, and the harness should read CI rather than only running tests. Both are in the P5 retro's actions.
 
 Unpushed: none.
 
 ## Repositories
-- `~/sdk/cadre` @ `f578a0b4` on `main` — **pushed**. Kernel absent from the published tree; knowledge engine deleted
+- `~/sdk/cadre` @ `9bd3fdba` on `main` — **pushed, CI green**. Kernel absent from the published tree; knowledge engine deleted
 - `~/sdk/cadre-kernel` @ `24ec47c` on `main` — **https://github.com/deagy/cadre-kernel** (public), released `v0.14.2` with five platform archives
-- `~/sdk/recall` @ `2c00c05` on `main` — **https://github.com/deagy/recall** (public), tagged `v0.3.1`, CI green including the cross-repo contract guard. Still no GitHub Release for either tag: `tag.yml` pushes with `GITHUB_TOKEN`, which does not fire `release.yml`. recall's own defect, no effect on cadre — module consumers resolve from the tag through the proxy
+- `~/sdk/recall` @ `3ee2795` on `main` — **https://github.com/deagy/recall** (public), tagged `v0.3.1`, CI green including the cross-repo contract guard. Still no GitHub Release for either tag: `tag.yml` pushes with `GITHUB_TOKEN`, which does not fire `release.yml`. recall's own defect, no effect on cadre — module consumers resolve from the tag through the proxy

@@ -4,3 +4,4 @@
 2026-09-01T15:50:34Z	CP-5	PASS	AC-09, AC-10, AC-11 all verified; ownership table amended on evidence with a revisit trigger
 2026-09-01T15:59:55Z	CP-4	FAIL	north-star ownership: 7 concerns single-owner and both attacked claims held; FAIL on a pipx Python agentic-sdlc 0.13.2 shadowing the kernel on PATH
 2026-09-01T16:22:26Z	CP-4	FAIL	evidence audit: cadre and gloop CI red since the commits their ACs cite; AC-05 executable impl survives; AC-07 false premise; AC-10 amended at the gate
+2026-09-01T17:32:09Z	CP-7	PASS	P5 retro: 2 gates failed the trail, AC-10 reopened, AC-05 reclosed, CI repaired in 3 repos

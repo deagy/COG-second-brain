@@ -28,7 +28,7 @@ When this is done, a change to a contract has one place to make it, and no secon
 | AC-04 | cadre's copies of the lifecycle contracts are held to the kernel's | The vendored copies carry a drift check that fails both when a copy is hand-edited and when pointed at a divergent source |
 | AC-05 | `agentic-lifecycle` is retired and no third contract definition survives | Repository archived; anything salvaged exists in exactly one other repository; no `run-record` definition exists outside the kernel |
 | AC-06 | gloop executes from cadre's governed plan | For each case in cadre's golden corpus, gloop consumes the plan cadre emits and produces an execution plan whose roles are exactly the plan's `agents` (primary, reviewers, support), in a stated pattern |
-| AC-07 | Only one selection implementation is reachable by new code | gloop's `Select()` and `catalog.MatchRoutes` carry Go `Deprecated:` markers naming `pkg/govplan` as the replacement; the CHANGELOG records the migration and the release they are removed in; no code path in gloop other than the deprecated ones produces a plan. **Removal completes at gloop's next major**, tracked as AC-07b |
+| AC-07 | Only one selection implementation is reachable by new code | gloop's `selector.Select` and `roster.Select` carry Go `Deprecated:` markers naming `pkg/govplan` as the replacement; the CHANGELOG records the migration and the release that removes them; no code path in gloop other than the deprecated ones produces a plan. `catalog.MatchRoutes` is explicitly **not** in scope — see the 2026-09-01 amendment. **Removal completes at gloop's next major**, tracked as AC-07b |
 | AC-08 | Knowledge storage has one owner, and it keeps the fail-closed contract | recall survives and cadre's `internal/knowledge` retrieval engine is deleted. The surviving path preserves all **six** refusals cadre's store makes, recorded as cases in `internal/knowledge/testdata/fail-closed-contract.json`: no query, no classification, no embedding provider, no source-scope decision, all-sources together with filters, and a blank filter entry. Every retrieval is recorded. **Each refusal has a test that fails when its check is removed.** |
 | AC-09 | The role catalog has one publishing home | The catalog exists in exactly one repository; each consuming runtime resolves it from there with no vendored second copy lacking a drift check |
 | AC-10 | No concern has two owners | The ownership table in `04-projects/agentic-sdlc/planning/repository-ownership-decision.md` names one repository per concern, and for each losing claimant the implementation is absent from its tree. **Removal of cadre's `runner="api"` completes as AC-10b** |
@@ -42,6 +42,12 @@ Two reasons it was withdrawn. **This document already rejects that move**, in th
 And **it was made at the gate**: the spec was edited after the finding that would otherwise have failed the row, by the party being judged, against a table that same party can edit. This document draws exactly that distinction when defending AC-07 — "there, a criterion was read generously at the gate to make failing work pass. Here the criterion was changed before the gate." AC-10's amendment was the second of those, not the first.
 
 The work is real and is tracked as **AC-10b** rather than dissolved by definition. AC-10 stays open until it lands.
+
+**Amended 2026-09-01 — `catalog.MatchRoutes` leaves AC-07's scope.** The criterion required a `Deprecated:` marker on it. gloop's own CHANGELOG retracts that in public: *"`catalog.MatchRoutes` is **not** deprecated and is not going away. It is the shared low-level matching engine that the deprecated selectors wrap and that `pkg/tenant` also uses. An earlier draft of this entry said it would be removed; that was wrong, and the code never said so."*
+
+`grep -n Deprecated pkg/catalog/*.go` finds nothing, correctly. The criterion was asking for a marker on a function that is not deprecated, so a repository doing the right thing could never have satisfied it. Scope is now `selector.Select` and `roster.Select`, both of which do carry markers naming `pkg/govplan`.
+
+This is the legitimate shape of a criterion amendment and worth contrasting with AC-10's, withdrawn the same day: **AC-07 has not been gated.** Nothing is recorded as verified against the old wording, and the correction makes the criterion match a fact its subject published, rather than making failing work pass.
 
 ### Named corrections list — retained as a regression guard
 
@@ -103,7 +109,9 @@ So AC-08 keeps its single owner and names the contract the survivor must carry. 
 
 ### AC-07 amended 2026-08-29 — deprecate, then remove
 
-AC-07 originally required `Select()` and `catalog.MatchRoutes` to be gone. Inventorying dependents before deleting showed gloop is a published Go module — `v0.1.0` and `v0.2.0` tagged, MIT-licensed, on pkg.go.dev — and both functions are exported. Removing them is a breaking change for any importer.
+AC-07 originally required `Select()` and `catalog.MatchRoutes` to be gone. Inventorying dependents before deleting showed both functions are exported and gloop carries release tags (`v0.1.0`, `v0.2.0`), so removing them is a breaking change for any importer.
+
+**Corrected 2026-09-01.** That sentence also said gloop was "MIT-licensed, on pkg.go.dev". Neither is true: `gh api repos/deagy/gloop` returns `private: true, license: null`, and `pkg.go.dev/github.com/deagy/gloop` is a 404, as a private module must be. The deprecate-rather-delete conclusion survives — exported functions with tagged releases are still a compatibility surface — but it survives **weaker** than it was argued. Every importer is inside this account, so the cost of removing them is knowable rather than unbounded, which is an argument for doing it at the next major rather than deferring further.
 
 The criterion measured the wrong moment. What matters is that only one implementation is **reachable by new code**; a deprecated function whose doc comment names its replacement is a migration path with an expiry date, not a competing implementation. So AC-07 now closes on deprecation, and **AC-07b** carries the removal to gloop's next major.
 
