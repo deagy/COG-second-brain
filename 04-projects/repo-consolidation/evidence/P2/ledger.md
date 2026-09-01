@@ -85,3 +85,15 @@ Searched all four surviving repositories for any reference to the retired one. `
 Judged acceptable without change: the line already reads "before that repository was archived", so a reader is told not to chase it. Recorded rather than silently accepted.
 
 P1's artifacts re-checked and still hold: `cadre-kernel`'s suite green.
+
+## Correction, 2026-09-01 — AC-05 was closed on a filename search
+
+T-02 recorded "no third contract definition survives" after deleting `schemas/run-record.yaml` and `schemas/gate-result.yaml`. The criterion says **no `run-record` definition exists outside the kernel**, and one did: `src/agentic_lifecycle/contracts.py` and `lifecycle.py` between them defined a run record in code — its `gates` map, per-gate `status`, `human_decision` and `history` — with `store.py` persisting it.
+
+This ledger even names `store.py` among the files committed before archiving. It was seen, and read as salvage rather than as a surviving definition.
+
+**Archiving is not the same as removal when a repository is installable.** `pyproject.toml` declared `agentic-lifecycle = agentic_lifecycle.cli:main`, so the losing implementation was one `pip install` from any machine — and P5's north-star pass found a pipx-installed predecessor of the same lineage already shadowing the kernel on this machine's PATH.
+
+Closed properly in `853ec2c`: implementation and packaging removed, documentation kept, repository re-archived, history intact at `630bb4f`.
+
+The lesson is the search, not the file. **Look for the concept, not the filename** — the same failure that let a broken `delete` verb and a broken staged workflow ship in P4, both found by running a command rather than by grepping for a name.

@@ -182,4 +182,17 @@ P2 deleted `schemas/run-record.yaml` and `schemas/gate-result.yaml` and recorded
 
 Prepared as `853ec2c` in the local checkout: `src/agentic_lifecycle/`, `tests/`, `scripts/validate.py`, `pyproject.toml` and `package.yaml` removed; the agent definitions, workflows, routing and skills kept, since those were only ever documentation. `git ls-files src tests scripts` is empty. Nothing is lost — `630bb4f` and everything before it still carry all of it.
 
-**Not pushed.** The repository is archived and read-only, and unarchiving was refused by this session's permission policy. One command from the user completes it; until then AC-05 stays **open**.
+**Landed and verified on the published tree**, not on the local checkout:
+
+| Check | Observation |
+|---|---|
+| Remote tip | `origin/main` = `853ec2c` |
+| Re-archived | `gh api repos/deagy/agentic-lifecycle` → `archived: true`, `pushed_at: 2026-09-01T17:19:28Z` |
+| Implementation gone | `GET /contents/src` → **404**; `GET /contents/pyproject.toml` → **404** |
+| What is published | `.gitignore README.md agents examples routing.yaml schemas skills workflows` — documentation only |
+| Python at the tip | `git ls-tree -r --name-only origin/main \| grep -c '\.py$'` → **0** |
+| History intact | `contracts.py` and `lifecycle.py` both present at `origin/main~1` (`630bb4f`) |
+
+The definition is absent from the tip and intact in the record. That is the right shape: the hazard was never that someone would read it, but that they could install it.
+
+**AC-05 closed.**
