@@ -1,0 +1,36 @@
+# P2 — the documents describe what exists
+
+Covers AC-2 (no absent capability described as current; recall named for what moved) and AC-6 (a convention is not written as a control). cadre `36ba82d6`.
+
+## The edit that would have been wrong
+
+Deleting every sentence naming an absent verb. P1 established why: these were **real commands** in `roster/knowledge-store/src/cli.py`, with handler code and dedicated test modules, removed in `b418031e`. Every sentence was accurate when written.
+
+And the prose is not filler. `SECURITY.md` carried, in detail, why retention defaults shipped indefinite — *"shipping working day-counts ahead of that decision would let them become policy by default inertia"* — why deletion evidence commits in two phases so `completed` cannot lie, and three limits stated plainly rather than hidden: a deletion cannot redact what a past retrieval already returned; exported bundles are outside its reach; residue reclaim covers the live database only, never backups.
+
+**That is the specification for a capability P3 had to decide about.** Satisfying AC-2 by deleting it would have closed one criterion by making the next one's decision worse-informed.
+
+## What was done instead
+
+The reasoning moved to `DESIGN-NOTES-deletion-and-retention.md`, **verbatim**, relabelled as design intent. The words are unchanged; only the claim they make about the world is corrected. Three of its limits are properties of the problem rather than of the Python implementation, so a replacement inherits them — and one that quietly did not say so would be the weaker artifact.
+
+| File | Was | Is |
+|---|---|---|
+| `knowledge-store/README.md` | `## Commands` listed the full Python-era surface as current | What the CLI answers, plus a removed-verbs table naming where each went |
+| `knowledge-store/SECURITY.md` | Four paragraphs of present-tense description | The absence stated plainly; the design preserved by reference |
+| `knowledge-store/AGENT.md` | Steward deliverables that cannot be produced | Corrected, including that the committed snapshot is now frozen — `import-staged` reads such a directory but nothing writes one, so the round trip is half present |
+| `workflows/knowledge-ingestion.md` | Step 9 described both deletion paths as live | One exists; the other is named as removed with a pointer |
+| `.agents/skills/{knowledge-ingestion,agent-stores}/SKILL.md` | Instructed agents to run `cadre knowledge context` | `search`, with its scope requirement stated |
+| `CHANGELOG.md` `[Unreleased]` | `--source` newly repeatable on a removed verb | The `search` half stands; the other is noted as removed in the same window |
+
+## AC-6 — one sentence, in the wrong place
+
+`SECURITY.md` told a reader to route ingestion, correction, retention and deletion "through the knowledge-store steward". That reads as a control. It is a convention: **the CLI has no caller identity at all**, and `--decided-by`, `--deleted-by` and `--authorized-by` are free-text strings authenticated by nobody — which the same document admitted sixteen lines further down.
+
+The admission now sits next to the claim, with the four separation-of-duties rules that *are* enforced named explicitly, so a reader can tell which is which. Those four are real: P4 proved each fails when its check is removed.
+
+## Three things the repository's own machinery taught, none of them planned
+
+- Editing a role's `AGENT.md` cascades: role metadata, then the plugin, then the Cline mirror, in that order.
+- `port-cline-agents` takes `--source plugin`; defaulting it to `--root` fails with a missing-directory error that does not explain why.
+- **The plugin generator packages only tracked files.** A new design note was invisible to it until staged — and `knowledgeStoreExtras` then had to name it, for the reason that allowlist's own comment already gives: shipping documents that cite a file the reader cannot open is the defect this phase exists to remove.

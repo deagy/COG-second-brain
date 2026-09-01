@@ -2,27 +2,32 @@
 
 North-star: every capability the roster's governance documents describe exists, or the documents say it does not.
 Spec: 04-projects/capability-parity/spec.md · Registry: 04-projects/harness/ultragoals.md
-Current phase: P2 · Overall: **in progress** — P1 done; 2 of 7 criteria verified
+Current phase: P2–P4 · Overall: **in progress** — all phases built and pushed; one verification pass covers AC-2 through AC-6
 
 ## Phases
 | Phase | AC covered | State | Evidence | Notes |
 |---|---|---|---|---|
 | P0 | — | **done** | evidence/P0/ | 47 claims tested against the binary: 34 exist, 10 absent, 2 partial, 1 untestable |
 | P1 | AC-1, AC-7 | **done** | evidence/P1/ | Six verbs answered by name; guard falsified eight ways across three hand-authored surfaces. Round one FAILed on the replacement claim itself; fixed and re-verified. cadre `e752376e`, run 33557815235 |
-| P2 | AC-2, AC-6 | not started | — | The knowledge-store documents describe what exists |
-| P3 | AC-3, AC-4 | not started | — | Retention and ingested-content deletion: build or declare. **Carries the decisions** |
-| P4 | AC-5 | not started | — | Mutation-proven tests for the two asserted-but-unexercised enforcements |
+| P2 | AC-2, AC-6 | **built, verifying** | evidence/P2/ | 7 files corrected; the Python-era design preserved verbatim as a note rather than deleted. cadre `36ba82d6` |
+| P3 | AC-3, AC-4 | **built, verifying** | evidence/P3/ | Declared, with what would change it and what its absence costs. cadre `7d0b2ea0` |
+| P4 | AC-5 | **built, verifying** | evidence/P4/ | Both call sites mutation-proven independently. The tests existed; the proof did not |
 
 ## Open AC-n (no PASS row yet)
-AC-2, AC-3, AC-4, AC-5, AC-6. AC-1 and AC-7 closed at P1.
+AC-2, AC-3, AC-4, AC-5, AC-6 — all built and pushed, none verified. AC-1 and AC-7 closed at P1.
+
+A build is not a criterion. Every one of these rests on my own reading until an independent pass says otherwise, and P1's first verification round failed on exactly that: the fix was sound and the claim it made was false.
 
 ## Next action (resume cold from here)
 
-**Start P2 — the documents describe what exists** (AC-2, AC-6). Three concrete items are already located:
+**A single CP-3v pass covers AC-2 through AC-6**, running against cadre `7d0b2ea0`. It was briefed to search for the concept rather than trust the file list in the commits — AC-3 and AC-4 say *every* document, and the phases edited the ones they knew about.
 
-1. `.agents/skills/knowledge-ingestion/SKILL.md:37` and `.agents/skills/agent-stores/SKILL.md:53` instruct an agent to run `cadre knowledge context`, removed in the Go rewrite. AC-1 makes the verb explain itself; a live instruction to run it is still wrong.
-2. `CHANGELOG.md`'s `[Unreleased]` section describes `--source` as newly repeatable on `cadre knowledge context` — a change to a command that no longer exists. It was true when written; it is not now.
-3. `roster/knowledge-store/{README,SECURITY,AGENT}.md` describe the full Python-era surface as current. This is the bulk of AC-2.
+Then the **north-star gate**: a fresh verifier checking that all seven criteria carry PASS rows traced to observed artifacts, briefed not to accept the spec's own traceability table as evidence of itself.
+
+Three things that pass should be pointed at specifically:
+- **AC-3 and AC-4 were closed by writing a paragraph.** That is the branch the criteria allow, and it is the branch most vulnerable to a document that states a gap without the required elements — what would change it, what it costs.
+- **The design note preserves prose describing a system that does not exist.** The whole question is whether a reader can tell. If it reads as current behaviour anywhere, P2 has moved the defect rather than fixed it.
+- **AC-5 was closed by demonstration, not by new tests.** The proof is reproducible mutations, and mutations are only evidence if someone else can reproduce them.
 
 ### What P1 established that P2 should not have to rediscover
 
