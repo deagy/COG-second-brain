@@ -35,7 +35,20 @@ Current phase: P5 · Overall: **closing** — 9 of 11 criteria verified; AC-07 a
 - **AC-07** — pending. `selector.Select` and `roster.Select` carry their markers; removal completes at gloop's next major as **AC-07b**. Its wording was corrected 2026-09-01: `catalog.MatchRoutes` left scope (gloop's CHANGELOG retracts its deprecation in public) and the amendment's claim that gloop is "MIT-licensed, on pkg.go.dev" was false — it is private and unlicensed.
 - **AC-10** — open. The reading holds: cadre spawns agent CLIs, gloop drives LLM endpoints, only `runner="api"` overlaps. **AC-10b** carries the resolution — gloop gains containment for its tool executor (path confinement, command allowlist, untrusted-brief fence), and cadre's `api_runner_*.go` retires onto it. That is the AC-08 shape: port the requirement, do not keep two implementations.
 
-**One item is the user's**, and it is a live north-star failure rather than a nuisance: a pipx-installed Python `agentic-sdlc 0.13.2` is the only `agentic-sdlc` on this machine's PATH, and the kernel that owns that concern is not installed at all. Either `pipx uninstall agentic-sdlc` and install the kernel under that name, or accept a losing implementation that is still running.
+**One item is the user's**, and it is a live north-star failure rather than a nuisance: a pipx-installed Python `agentic-sdlc 0.13.2` is the only `agentic-sdlc` on this machine's PATH, and the kernel that owns that concern is not installed at all.
+
+cadre's side of it is closed (`23fe930a`). The compatibility floor was `0.13.2` while cadre-kernel has released exactly one version, `v0.14.2` — so the stale kernel satisfied `--require-sdlc` by sitting exactly on the inclusive minimum. The floor is now tied to the pin, two tests hold it there (one of which the code already claimed existed), and `cadre doctor` reports which kernel answers, at what version, and what else on PATH is behind it.
+
+The consequence is deliberate: a pre-port kernel is now **refused** rather than silently accepted, so `cadre generate-plugin` and the compatibility guard both fail against it. Replacing the binary is required for local work now, not optional:
+
+```sh
+pipx uninstall agentic-sdlc
+gh release download v0.14.2 --repo deagy/cadre-kernel \
+  --pattern "agentic-sdlc-v0.14.2-linux-arm64.tar.gz" --pattern SHA256SUMS -D /tmp/k
+cd /tmp/k && sha256sum -c --ignore-missing SHA256SUMS \
+  && tar xzf agentic-sdlc-v0.14.2-linux-arm64.tar.gz \
+  && install -m755 agentic-sdlc ~/.local/bin/agentic-sdlc
+```
 
 **What this phase changed about the trail itself.** cadre and gloop had been red on every push since their consolidation work began — cadre since the exact commit its AC-02 row cites as "full suite green". Both are green now, with the guards executing rather than skipping, and AC-02 is restated against run `33534720412`. Four criteria in this trail had rested on local exit codes; two were false where it counted.
 
@@ -47,7 +60,7 @@ Unpushed: none.
 
 | Repo | HEAD | Run | Conclusion |
 |---|---|---|---|
-| cadre | `9bd3fdba` | `33537911588` | success |
+| cadre | `23fe930a` | `33540445520` | success |
 | recall | `3ee2795` | `33537575047` | success |
 | gloop | `b3e32c8` | `33532899185` | success |
 | cadre-kernel | `e53c9bb` | — | docs-only commit |
@@ -55,6 +68,6 @@ Unpushed: none.
 Recorded this way deliberately. The first action out of P5's retro is that a claim of "green" cites a run ID or it is not evidence, and this trail spent five phases proving why.
 
 ## Repositories
-- `~/sdk/cadre` @ `9bd3fdba` on `main` — **pushed, CI green**. Kernel absent from the published tree; knowledge engine deleted
+- `~/sdk/cadre` @ `23fe930a` on `main` — **pushed, CI green**. Kernel absent from the published tree; knowledge engine deleted
 - `~/sdk/cadre-kernel` @ `24ec47c` on `main` — **https://github.com/deagy/cadre-kernel** (public), released `v0.14.2` with five platform archives
 - `~/sdk/recall` @ `3ee2795` on `main` — **https://github.com/deagy/recall** (public), tagged `v0.3.1`, CI green including the cross-repo contract guard. Still no GitHub Release for either tag: `tag.yml` pushes with `GITHUB_TOKEN`, which does not fire `release.yml`. recall's own defect, no effect on cadre — module consumers resolve from the tag through the proxy
