@@ -1,0 +1,2 @@
+2026-09-01T20:43:21Z	CP-3	PASS	6 verbs answered by name; guard falsified 5 ways; 2 drifts found by widening
+2026-09-01T20:43:21Z	CP-3v	FAIL	round 1: classification false, 3 pointers wrong, scan missed .agents/skills; fixed in 20119003, re-verify pending
