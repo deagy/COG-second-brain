@@ -39,7 +39,7 @@ Current phase: P5 · Overall: **closing** — 9 of 11 criteria verified; AC-07 a
 
 cadre's side of it is closed (`23fe930a`). The compatibility floor was `0.13.2` while cadre-kernel has released exactly one version, `v0.14.2` — so the stale kernel satisfied `--require-sdlc` by sitting exactly on the inclusive minimum. The floor is now tied to the pin, two tests hold it there (one of which the code already claimed existed), and `cadre doctor` reports which kernel answers, at what version, and what else on PATH is behind it.
 
-The consequence is deliberate: a pre-port kernel is now **refused** rather than silently accepted, so `cadre generate-plugin` and the compatibility guard both fail against it. Replacing the binary is required for local work now, not optional:
+The consequence is deliberate: a pre-port kernel is now **refused** by the compatibility guard rather than silently accepted, so `go test ./internal/orchestration/` fails on this machine until the binary is replaced. (`generate-plugin` is *not* affected — an earlier note here said it was, from one unisolated observation that does not reproduce.) Replacing the binary is worth doing regardless:
 
 ```sh
 pipx uninstall agentic-sdlc

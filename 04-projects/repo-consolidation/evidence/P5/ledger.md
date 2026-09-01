@@ -227,6 +227,14 @@ Three changes, in `23fe930a`:
 | `TestTheCompatibilityFloorIsAKernelThatWasActuallyReleased` | Fails if the floor ever drops below the pin again |
 | `cadre doctor` reports the resolved kernel | Path, version, resolution source, every other match on PATH behind it, and a warning when it is below the pin. Doctor existed to report machine state and said nothing about the most consequential thing cadre resolves |
 
-**A consequence worth recording:** the floor change makes the refusal bite real workflows. `cadre generate-plugin` shells to the kernel and now refuses a pre-port one, as does the compatibility guard. Verifying this change required wiring `AGENTIC_SDLC_BIN` at the released kernel. That is the control working, and it turns replacing the binary from optional into required for local work — which is the correct pressure, given the alternative was a silent wrong answer.
+**A consequence worth recording — and a claim I got wrong stating it.**
+
+I wrote here that "`cadre generate-plugin` shells to the kernel and now refuses a pre-port one". **That is false.** Tested three ways afterwards: with the stale kernel explicitly wired via `AGENTIC_SDLC_BIN`, with it resolved from `PATH`, and with no kernel reachable at all, `generate-plugin --check` passes in every case. It does not consult the kernel binary.
+
+What actually happened: I saw one `provider validation failed: ... does not include this kernel's version 0.13.2` from a single `generate-plugin --check` run mid-change, and inferred a cause without isolating it. The tree was part-regenerated at that moment and the wrapper was rebuilding; I never established which of those produced it, and it has not reproduced since.
+
+What is true, verified repeatedly: **`TestOurProviderBundleAcceptsTheKernelWeDependOn` refuses the stale kernel**, which is the guard's job — it asks whether a consumer's installed kernel would accept this bundle, and on this machine the answer is genuinely no. It passes with the released kernel wired. `cadre doctor` reports and warns. Neither depends on the generator.
+
+Recording the error rather than editing it out, because it is this phase's own lesson happening again: a causal claim from one observation, written down without isolating the cause. I made it in the same session as the retro action that says a claim needs the artifact behind it.
 
 **Still open:** the machine itself. Uninstalling the pipx kernel and installing the released one is the user's to run.
