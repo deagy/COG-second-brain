@@ -79,7 +79,7 @@ They are kept, not deleted, because they remain the list of things that must not
 | AC-02 | P1 | evidence/P1/ledger.md · re-verified on a green runner: `gh run view 33534720412` at cadre `c4447718` | verified |
 | AC-03 | P1 | ledger P1 § T-01, T-02 | verified |
 | AC-04 | P1 | ledger P1 § T-03 | verified |
-| AC-05 | P2 · re-closed P5 | | pending |
+| AC-05 | P2 · re-closed P5 | evidence/P2/ledger.md § correction · evidence/P5/ledger.md | verified |
 | AC-06 | P3 | | pending |
 | AC-07 | P3 | | pending |
 | AC-07b | post-P3, at gloop's next major | | deferred |
