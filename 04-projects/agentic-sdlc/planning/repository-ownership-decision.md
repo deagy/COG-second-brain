@@ -23,7 +23,7 @@ The rule being applied is the one three separate defects taught on 2026-08-28: *
 | Agent definitions | `cadre/roster` (159), `agentic-lifecycle/agents` (10), `gloop/pkg/roster` | **`cadre`** — amended 2026-09-01, see below | high |
 | Governed selection | `cadre/internal/selector` | `cadre` (with the catalog) | high |
 | Sandboxed dispatch to agent CLIs | `cadre/internal/orchestration` | `cadre` — no rival implementation exists | high |
-| Governed dispatch to an LLM endpoint | `cadre/internal/orchestration/api_runner_*.go` (2,199 lines) | **`cadre`** — amended 2026-09-01, see below | medium |
+| Driving an LLM endpoint's tool-call loop | `cadre/internal/orchestration/api_runner_*.go` (2,199 lines), `gloop/pkg/runtime` | **`gloop`** — cadre's is the losing claimant, removal tracked as AC-10b | medium |
 | Unopinionated agent orchestration | `gloop/pkg/dispatch`, `gloop/pkg/runtime` | `gloop` | high |
 
 ## Lifecycle contracts
@@ -175,14 +175,18 @@ cadre resolves a role, computes an effective sandbox, gates write-capable operat
 
 The genuine overlap is cadre's `runner="api"`, which drives a chat endpoint and executes tool calls itself — cadre's own comment says it "serves deployments where there is no coding CLI to spawn", which is gloop's job description.
 
-**It stays in cadre, because the containment is the deliverable.** Its threat model is written down and enforced: `https://` accepted anywhere but `http://` only toward loopback/private/link-local hosts, so a mistyped public endpoint cannot receive a key in the clear; the key handled as the *name* of an env var, never the value; writes off by default as one of four independent conditions; a command allowlist that is empty by default and documented as **advisory, not a containment boundary**; and a fence putting the caller-supplied brief in the user message and the role's instructions in the system message — added to fix a real bug where trusted instructions also sat inside the untrusted slot.
+**It does not stay in cadre.** That was this document's conclusion for a few hours on 2026-09-01, on the grounds that the containment is the deliverable: `https://` accepted anywhere but `http://` only toward loopback/private/link-local hosts, so a mistyped public endpoint cannot receive a key in the clear; the key handled as the *name* of an env var, never the value; writes off by default behind four independent conditions; a command allowlist empty by default and documented as **advisory, not a containment boundary**; and a fence separating the caller-supplied brief from the role's instructions, added to fix a real bug where trusted instructions sat inside the untrusted slot.
 
-gloop supplies none of that, deliberately. Its `ToolExecutor` is a handler registry: a map from tool name to a closure, with no path confinement, no command allowlist and no URL policy. Whoever registers a handler owns the safety, which is the right design for a general-purpose library. Its only mention of a sandbox is a comment that read-only means offering no tools at all — containment by omission rather than by confinement.
+Every one of those is real and independently confirmed. None of them makes it a second concern.
 
-So these are not two owners of one concern. One is a governed runner where confinement is the product; the other is an unopinionated library where confinement is the caller's job.
+**This document already settled that argument, for an identical shape.** The knowledge row above: cadre's store "happens to contain both an engine recall does better and a refusal layer recall lacks. That is one concern with a requirement attached, not two concerns." The resolution was not to keep cadre's store — it was to move the engine to recall **and port the refusals with it**, as `recall/govern`. The refusals turned out not to be policy: they forced a caller to state decisions without prescribing values, which is exactly why they could live in a general-purpose library.
 
-### The condition under which this is wrong
+Cadre's containment has the same property. Path confinement and a command allowlist are mechanism; *which* paths and *which* commands stay with the embedding system. A `gloop` containment layer that confines a tool executor without deciding what is permitted is the direct analogue of `govern`, and it is what AC-10b requires.
 
-**If gloop grows filesystem or command confinement — a sandboxed tool executor, a path-confined default, a command allowlist — the duplication becomes real and this row must be revisited.**
+gloop's `ToolExecutor` is a bare `map[string]ToolHandler` today, with no confinement and no URL policy, and its only mention of a sandbox is a comment that read-only means offering no tools at all. That is a gap to close, not a reason to keep two loops.
 
-Recorded as a trigger rather than left as settled, because a correct decision with no standing reason to look again is how the five stale rationales this consolidation has already corrected came to exist.
+### Why this reversal is recorded rather than quietly edited
+
+The three-way split was written **at the gate**: after a verification finding that would otherwise have failed the row, by the party being judged, into a table that same party can edit. That is the failure mode this criterion exists to catch, one level up — an ownership question dissolved by redefining the concerns rather than by changing the code.
+
+The reading that produced it stands and is worth keeping. The conclusion drawn from it does not.

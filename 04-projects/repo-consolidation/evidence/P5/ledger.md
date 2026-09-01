@@ -161,3 +161,25 @@ The audit could not reproduce "2 gates → 9" and was right to say so: `CP-5-acc
 Re-run with the inputs recorded: **standalone 2 (`G8, G9`) → integrated 9 (`G1…G9`)**, identical to the original. The figure was accurate; the evidence was incomplete. The invocation is now written into the acceptance file, including the detail that `bin/cadre` rebuilds itself and so needs `go` on the scrubbed `PATH` — omitting it is why the first re-run attempt produced no JSON at all.
 
 A criticism worth keeping separate from its conclusion: "I cannot reproduce this" is a defect in the evidence whether or not the claim is true, and this one was true.
+
+## AC-10 — the amendment withdrawn, work tracked as AC-10b
+
+The reading stands: cadre spawns agent CLIs, gloop drives LLM endpoints, and only `runner="api"` overlaps — all independently confirmed by the north-star ownership pass. **The conclusion drawn from it does not.**
+
+Two reasons, both from the audit and both correct:
+
+**The spec already rejected this move.** Its AC-08 section says of cadre's knowledge store that it "happens to contain both an engine recall does better and a refusal layer recall lacks. That is one concern with a requirement attached, not two concerns." The resolution there was to move the engine *and port the refusals* — `recall/govern` — because the refusals turned out not to be policy: they force a caller to state decisions without prescribing values, which is why they could live in a general-purpose library. Cadre's containment has that same property. Path confinement and a command allowlist are mechanism; which paths and which commands stay with the embedding system.
+
+**It was made at the gate.** The spec was edited at 08:49, after the 07:19 finding that would otherwise have failed the row, by the party being judged, into a table that same party can edit. The spec draws exactly that distinction when defending AC-07 — "there, a criterion was read generously at the gate to make failing work pass. Here the criterion was changed before the gate." This was the second kind.
+
+**Now:** AC-10's original wording is restored and its status is **open**. The ownership table names `gloop` as owner of the endpoint tool-call loop with cadre's `api_runner_*.go` as the losing claimant. **AC-10b** carries the work — gloop gains containment for its tool executor, cadre's runner retires onto it — deferred and tracked like AC-07b rather than dissolved by definition.
+
+## AC-05 — an executable run-record definition survived the archive
+
+P2 deleted `schemas/run-record.yaml` and `schemas/gate-result.yaml` and recorded AC-05 satisfied. It had searched for schema *files*. An executable definition survived: `contracts.py` and `lifecycle.py` between them define a run record — its `gates` map, per-gate `status`, `human_decision`, `history` — and `store.py` persists it.
+
+**Archiving stopped the repository changing; it did not stop it being installed.** `pyproject.toml` declared `agentic-lifecycle = agentic_lifecycle.cli:main`, so the losing implementation was one `pip install` from any machine. That is not hypothetical here: the north-star pass found a pipx-installed predecessor of the *same lineage* already shadowing the kernel on this machine's PATH.
+
+Prepared as `853ec2c` in the local checkout: `src/agentic_lifecycle/`, `tests/`, `scripts/validate.py`, `pyproject.toml` and `package.yaml` removed; the agent definitions, workflows, routing and skills kept, since those were only ever documentation. `git ls-files src tests scripts` is empty. Nothing is lost — `630bb4f` and everything before it still carry all of it.
+
+**Not pushed.** The repository is archived and read-only, and unarchiving was refused by this session's permission policy. One command from the user completes it; until then AC-05 stays **open**.

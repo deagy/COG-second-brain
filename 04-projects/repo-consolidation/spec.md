@@ -31,8 +31,17 @@ When this is done, a change to a contract has one place to make it, and no secon
 | AC-07 | Only one selection implementation is reachable by new code | gloop's `Select()` and `catalog.MatchRoutes` carry Go `Deprecated:` markers naming `pkg/govplan` as the replacement; the CHANGELOG records the migration and the release they are removed in; no code path in gloop other than the deprecated ones produces a plan. **Removal completes at gloop's next major**, tracked as AC-07b |
 | AC-08 | Knowledge storage has one owner, and it keeps the fail-closed contract | recall survives and cadre's `internal/knowledge` retrieval engine is deleted. The surviving path preserves all **six** refusals cadre's store makes, recorded as cases in `internal/knowledge/testdata/fail-closed-contract.json`: no query, no classification, no embedding provider, no source-scope decision, all-sources together with filters, and a blank filter entry. Every retrieval is recorded. **Each refusal has a test that fails when its check is removed.** |
 | AC-09 | The role catalog has one publishing home | The catalog exists in exactly one repository; each consuming runtime resolves it from there with no vendored second copy lacking a drift check |
-| AC-10 | No concern has two owners | The ownership table in `04-projects/agentic-sdlc/planning/repository-ownership-decision.md` names one repository per concern, and for each losing claimant the implementation is absent from its tree. **Amended 2026-09-01** — the table's rows are themselves subject to the criterion: a row that names two implementations of what reading shows to be two concerns is a defect in the row, not in the code. Two were corrected on that basis, each recording the evidence and, where the split could stop being true, the condition that would reopen it |
+| AC-10 | No concern has two owners | The ownership table in `04-projects/agentic-sdlc/planning/repository-ownership-decision.md` names one repository per concern, and for each losing claimant the implementation is absent from its tree. **Removal of cadre's `runner="api"` completes as AC-10b** |
+| AC-10b | cadre's endpoint runner retires onto gloop | gloop gains filesystem and command containment for its tool executor -- path confinement, a command allowlist, and the untrusted-brief fence -- and cadre's `internal/orchestration/api_runner_*.go` is absent from its tree, with `runner="api"` either routed through gloop or retired by name |
 | AC-11 | The split pipeline runs end to end | A plan from `cadre select` is accepted by an installed released kernel's `agentic-sdlc validate` (exit 0), with that kernel wired to cadre's provider bundle |
+
+**Amended 2026-09-01, then withdrawn the same day.** AC-10 was briefly amended to say that a row naming two implementations of what reading shows to be two concerns is a defect in the row. The reading behind it was sound and independently confirmed — cadre spawns agent CLIs and gloop drives LLM endpoints, and only `runner="api"` overlaps. The amendment was not.
+
+Two reasons it was withdrawn. **This document already rejects that move**, in the AC-08 section: cadre's knowledge store "happens to contain both an engine recall does better and a refusal layer recall lacks. That is one concern with a requirement attached, not two concerns." The resolution there was to move the engine *and port the refusals* — `recall/govern`. The same shape applies here: containment is a requirement attached to the endpoint loop, not a second concern, and the honest resolution is a containment layer in gloop with cadre's runner retiring onto it.
+
+And **it was made at the gate**: the spec was edited after the finding that would otherwise have failed the row, by the party being judged, against a table that same party can edit. This document draws exactly that distinction when defending AC-07 — "there, a criterion was read generously at the gate to make failing work pass. Here the criterion was changed before the gate." AC-10's amendment was the second of those, not the first.
+
+The work is real and is tracked as **AC-10b** rather than dissolved by definition. AC-10 stays open until it lands.
 
 ### Named corrections list — retained as a regression guard
 
@@ -76,7 +85,8 @@ They are kept, not deleted, because they remain the list of things that must not
 | AC-07b | post-P3, at gloop's next major | | deferred |
 | AC-08 | P4 | | pending |
 | AC-09 | P5 | evidence/P5/CP-2-plan.md | verified |
-| AC-10 | P5 | evidence/P5/CP-3-AC10-dispatch-finding.md | verified |
+| AC-10 | P5 | evidence/P5/CP-3-AC10-dispatch-finding.md | **open** — blocked on AC-10b |
+| AC-10b | deferred | evidence/P5/CP-3-AC10-dispatch-finding.md | not started |
 | AC-11 | P5 | evidence/P5/CP-5-acceptance-AC11.md | verified |
 
 ### AC-08 amended 2026-08-29 — one owner, and the contract it must carry
