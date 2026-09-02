@@ -350,3 +350,42 @@ is not.
 
 Three rounds in a row now, the falsification has found the guard weaker than it
 looked. Writing the check is not the work; running it against its own defect is.
+
+## CP-3v round 7 — the categories nobody had checked
+
+Round 7 was told to stop checking guards and start enumerating **kinds of claim**,
+then check each kind. It found four, in four categories no round had touched:
+
+| Claim | Reality |
+|---|---|
+| README's own architecture diagram | its "Agent Providers" box names three of six, dropping OpenAI and Cohere |
+| *A dispatch plan looks like:* | the ```json block carries three shell-style `#` comments, so copying it produces a parse error |
+| `docs/ROSTER.md` § Matching semantics, and `metadata.matched_routes` | describes route matching gloop no longer does, and a metadata key that exists nowhere in the tree — contradicting the file's own removal banner three paragraphs above |
+| `go test -tags integration ./pkg/roster/`, given in two documents | does not compile: two test files still called `Roster.Select`, removed weeks ago |
+
+The last is the sharpest of the whole phase. **A build failure behind a tag nobody
+builds is indistinguishable from a passing test** — the same shape as a tag with no
+release behind it, and as a documented example nobody compiled. Both files were fixed:
+the contract test now checks the property that survives (every route's roles resolve),
+and the peer-exchange end-to-end builds its plan directly instead of selecting one, so
+it **left the tag entirely and runs in the ordinary suite**. Peer exchange is gloop's;
+selection is not.
+
+`TestEveryBuildTagStillCompiles` vets every tag any test file declares, discovering
+them from the tree. Falsified by putting the removed call back — and the same run
+shows untagged `go vet ./...` staying silent on it, which is the gap it closes.
+
+### The provider list, for the fifth and sixth time
+
+README's diagram was the fifth place this fact had drifted. So the guard stopped
+naming places: **any blank-line-delimited block in a live document naming three or
+more providers must name all of them**, with the set read from
+`IsKnownProviderType`.
+
+It found a sixth on its first run — `docs/ROSTER.md`'s tier-pin validation rule —
+and adding a seventh provider to the type list now fails all seven enumerations at
+once.
+
+Getting the span right took two attempts. A line-at-a-time scan read each row of the
+ASCII box as a pair; a fixed-width window read a fragment of the box as an incomplete
+list and reported the box against itself. A block is what a reader sees as one list.
