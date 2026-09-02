@@ -45,6 +45,29 @@ Code, if any, lives outside the vault (e.g. `~/code/<goal>/`) — the spec/statu
    - Traceability matrix (`AC-n` ↔ phase ↔ status)
 3. Create `STATUS.md` (see template below) and add a row to the registry.
 
+Before recording CP-1, run the criteria past the two shapes that cannot be
+satisfied inside the phase that owns them:
+
+```bash
+bash .claude/lib/spec-lint.sh 04-projects/<goal>
+```
+
+- **A criterion verified against a published artifact** depends on whichever
+  phase publishes it. `AC-11` of the repo-consolidation goal read "accepted
+  by an installed released kernel", and the release it needed came from a
+  phase that had not run. The criterion was not wrong; it was unsatisfiable
+  where it sat.
+- **A universal negative** — "no third definition survives", "no X exists
+  outside Y" — is a claim about everywhere, and can only be checked against a
+  named, bounded set. `AC-05` asserted one, was closed on a filename search,
+  and an executable implementation turned out to have survived in an
+  archived-but-still-installable repository.
+
+This is a charter-time check. A **closed** goal's spec may still fire, and
+that is a record of what its criteria cost rather than a regression to fix —
+rewording a criterion after its gate is the failure § "Amending a gated
+criterion" in `WORKFLOW.md` describes.
+
 Record: `bash .claude/lib/checkpoint.sh record 04-projects/<goal>/evidence/P0 CP-1 PASS "N criteria, M phases"`
 
 ## The phase loop (every phase, no lane downgrade)
