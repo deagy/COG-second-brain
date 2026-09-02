@@ -27,19 +27,28 @@ AC-6 and AC-7 (P5), AC-3b (P6). AC-1, AC-2, AC-3 closed at P1; AC-8 at P2; AC-4 
 
 ## Next action (resume cold from here)
 
-**P5 — release all four, then prove a clean machine reaches a working state (AC-6, AC-7).**
+**P5 is at CP-3 done.** Next: T-05's container run against `cli-v0.7.1`, then CP-3v, CP-4, CP-5.
 
-AC-6: at the goal's close each repository has zero commits between its latest release tag and `HEAD`, or a stated reason for each that remains.
-AC-7: on a machine with none of the four checked out, installing from the artifacts P5 publishes produces a `cadre` that answers `cadre sdlc --version` and `cadre knowledge search`.
+Releases cut: cadre-kernel `v0.14.3` then `v0.14.4`, recall `v0.3.3`, cadre
+`cli-v0.7.0`/`plugin-v0.24.0` then `cli-v0.7.1`/`plugin-v0.24.1`. gloop deliberately
+none, with the reason written into its own README rather than only here.
 
-Two things carried here that are P5's to settle:
+Two defects the container found that nothing else could, both now fixed and
+re-released:
 
-- **The kernel's published `v0.14.2` predates its licence commit.** The tarball an installer downloads today carries no licence text even though the repository does. AC-2 passed as scoped — about source repositories — and is not true of what people actually install until this phase re-cuts.
-- **Nothing in any of the four gates on licences in CI.** Only recall runs `go-licenses`, and that checks *dependency* licences; it would not catch a repository with no `LICENSE` of its own. A control candidate, deliberately not built mid-phase.
+- **The kernel shim could not install a kernel, on any release since the
+  extraction.** It resolves a checksum with `grep " $ARCHIVE$"`; every release
+  wrote `SHA256SUMS` with `sha256sum ./*`, so no line matched and it reported the
+  archive as unlisted.
+- **A `cadre` installed by `install.sh` needed a Go toolchain** that the install
+  instructions never mention. `bin/cadre` now falls back to the packaged launcher,
+  which downloads a released binary.
 
-Release order follows the dependency: the kernel first, because cadre's installer downloads it by version and a cadre release pinning an unreleased kernel version is a broken install.
-
-**AC-7 is the only criterion an outside party could run**, and the spec names its own falsification here: declaring this goal done from a developer machine. Seven of nine criteria are satisfiable without leaving a checkout that has all four repositories present and built — which is exactly the position that cannot see an installation defect. Run it in a container, not a shell with `~/sdk` on it.
+And one caught after publishing: `cli-v0.7.0` and `plugin-v0.24.0` went out from a
+commit whose `validate` run was red, because `validate.yml`'s `CADRE_KERNEL_REF`
+was the fifth place downstream of one constant. `TestTheWorkflowKernelPinMatchesTheProviderPin`
+now fails locally instead. The release job and the validate job run on the same
+push and neither waits for the other — worth a control at the retro.
 
 ## Watch for
 
