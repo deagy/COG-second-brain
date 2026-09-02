@@ -128,3 +128,41 @@ table heading is renamed rather than passing over a table it can no longer find.
 A guard that matches anywhere matches the wrong thing. It took a falsification to
 see it, which is the argument for falsifying every guard rather than the ones that
 look risky.
+
+## CP-3v round 2 — the same defect, one level down again
+
+Round 2 found that my coverage check verified a subcommand's **name** appeared in
+the table and never which **row** it sat under. Moving `handoff prune` from Rejected
+to Ignored — a claim the binary contradicts — left the test green.
+
+That is this phase's own subject, two levels deep: a document making a false claim, a
+guard that reads the document without checking the claim, and a falsification of that
+guard that only exercised deletion rather than misplacement.
+
+The guard now **parses each row's bucket label and compares it to a classification it
+derives by running the command.** Rejection is a message; honoured versus ignored is
+whether two configs differing in one value produce two different outputs — a test
+that needs no knowledge of what any particular command does with the file. It also
+fails on a subcommand named in the table that it cannot invoke, so a row can never be
+unchecked.
+
+Round 2's other two findings, both correct and both fixed: `gate approve`,
+`gate reject`, `gate skip` and `session delete` were absent from the table entirely,
+and the build record's "thirteen subcommands" overstated a guard that behaviourally
+exercised twelve. The table now names eighteen and the count is produced by the loop
+rather than asserted in prose.
+
+### The stronger guard immediately accused the README, and the README was right
+
+Its first run reported `config update` as ignored while the table said honoured. It
+was the **invocation** that was wrong: `config update` fails argument validation
+before it ever looks at `--config`, so the probe compared two identical error
+messages. Given all three required fields and a set key variable, it writes to
+exactly the path it is handed.
+
+**A weak probe is indistinguishable from a false claim**, and the difference is
+whether you check before believing the tool you just built. This is the fourth time
+in this goal that a fixture, not the subject, was the thing that was wrong.
+
+Falsified three ways: round 2's exact bucket flip, a flip in the other direction, and
+a row naming a subcommand the test cannot run.

@@ -1,3 +1,4 @@
 2026-09-02T17:10:31Z	CP-2	PASS	3 tasks; live set scoped to ~1,283 lines on the docs index's own classification, records exempt only where they say so
 2026-09-02T17:21:50Z	CP-3	PASS	3 tasks; --config stated correctly on the fourth attempt, 3 defects in help text, 1 self-contradicting payload, 22 records banner-declared; 8 guards, all falsified
 2026-09-02T17:33:26Z	CP-3v	FAIL	round 1: 19 claims; handoff is not one bucket — the fifth wrong statement of --config, generalised from subcommand to command like the four before it
+2026-09-02T17:43:34Z	CP-3v	FAIL	round 2: 9 claims; the guard checked the name, not the row — a bucket flip passed. Now derives each classification by running and compares it to the row
