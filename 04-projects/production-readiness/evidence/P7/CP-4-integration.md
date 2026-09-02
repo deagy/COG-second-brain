@@ -52,3 +52,33 @@ instructions, and historical run records. Those are broken links, not release ho
 and sweeping them is an audit this goal has no criterion for.
 
 EVIDENCE AC-8 | CP-4 | PASS | No tracked file tells a reader to obtain the kernel from `deagy/cadre` by any of the four routes; the enumeration returns zero, counted rather than eyeballed. `go test ./internal/generators/` passes, including the three-copy duplication guard, and the full suite is green | cadre `cd836b95`
+
+## The doc fix went red on the runner, and the reason is worth the space
+
+`cd836b95` passed `go test ./...` and `go test ./internal/generators/` locally and
+failed `validate` on the runner: `cadre generate-plugin --check --output plugin`
+reported `content differs: plugins/lifecycle/skills/lifecycle-onboarding/SKILL.md`.
+
+`plugin/` is generated. I edited `.agents/skills/lifecycle-onboarding/SKILL.md` and
+its generated copy separately, and the two differed by one phrase — *"the shim
+packaged with this plugin"* against *"…with the lifecycle plugin"*. Regenerated at
+`4697eb68`, with the `-github` and `-gitlab` copies aligned on the generated wording
+so all three stay identical.
+
+**The instruction I followed was wrong, and that is the finding.** `AGENTS.md` says
+*"re-run the regeneration guard, `go test ./internal/generators/`"*. That test checks
+the generator is **deterministic** — it runs `--check` against what it just wrote into
+a temp directory. Nothing in the Go suite runs `--check` against the *committed* tree;
+only `.github/workflows/validate.yml:641` does. So the guard named in the contributor
+document and the guard that actually gates the merge are different checks, and the
+named one passes on exactly the defect the real one catches.
+
+Fixed in `AGENTS.md` (and its generated `plugin/suite/` copy), which now names the
+command and says why the Go test is not a substitute. Filed as **AI-30**, disposition
+`control — unbuilt`: the observable is to read the command out of `validate.yml` and
+assert `AGENTS.md` names it — generating the expectation from the source of truth
+rather than parsing the prose, which is AI-25's method and the one that worked in P6.
+
+This is the third time in this goal that **a local exit code was evidence about a
+laptop**, and the first where the wrong instruction was in the repository rather than
+in my head.
