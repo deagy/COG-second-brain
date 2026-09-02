@@ -4,7 +4,7 @@ project: cog-cadre-integration
 change: 03-gate-mutations
 created: 2026-09-02
 depends_on: ["01-run-record", "02-per-task-amend"]
-status: draft
+status: implemented
 tags: ["#plan", "#gates", "#authority", "#publishing"]
 ---
 
@@ -92,4 +92,21 @@ cosmetic decision, not a structural one.
 Decide the external/internal boundary by listing each skill's writes and tagging
 them, and confirm the authority names. The run-record (change 1) must carry the
 `approval` binding, and the amend semantics (change 2) must exist so a denied
+
+## Implementation (committed: 883b7fd)
+
+Created `plan/authority-gates.md`, the one registry mapping each external mutation to
+exactly one gate and one authority. Gate numbers are kept for kadre traceability; the
+authority is renamed from cadre's software-release role to **Publisher** (the human who
+approves the external write) so the mapping stays legible to a COG user. AC-1 met:
+content-factory spans G7+G8 but has one approval — one authority signs the whole publish.
+The three publishing skills reference the registry and record the approval in the
+run-record's `human_approvals` binding before the mutation (AC-3): publish-to-confluence
+G7, team-brief G9, content-factory G7+G8. Each skill already ran a post-condition
+re-fetch (AC-4); internal writes remain ungated (AC-5, unchanged).
+
+One note for a later pass: the registry is currently a plan doc; its production form is
+the small schema in `05-knowledge/` the plan calls for. That is a move, not a change, and
+is left for the merge.
+
 mutation has a defined re-entry rather than a dead end.
