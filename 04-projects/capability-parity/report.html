@@ -134,7 +134,7 @@
   <tbody>
     <tr><td>The near-duplicate detector lives in the evidence bundle, not in the repository</td><td>It caught four instances that hand-checking missed. AC-7&rsquo;s own argument applies: a rule written into a gate held, while the same rule written into a retro was not applied the next day.</td></tr>
     <tr><td>&ldquo;Four separation checks, one predicate&rdquo; is true of three of them</td><td><code>DispositionStagedRecord</code> carries its own inline comparison because it is asked a structurally different question. Correct, but nothing would catch the two implementations diverging &mdash; the drift the shared predicate exists to prevent.</td></tr>
-    <tr><td><code>list-staged</code> and a staged-deletion-evidence reader are closer than the documents suggest</td><td><code>ListStagedRecords(status)</code> is live, tested and filterable; deletion evidence is retained in <code>staged_record_deletions</code> with nothing reading it back. Both are a missing wire, not a missing capability.</td></tr>
+    <tr><td><code>list-staged</code> and a staged-deletion-evidence reader are closer than the documents suggest</td><td>Checked against source at the second gate. <code>ListStagedRecords(status)</code> (<code>staged_store.go:253</code>) is live, filterable and called internally; no dispatch entry points at it. <code>StagedDeletionEvidenceRows()</code> (<code>staged_store.go:367</code>) already reads <code>staged_record_deletions</code> back &mdash; its only callers are tests. Both are a CLI wire, not an implementation.</td></tr>
   </tbody>
 </table>
 </div>
