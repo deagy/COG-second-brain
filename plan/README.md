@@ -11,9 +11,12 @@ tags: ["#plan", "#integration", "#cadre", "#cog", "#harness"]
 ## What this is
 
 Four contained changes that wire the cadre/agentic-lifecycle execution and
-governance stack into COG's second-brain harness. This is a plan, not the
-change. Nothing here is implemented; the worktree exists so the plan has an
-isolated place to live and so file paths below resolve against a real checkout.
+governance stack into COG's second-brain harness. This is a plan, and the work
+to implement it, living on the `plan/cadre-cog-integration` branch of this
+worktree's repo. Changes 1–3 are implemented and committed; change 4 (roster
+dispatch) stays documentation pending an external dependency. The worktree
+exists so the plan has an isolated place to live and so file paths below
+resolve against a real checkout.
 
 The composition the four changes assume:
 
@@ -56,12 +59,12 @@ with placeholder values, not a schema. The authoritative lifecycle contract is
 
 ## The four changes
 
-| # | Change | What it adds | Primary files | Risk |
-|---|---|---|---|---|
-| 1 | Run-record as the shared object | Every harness run emits a run-record with auditable provenance | new schema + template, `closed-loop/SKILL.md`, `WORKFLOW.md`, new lint | low |
-| 2 | Per-task amend semantics | COG's CP-3v verify loop gets deny/re-entry teeth | `closed-loop/SKILL.md`, `task-verifier.md`, `checkpoint.sh`, `WORKFLOW.md` | low |
-| 3 | Gate the high-consequence mutations | External writes go through a named authority + explicit approval | `publish-to-confluence`, `team-brief`, `content-factory` skills | medium |
-| 4 | Roster dispatch for specialized execution | Skills resolve domain specialists from the roster and dispatch them | worker-executor / new skill; roster vendored first | high |
+| # | Change | What it adds | Primary files | Risk | Status |
+|---|---|---|---|---|---|
+| 1 | Run-record as the shared object | Every harness run emits a run-record with auditable provenance | new schema + template, `closed-loop/SKILL.md`, `WORKFLOW.md`, new lint | low | implemented (`1d8966b`) |
+| 2 | Per-task amend semantics | COG's CP-3v verify loop gets deny/re-entry teeth | `closed-loop/SKILL.md`, `task-verifier.md`, `checkpoint.sh`, `WORKFLOW.md` | low | implemented (`8a07f03`) |
+| 3 | Gate the high-consequence mutations | External writes go through a named authority + explicit approval | `publish-to-confluence`, `team-brief`, `content-factory` skills | medium | implemented (`883b7fd`) |
+| 4 | Roster dispatch for specialized execution | Skills resolve domain specialists from the roster and dispatch them | worker-executor / new skill; roster vendored first | high | pending — roster not yet vendored in-vault |
 
 ## Sequencing
 
