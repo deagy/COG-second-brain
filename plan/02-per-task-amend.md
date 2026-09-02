@@ -4,7 +4,7 @@ project: cog-cadre-integration
 change: 02-per-task-amend
 created: 2026-09-02
 depends_on: ["01-run-record"]
-status: draft
+status: implemented
 tags: ["#plan", "#amend-semantics", "#deny", "#verify-loop"]
 ---
 
@@ -94,4 +94,25 @@ explicitly rather than assuming a team-mode second agent always exists.
 Decide the amend-bound number and the solo-mode re-review definition. Both come
 from reading what cadre already does at the phase level; neither should be guessed.
 The run-record scaffold (change 1) must exist so `re_entry_history` has a place to
+
+## Implementation (committed: 8a07f03)
+
+Ports cadre's per-task denial model onto COG's CP-3v loop. `task-verifier.md` output
+contract gains an `AMEND` block (`denier`, `amend_attempt`, `invalidates`, `reentry`,
+`findings`); a new section documents the three ported rules — invalidation cascade,
+earliest-affected re-entry (`gatesFrom` in `cadre/internal/engine/executor/reentry.go`),
+and reviewer-becomes-author (`decideGate`/`applyApproval` fail-closed separation of
+duties). `checkpoint.sh` gains `record_reentry` (append to a run's `re_entry_history`,
+mirroring the run-record invalidation def); validated with `bash -n` and a live
+`record_reentry` run. `skills/closed-loop/SKILL.md` Phase 4 replaces the bare
+`retry < 2` loop with an `AMEND_BOUND=3` amend-and-re-review loop ending in a terminal
+`FAIL:escalate`; `WORKFLOW.md` states the bound, the invalidation rule, and the terminal
+escalate in the checkpoint table and the per-task loop.
+
+Two decisions the plan left open are resolved here: the amend bound is **3** (a COG
+decision — kadre records `amend_attempt` as telemetry without a fixed cap), and solo-mode
+re-review is a fresh verifier context that reads the deliverable against the criterion
+with no memory of the amend. AC-1/AC-2/AC-3/AC-4 are met; AC-5 (a recorded-but-effectless
+denial is not a pass) is enforced by requiring the re-entry record on every FAIL:fixable.
+
 land.

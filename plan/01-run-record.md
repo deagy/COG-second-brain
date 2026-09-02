@@ -4,7 +4,7 @@ project: cog-cadre-integration
 change: 01-run-record
 created: 2026-09-02
 depends_on: []
-status: draft
+status: implemented
 tags: ["#plan", "#run-record", "#provenance", "#shared-object"]
 ---
 
@@ -91,4 +91,22 @@ what makes the drift a failing test rather than a silent one.
 The one decision needed before this can be built: confirm the run-record schema is
 vendored from the current `cadre/kernel` revision and pin that revision in the
 schema header. Everything downstream depends on that one copy being the source of
+
+## Implementation (committed: 1d8966b)
+
+Vendored the authoritative `cadre-kernel/kernel/contracts/run-record.schema.json`
+(rev `d4fb0894`, sha256 `0a14c607`) as `05-knowledge/run-record.schema.json` — byte-for-byte,
+no edits. Added `05-knowledge/run-record.provenance.json` (origin + the COG-CP→lifecycle
+mapping in one place), `06-templates/run-record.template.json` (a valid, lint-fillable
+example), and `.claude/lib/run-record-lint.sh` (schema validation via jsonschema draft
+2020-12 + a sha256 drift check). `skills/closed-loop/SKILL.md` Phase 7 now emits a
+lint-clean run-record for every harness run; `WORKFLOW.md` records the mapping and states
+a run without a run-record is not finished.
+
+AC-2/AC-3/AC-4 validated: the template and a real `cadre` run-record pass lint; a
+hand-edited schema and a malformed record both fail. One correction from the plan: the
+phase mapping uses the run-record enum's actual members (`architecture`, `verify`) rather
+than the plan's shorthand (`architecture-design`, `verification`) — the shorthand would
+not have validated.
+
 truth.
