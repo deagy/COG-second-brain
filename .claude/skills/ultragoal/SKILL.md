@@ -140,6 +140,31 @@ with an artifact but no row **ran unrecorded**, which means the work was done
 and the trail cannot be queried for it. A deliberate skip is recorded as
 `SKIP` with its reason — an auditable decision, unlike an absence.
 
+### And the evidence has to survive reading
+
+```bash
+bash .claude/lib/evidence-lint.sh 04-projects/<goal>
+```
+
+Three properties of an evidence bundle, each from a defect that already got
+through:
+
+- **An enumeration piped through `head` with no total beside it.** A P3
+  inventory reported eleven matches from `grep ... | head -10` when the real
+  count was thirty-one, and two production callers sat below the cut. A list
+  truncated at ten looks exactly like a list of ten; nothing in the output
+  says which it is.
+- **A retire or archive verdict with no working-tree state recorded.** A
+  repository was assessed for salvage from committed state alone while 209
+  uncommitted lines sat in the tree, including the one artifact worth
+  keeping. The verdict is judgment; looking before judging is not.
+- **A port or extraction plan missing one of its five inventory axes.** The
+  originating defect was an absent axis rather than a badly filled one: four
+  were run against the source and none asked what the destination already
+  does. The check triggers on a plan naming its own axes, because that is
+  what such plans do and a self-declaration can be forgotten — which is the
+  same omission it exists to catch.
+
 ```
 North-star acceptance:
   read spec.md matrix (all AC-n)
