@@ -417,3 +417,42 @@ sentence.
 `TestNoLiveDocumentTableRepeatsARow` came from round 8's one note: README's package
 table had two `pkg/govplan/` rows with different wording. Not false, but two answers
 to one question, which is this phase's subject with the clock not yet started.
+
+## CP-3v round 9 — PASS
+
+An end-to-end sweep of all six live documents found **no new false claim**. Round 8's
+fixes hold under mutation; the full suite, both `go vet` configurations and a
+`CGO_ENABLED=0` build are green.
+
+Two residue notes, neither a documentation falsehood. One was worth acting on anyway:
+
+**The binary's own `--help` said gloop selects agents.** `Gloop is a comprehensive
+CLI tool … It provides capabilities for **selecting agents**, dispatching plans …` —
+the first sentence the program says about itself, wrong through all nine rounds,
+because no document quotes it and every guard read documents.
+
+Corrected, and `TestNoLiveDocumentClaimsGloopSelects` now reads the binary's help
+alongside the documents. Two things had to widen for it to catch the real sentence,
+and **falsifying against a paraphrase would have hidden both**: the claim sits over a
+hundred characters from its subject and uses a gerund, so the old ±40-character window
+and short verb list missed it. It is now falsified against the original string
+verbatim.
+
+Round 9's other note also landed: the disclaimer that excuses a match must sit *near*
+it. A long line could carry both a claim and an unrelated "removed" and be excused —
+and the sentence this guard was written for names the `cadre-roster` repository two
+clauses after claiming gloop selects.
+
+## AC-3b, decided
+
+Nine rounds. Rounds 1–7 each found several false claims; round 8 found one, and that
+one was a sentence round 7 had quoted without flagging; round 9 found none.
+
+**Twenty-one false claims in gloop's documentation, every one now fixed and each
+confirmed by running, compiling, or opening what it named.** Fourteen guards, every
+one falsified by reintroducing the defect it catches.
+
+Six of those claims were the same fact — which providers exist — restated in six
+places and corrected in five separate rounds, because each guard covered the list in
+front of it. That stopped when the guard began *finding* enumerations instead of
+naming them, and it found the sixth immediately.
