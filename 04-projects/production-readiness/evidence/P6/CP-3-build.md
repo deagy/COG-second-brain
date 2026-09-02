@@ -96,3 +96,35 @@ plugin interface, all three web-UI endpoints and four session methods, all eight
 documented metrics, and the entire `config.toml` example — written to a file and
 loaded by the binary, with a malformed value confirmed rejected so that a clean load
 means the keys are actually read.
+
+## CP-3v round 1 — FAIL:fixable, 19 claims, and it was the fifth wrong statement
+
+The verifier ran every bucket rather than reading the table, and found that
+**`handoff` is not one bucket**: `handoff list` ignores `--config`; `handoff get`
+and `handoff prune` refuse it. The table said `handoff`.
+
+**Every one of the five wrong statements of this contract generalised the same
+way** — from a subcommand that was checked to the command it sits under. The
+buckets are a property of the subcommand. That sentence is now the first line of
+the section, because the shape of the error is more useful than the corrections.
+
+My own guard could not have caught it: it tested one subcommand per command, so
+`handoff list` stood in for `handoff`. It now classifies thirteen subcommands
+individually, and the matcher accepts `unexpected argument` alongside `usage:` and
+`unknown flag` — `handoff prune` refuses with that wording, and a matcher missing it
+would have read the refusal as acceptance. **That is precisely how an earlier check
+on this same contract came to call a real finding a false positive.**
+
+### The coverage check I added was itself too weak, and the falsification caught it
+
+I added an assertion that the README names every subcommand the test classifies, and
+falsified it by deleting `handoff prune` from the table. **It passed.** The name
+appears elsewhere in the README — `gloop handoff prune --max-age 720h` sits in the
+examples block — and the check searched the whole file.
+
+Scoped to the table's own text it now fails on that deletion, and fails again if the
+table heading is renamed rather than passing over a table it can no longer find.
+
+A guard that matches anywhere matches the wrong thing. It took a falsification to
+see it, which is the argument for falsifying every guard rather than the ones that
+look risky.
