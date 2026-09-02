@@ -276,3 +276,32 @@ stop.
 It also failed AC-6 on cadre: HEAD was one commit ahead of `cli-v0.7.2` when it
 looked, which is true and is the phase still moving. AC-6 is measured at the
 phase's close, not mid-flight, and the release below is that close.
+
+## T-09 · the doctor disagreed with the command it diagnoses
+
+The fourth container run passed AC-7's two commands — `cadre sdlc --version`
+answered `0.14.4` at exit 0, `cadre knowledge search` answered — and then
+`cadre doctor` printed, on the same machine, in the same session:
+
+```
+lifecycle kernel:   no agentic-sdlc on PATH, AGENTIC_SDLC_BIN is unset,
+                    and no packaged lifecycle shim was found
+```
+
+Doctor resolved its root with `platform.RepoRoot()`, an upward walk for `.git`.
+A packaged install has none, and is usually run from somewhere else — cwd was `/`.
+
+`cadre doctor` exists because a stale kernel answering the name is not
+hypothetical: a pre-port Python `agentic-sdlc 0.13.2` sat on a developer's PATH
+and satisfied the compatibility floor by exactly one patch version. **A doctor
+that reports a different kernel from the one the command runs is worse than one
+that says nothing**, because its whole value is being believed.
+
+It now resolves through `platform.FindInstallationRoot()`, which honours
+`CADRE_REPO_ROOT` and the packaged layouts — the same resolution the rest of the
+CLI uses. `TestDoctorAndSdlcResolveTheSameKernel` holds the two answers together
+for one root rather than asserting either separately, which is the property that
+was actually violated.
+
+Only visible after AC-7 passed. The criterion names two commands; the run printed
+a third thing beside them, and it was wrong.
