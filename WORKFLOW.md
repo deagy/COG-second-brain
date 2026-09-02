@@ -75,6 +75,14 @@ A criterion may be amended only *before* it is gated, in the open, to match a fa
 
 This holds **even when the reasoning behind the amendment is independently sound**: soundness does not fix an artifact that is editable by the party it judges. If a verification finding would fail a criterion, let the criterion fail, and open a new deferred criterion for the follow-on work (`AC-07b`-style) rather than relaxing the one that failed.
 
+### Reading a criterion you are about to be judged by
+
+The rule above covers editing a criterion at its gate. The same pressure has a quieter form: **reading it generously.** Where a criterion's literal and intended readings differ, the literal one governs — or rewrite it before the phase closes, in the open, under the rule above.
+
+`AC-04` asked that no definition exist outside the kernel. At its gate, "an archived file cannot drift" was offered as a defence, and the archive was still pip-installable. The criterion had not changed and nobody edited anything; the reading did the work an amendment would have.
+
+No check reaches this. The criterion is unedited, the verdict is a judgment, and nothing distinguishes a generous reading from a correct one syntactically — which is why the harness answers it structurally instead, with a verifier who did not write the thing being judged.
+
 ## Gate classes
 
 | Class | Examples | Behavior |

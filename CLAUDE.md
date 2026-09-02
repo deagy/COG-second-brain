@@ -153,6 +153,7 @@ This is opt-in per skill — not a hard rule for every output. Apply it where wr
 - Never `git reset --hard` or `git commit --amend` unless the user explicitly asks. Always create new commits and push normally. If changes get wiped, recover from `git reflog` — do not destroy history.
 - Always commit with commitlint standards (Conventional Commits: `type(scope): subject`).
 - When a command requires interactive input (e.g. `git rebase --continue`, editor prompts), supply the non-interactive flag or set `GIT_EDITOR=true` / `EDITOR=true` / `--no-edit` as appropriate.
+- **Never put a file write and the commit describing it in one compound command.** Write, confirm the write landed, then commit. A heredoc that silently no-ops leaves a commit message describing work that does not exist, and the message is what everyone reads afterwards. A `PreToolUse` hook could enforce this — COG ships no hook infrastructure, so this is a cost decision rather than an impossible one, and worth revisiting if hooks ever arrive for another reason.
 
 ### Pull Requests
 - Before opening a PR, check the repository for a PR template (e.g. `.github/PULL_REQUEST_TEMPLATE.md` or similar) and always follow it when composing the PR description.
@@ -162,6 +163,14 @@ This is opt-in per skill — not a hard rule for every output. Apply it where wr
 - A background command that queries one repository must not resolve its arguments from the session's working directory. Pass `-R <owner/repo>` and an explicit sha; `git rev-parse HEAD` in a background shell resolves against the session's cwd, not the repository you are asking about.
 - Do not end a background command with an `echo` after the command whose exit code matters. The notification reports the *last* command's status, so a failed watch followed by `echo` is reported as success. Two CI watches in one session reported exit 0 while having 404'd on an empty run id.
 - Verify the outcome against the artifact, not the wrapper's exit code — for CI, `.claude/lib/ci-status.sh`, which resolves the run for HEAD's exact sha and treats a missing or in-flight run as not-green.
+
+### Before you assert it, check it
+
+Three rules that no lint reaches, for one shared reason: **each defect happens in a message rather than in a file.** There is no artifact to inspect and no moment after the fact when a check could run — by the time anything exists to lint, the wrong claim has already been made. That is the reason they live here rather than in a test, and it is not a statement that they matter less.
+
+- **Verify a name or destination exists before putting the decision to the user.** A citation about a name is not evidence the name is free. `cadre-lifecycle` was proposed as a repository name off a misread citation; `gh repo create` refusing it was the only thing standing between that session and pushing into an archived repository. The check is mechanical and already exists — it just ran too late to be a check.
+- **Check a repository's visibility before reasoning about who its documentation reaches.** `gh repo view --json visibility` is one line. Nothing invokes it, because the defect is a reasoning step: an argument about what a document exposes, built on an assumption about who can read it.
+- **Treat an environment note as a finding until shown otherwise.** "Installed kernel 0.13.2, repository 0.14.2" was recorded as a curiosity. It was a guard checking the wrong artifact. Most environment notes are not version-pair-shaped, which is why this stays judgment — but a note you cannot immediately explain is a finding you have not investigated yet.
 
 ### Interaction
 - Read every file the user provides (images, screenshots, code, text) with the read tool before responding — never assume its contents.
