@@ -309,3 +309,44 @@ would have caught:
 
 A documented example that has never been compiled is a claim nobody has checked, and
 this one was wrong in three separate ways at once.
+
+## CP-3v round 6 — four more, all in categories no guard read
+
+Round 6 swept the live documents exhaustively and found four false claims, every
+one of them outside what the existing guards look at:
+
+| Claim | Reality |
+|---|---|
+| `go test ./pkg/streaming/...` | `pkg/streaming` was deleted; the command fails outright |
+| Roadmap: *Support for additional providers (Cohere, etc.)* unchecked | Cohere ships, and the Features list three lines above says so — a document contradicting itself |
+| `go doc ./...`, twice | not valid `go doc` syntax; it takes one package or symbol |
+| `MOCKERY_INTEGRATION.md`'s yaml block and mocks list | still naming `AgentProvider`, `StreamProvider`, `StreamCallback` — none exist — and `TokenCounter` under the wrong package |
+
+The last is the sharpest: **that file was fixed in round 5 and left wrong in two
+sibling places in the same file**, because the compile guard reads ` ```go ` fences
+and those two are yaml and a bullet list.
+
+Two new guards, one per class:
+
+- `TestTheMockeryDocMatchesTheMockeryConfig` holds the document's mocks list to
+  `test/mocks/` in both directions, and every interface and package its yaml block
+  names to `.mockery.yaml`.
+- `TestEveryGoToolingCommandInTheLiveDocsRuns` **runs** every `go doc`, `go vet`,
+  `go build` and `go list` the live documents give, and resolves the packages every
+  `go test` names. A command in a document is an instruction, and an instruction that
+  errors is a false claim about the repository.
+
+### The command guard did not cover its own defect, and the falsification said so
+
+Its first version scanned lines *beginning* with `go `. Both `go doc ./...` mentions
+sit inside backticks in a prose bullet, so it read neither — **it passed when I put
+the defect back.** It now reads inline spans too.
+
+Then it caught two things I had just written: a placeholder `go doc ./pkg/<package>`,
+which is a template rather than an instruction and is skipped by shape; and my own
+sentence *"`go doc` takes one package or symbol"*, which is prose naming the tool and
+not a command to run. Inline spans with no argument are mentions; a fenced line always
+is not.
+
+Three rounds in a row now, the falsification has found the guard weaker than it
+looked. Writing the check is not the work; running it against its own defect is.
