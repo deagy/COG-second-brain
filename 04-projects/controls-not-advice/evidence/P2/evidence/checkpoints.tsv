@@ -1,1 +1,3 @@
 2026-09-02T03:07:53Z	CP-2	PASS	9 controls in 2 homes; live-defect ones first; a built-but-uninvoked check is recorded as advice, not as a control
+2026-09-02T03:24:52Z	CP-3	PASS	9 controls built and falsified both directions; 8 bugs found by running them, none by reading them
+2026-09-02T03:33:51Z	CP-3v	FAIL	round 1: 9/9 reproduced, 7 pass; AI-4a/AI-4b claimed a passing direction never run, and fired on every closed spec

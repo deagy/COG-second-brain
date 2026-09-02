@@ -47,6 +47,18 @@ for goal in "$@"; do
     id=$(printf '%s' "$row" | sed -nE 's/^\| *(AC-[0-9a-z]+) *\|.*/\1/p')
     [ -n "$id" ] || continue
 
+    # A criterion the traceability matrix records as verified has answered
+    # this question by demonstration: it *was* satisfied, so asking whether
+    # it could be is moot. This is a charter-time check, and without this
+    # skip it fires forever on every closed goal -- repo-consolidation's
+    # AC-05 and AC-11 read exactly as they did before their amendment,
+    # because the amendment moved the criterion to a later phase rather than
+    # rewording the row. A lint that cries wolf on shipped work gets turned
+    # off, and then it is advice again.
+    if grep -qE "^\| *$id *\|.*\| *verified *\|" "$spec"; then
+      continue
+    fi
+
     # ---- released: verified against something a phase has to publish ----
     if printf '%s' "$row" | grep -qiE 'installed released|released [a-z]+|from the registry|gh release|pip install|npm install|docker pull|published (artifact|release|package)'; then
       # Discharged when the row, or a line naming the id, says which phase

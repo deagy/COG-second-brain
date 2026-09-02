@@ -63,10 +63,13 @@ bash .claude/lib/spec-lint.sh 04-projects/<goal>
   and an executable implementation turned out to have survived in an
   archived-but-still-installable repository.
 
-This is a charter-time check. A **closed** goal's spec may still fire, and
-that is a record of what its criteria cost rather than a regression to fix —
-rewording a criterion after its gate is the failure § "Amending a gated
-criterion" in `WORKFLOW.md` describes.
+This is a charter-time check, and it skips any criterion the traceability
+matrix records as `verified`: one that was satisfied has answered the
+question by demonstration. Without that skip it fires forever on closed
+goals — repo-consolidation's AC-05 and AC-11 read exactly as they did before
+their amendment, because the amendment moved the criterion to a later phase
+rather than rewording the row. A lint that cries wolf on shipped work gets
+turned off, and then it is advice again.
 
 Record: `bash .claude/lib/checkpoint.sh record 04-projects/<goal>/evidence/P0 CP-1 PASS "N criteria, M phases"`
 
