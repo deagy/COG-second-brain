@@ -253,3 +253,59 @@ and `cohere`. Three lines above it sits the Multi-Provider bullet that
 The guard looked at the bullet. A second enumeration of the same fact sat outside it,
 in a fenced code block. **Two lists of one fact drift; three drift faster.** The
 check now reads `IsKnownProviderType`'s own case clause and holds both lists to it.
+
+## CP-3v round 5 — two false claims in live documents, and the class they belong to
+
+Round 5 was told to separate a false claim in the documentation from a guard that
+could be evaded by a change nobody has made, and to report the second as a note. It
+did, and both of its failures are the first kind.
+
+### The providers, a fourth time
+
+`docs/ARCHITECTURE.md` listed five provider runtimes in two places, omitting cohere.
+That is the **fourth** enumeration of the same fact to drift: the Multi-Provider
+bullet, the `config.toml` comment, and now the architecture diagram and its package
+table. Each was corrected the round after the previous one, because each guard
+covered the list in front of it.
+
+### A code sample that never compiled
+
+`README.md`'s Metrics & Monitoring block called `logging.NewMetricsCollector()` with
+no argument and three methods — `RecordCounter`, `RecordHistogram`, `RecordGauge` —
+**that exist nowhere in the tree**. The real API is
+`NewMetricsCollector(config *MetricsCollectorConfig)` and
+`IncrementCounter`/`ObserveHistogram`/`SetGauge`, each taking a labels map.
+
+The verifier found it by compiling the snippet and reading four errors. Nothing in
+this repository had ever compiled it.
+
+### The guard that closes the class, and what it found immediately
+
+`TestEveryGoSampleInTheLiveDocsIsAccountedFor` takes every fenced Go block in the live
+documents and puts each in one of four sets — **compiled** against this module,
+**quoted** from a named source file and compared to it, a **whole file** compiled as
+written, or **illustrative**. A block in none of them fails the test naming its first
+line. Compiling every block is not possible: an interface excerpt naming `Provider`
+and `Message` unqualified only compiles inside the package that defines them, so
+those are checked line by line against their source instead.
+
+Falsified three ways: restoring `RecordCounter` fails with the compiler's own message,
+an unaccounted-for block fails naming it, and altering a quoted declaration fails
+naming the line and the file it is not in.
+
+**It found two more defects on its first green-ish run**, neither of which any reading
+would have caught:
+
+- `docs/MOCKERY_INTEGRATION.md`'s example called `mocks.NewMockAgentProvider` and
+  `runtime.AgentResponse`, neither of which exists — and once corrected, it still did
+  not compile, because **the checked-in mocks were stale**: `MockProvider.Complete`
+  took two arguments where `types.Provider.Complete` takes three, so the mock did not
+  implement the interface it mocks. Regenerated.
+- `.mockery.yaml` named `AgentProvider` and `TokenCounter` under `pkg/runtime`.
+  Neither is there; `TokenCounter` lives in `pkg/types` and `AgentProvider` does not
+  exist at all. **mockery warned `no such interface` on every run and exited zero**,
+  so the config named two interfaces it could not find and nothing said so louder than
+  a log line. Both fixed, and mockery now resolves every interface it is given.
+
+A documented example that has never been compiled is a claim nobody has checked, and
+this one was wrong in three separate ways at once.
