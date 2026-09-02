@@ -70,7 +70,14 @@ The evidence for asking at all: `AI-5` sat open as a working-practice note for f
 
    ```bash
    bash .claude/lib/backlog-lint.sh
+   bash .claude/lib/crossref-lint.sh
    ```
+
+   The second is for rows that talk about each other. Three defects in one
+   ultragoal were a row making a claim another row contradicted — a merged
+   item with two dispositions, a coverage claim the covering row denied, a
+   reference to a control that had been withdrawn — and all three had
+   perfect shape.
 
    It reads the word and ignores the decoration, so `control`, **control** and
    **`control`** are the same answer. What it will not accept is a row that
