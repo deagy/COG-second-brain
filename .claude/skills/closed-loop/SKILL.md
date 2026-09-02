@@ -75,6 +75,11 @@ Two mechanical habits, because careful reading demonstrably did not
 substitute for either: check every occurrence in a file rather than the
 first, and check for near-duplicate paragraphs, where one of a pair is stale.
 
+No check reaches this one, and the reason is worth stating: **nothing
+observes an enumeration that was never run.** A search scoped too narrowly
+produces output indistinguishable from a complete one, and the hits it
+missed are missing from the evidence as well.
+
 ## Phase 4 — CP-3v Component verify
 
 ```
@@ -100,6 +105,10 @@ On a third failure of the same criterion, stop and put it to the user:
 name the pattern across the failures, propose the new method, and let them
 decide whether to spend the attempt. That costs one message. Self-authorising
 the attempt costs a round, and the round after it if you are wrong again.
+
+The retry count is observable; the judgment is not. A worker convinced this
+attempt differs in kind from the last will record it as a first attempt at a
+new method, and the count will agree with them.
 
 Copy verifier EVIDENCE rows into `evidence/CP-3v-component.md`.
 
@@ -144,6 +153,12 @@ revert took both. Diff against HEAD and confirm what survived before
 continuing — a revert you believe happened is not a revert you observed.
 This has already silently discarded three real edits in one session, one
 commit after the rule was written down.
+
+A hook could diff after every `git checkout --` and refuse the surprise.
+COG ships no hook infrastructure, so this is a cost argument rather than an
+impossibility — the same one that keeps the write-and-commit rule in
+`CLAUDE.md` § Git out of a check, and both close together if hooks ever
+arrive for another reason.
 
 ## Phase 7 — Record + handoff
 

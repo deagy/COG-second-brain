@@ -163,6 +163,7 @@ This is opt-in per skill — not a hard rule for every output. Apply it where wr
 - A background command that queries one repository must not resolve its arguments from the session's working directory. Pass `-R <owner/repo>` and an explicit sha; `git rev-parse HEAD` in a background shell resolves against the session's cwd, not the repository you are asking about.
 - Do not end a background command with an `echo` after the command whose exit code matters. The notification reports the *last* command's status, so a failed watch followed by `echo` is reported as success. Two CI watches in one session reported exit 0 while having 404'd on an empty run id.
 - Verify the outcome against the artifact, not the wrapper's exit code — for CI, `.claude/lib/ci-status.sh`, which resolves the run for HEAD's exact sha and treats a missing or in-flight run as not-green.
+- No check reaches these: a `PreToolUse` hook could inspect the command string before it runs, and COG ships no hook infrastructure. A cost argument, not an impossibility, and it closes alongside the write-and-commit rule above if hooks ever arrive.
 
 ### Before you assert it, check it
 
