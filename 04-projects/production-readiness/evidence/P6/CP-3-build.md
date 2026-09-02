@@ -166,3 +166,51 @@ in this goal that a fixture, not the subject, was the thing that was wrong.
 
 Falsified three ways: round 2's exact bucket flip, a flip in the other direction, and
 a row naming a subcommand the test cannot run.
+
+## After the escalation — the guard now generates the table instead of reading it
+
+Round 3 returned FAIL:escalate. Three failures of AC-3b, and the pattern was one
+shape each time: **silent omission**, with the absence looking exactly like coverage.
+The doc was wrong; then the guard checked the name and not the row; then the guard's
+parser skipped `` `dispatch <plan>` `` and `` `run <plan>` `` because they did not
+match its regexp — the two rows the README's own prose singles out.
+
+Put to the user under AI-18 rather than spent as a fourth attempt. They chose to
+invert the direction, and that is what shipped:
+
+`internal/docguard` **enumerates every subcommand from `gloop --help`, classifies
+each by running it, renders the table, and asserts `README.md` contains that block.**
+There is no parser to skip a row, no regexp to miss a placeholder, and no way for a
+subcommand to be absent from both the doc and the check — the doc is derived, not
+compared. A mismatch prints the block to paste in. The README says so, above the
+table.
+
+### It found three of my own errors before it passed once
+
+1. **`config setup` and `config update` write to the config they are handed.** With
+   one shared fixture pair they overwrote both files with identical content, after
+   which every later subcommand saw two identical configs and read as *ignored*. The
+   generated table came out with an **empty Honoured row** and I nearly believed it.
+   Each subcommand now gets a fresh pair.
+2. **Normalising the config path out of the output** erased the only signal the two
+   writers give — `Wrote config to <path>` — and put them in the wrong bucket. A
+   command that echoes the path it was handed *did* read the flag; that is what
+   honoured means.
+3. **`dispatch` and `run` cannot be classified this way at all**: both need a plan
+   file and a reachable provider, and without those they fail identically whichever
+   config they are handed. They are excluded — and the exclusion is *stated*, in a
+   set the test reads, with an assertion that the README documents both separately.
+   A stated omission is the opposite of the defect this phase exists to catch.
+
+`TestTheHelpEnumerationIsComplete` guards what is left: a subcommand that stops being
+listed in help would leave the table and the check together. It counts the
+**arguments** to `AddCommand`, not the calls — `AddCommand` is variadic, and counting
+calls gave 16 against 20 real subcommands, which is the same class of error as
+everything else here: a number that looks like a check and measures the wrong thing.
+
+Falsified three ways: a flipped row fails with the block to paste; deleting the
+`dispatch`/`run` paragraph fails with *covered by nothing*; and hiding one command
+from the help listing while leaving it registered fails with the count. **That last
+mutation had to be placed twice** — the first attempt patched `help.go` and the test
+stayed green, because `gloop handoff --help` is rendered by `root.go`. Two renderers,
+which is the same duplication that produced `Usage: gloop gloop`.
