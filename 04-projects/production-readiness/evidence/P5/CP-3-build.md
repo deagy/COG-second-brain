@@ -141,3 +141,36 @@ would have published an empty body) and `TestEveryRunnerLabelIsReviewed`, which
 refused `ubuntu-24.04-arm` until it was added to the approved list with a note —
 pinned to a version rather than a floating arm label, because this leg builds cgo
 against the runner's glibc and the wheel it produces claims `manylinux_2_17`.
+
+### The arm64 leg failed once, at the last job, on a number
+
+Every build in the matrix succeeded — including the new `ubuntu-24.04-arm` leg —
+and then `Publish Cadre CLI release` failed:
+
+```
+cadre-0.7.2-py3-none-macosx_11_0_arm64.whl: 0 python, binary present, 159 roles
+cadre-0.7.2-py3-none-manylinux_2_17_x86_64.whl: 0 python, binary present, 159 roles
+cadre-0.7.2-py3-none-win_amd64.whl: 0 python, binary present, 159 roles
+expected 4 wheels, found 3
+```
+
+The wheel step builds one wheel per platform from a here-doc list, because pip
+needs a PEP 425 tag per platform and the contract has no opinion about those. The
+list is hand-kept, and its comment said "kept in step with the build matrix above
+and with `internal/release/platforms.go`" — which is a description of an intention,
+not a mechanism.
+
+**This is the second time in one phase that a hand-kept list diverged from the
+contract**, after the launcher's platform message. And the third place where one
+constant's move had to be chased outward by hand.
+
+`TestTheWheelPlatformsMatchTheContract` now reads the same here-doc and compares
+its pairs to `PlatformsFor(ProgramCLI)`. Falsified three ways: a missing row fails,
+an extra row the CLI does not publish fails, and renaming the here-doc marker fails
+rather than passing over a list nothing checks. The tags stay unchecked on purpose —
+they are pip's vocabulary, and a wrong one has its own guard in the wheel-contents
+step.
+
+The count check was right and in the wrong place: correct, and reached only after
+a twenty-minute build matrix. Nothing was tagged, because the tag step runs after
+the wheel verification — so the failure cost time and published nothing wrong.
