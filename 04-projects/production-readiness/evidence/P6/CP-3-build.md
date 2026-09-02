@@ -448,11 +448,58 @@ clauses after claiming gloop selects.
 Nine rounds. Rounds 1–7 each found several false claims; round 8 found one, and that
 one was a sentence round 7 had quoted without flagging; round 9 found none.
 
-**Twenty-one false claims in gloop's documentation, every one now fixed and each
-confirmed by running, compiling, or opening what it named.** Fourteen guards, every
-one falsified by reintroducing the defect it catches.
+**Twenty-two false claims in gloop's documentation, every one now fixed and each
+confirmed by running, compiling, or opening what it named** — the twenty-second found
+by CP-4, and it was the build instruction that had committed a 16MB binary. Twenty
+guards, every one falsified by reintroducing the defect it catches.
 
 Six of those claims were the same fact — which providers exist — restated in six
 places and corrected in five separate rounds, because each guard covered the list in
 front of it. That stopped when the guard began *finding* enumerations instead of
 naming them, and it found the sixth immediately.
+
+## CP-4 — three defects nine rounds of component verification could not see
+
+CP-4 confirmed what the phase set out to confirm: P1's and P5's work survived P6's
+rewrites, the guards do not contradict each other, none depends on the network or on
+this machine, `mockery` regenerates a byte-identical tree, and gloop's cross-repository
+fixture guards still pass against cadre's current tree.
+
+Then it found three things every round had passed over.
+
+### A guard was deleted and nothing noticed
+
+`TestDispatchHasNoUnlistedSpecialCase` was written in round 4 to close a dispatch
+bypass a verifier had *demonstrated*, and falsified against that exact bypass. **Two
+commits later a scripted rewrite of the file sliced between two markers and dropped
+it.** Rounds 5 through 9 all passed.
+
+They would. Every round asked whether the guards that exist pass, and **a guard that
+no longer exists passes by not being there.** That is this phase's own subject turned
+back on the phase: an absence indistinguishable from a success — the same shape as a
+tag with no release, a build behind a tag nobody builds, and an example nobody
+compiled.
+
+Restored, and `TestTheGuardSetOnlyGrows` now names all twenty by hand. Adding a guard
+means adding its name; deleting one has to be a visible line in a diff, which is
+exactly what the scripted rewrite was not. Falsified by deleting the same guard the
+same way.
+
+### A 16MB binary had been committed, by the README's own instruction
+
+`gloop/gloop`, an ELF executable, tracked since round 6. It came from the README's
+Development section: `go build -o gloop ./cmd/gloop`, run from the repository root
+where `gloop/` is a package directory — so `-o` names an existing directory and Go
+writes the binary inside it. `.gitignore` covers `bin/`, which is what the Makefile
+uses, and nothing covered this.
+
+**I ran the documented command and it produced the defect.** Removed, ignored, and
+the instruction corrected to `go build -o bin/gloop`, which is what `make build`
+does.
+
+### The build record's guard count was never measured
+
+It said "Fourteen guards" while the tree had twenty. Counted from memory across
+rounds and carried forward — in a phase about claims that were never checked against
+the thing they describe. `TestTheGuardSetOnlyGrows` now logs the real number, and this
+record states it: **twenty**.
