@@ -3,3 +3,4 @@
 2026-09-01T20:52:21Z	CP-3v	PASS	round 2: all four fixes hold; 2 residuals fixed in e752376e with self-falsification only
 2026-09-01T21:05:31Z	CP-5	PASS	AC-1 and AC-7 accepted; guard falsified 8 ways; final delta self-falsified, recorded
 2026-09-01T21:05:31Z	CP-6	PASS	cadre e752376e pushed, run 33557815235 green
+2026-09-02T01:00:10Z	CP-4	PASS	run retrospectively under AI-15; FAIL:fixable on the AC-7 guard not reaching the repo root, fixed in cadre f378fee1 -- see evidence/CP-4-integration.md

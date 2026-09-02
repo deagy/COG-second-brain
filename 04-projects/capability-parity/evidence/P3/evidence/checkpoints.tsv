@@ -1,3 +1,4 @@
 2026-09-01T23:14:31Z	CP-3	PASS	AC-3/AC-4 declared with what-would-change-it and what-it-costs; design preserved for a future decision
 2026-09-02T00:53:08Z	CP-3v	PASS	covered by P2's round-4 pass, which had AC-3 and AC-4 in scope at the same commit -- report filed under P2/
 2026-09-02T00:53:08Z	CP-5	PASS	AC-3, AC-4 accepted; declare-branch checked for cost and reversal clauses
+2026-09-02T01:00:10Z	CP-4	PASS	run retrospectively under AI-15; FAIL:fixable on the AC-7 guard not reaching the repo root, fixed in cadre f378fee1 -- see evidence/CP-4-integration.md

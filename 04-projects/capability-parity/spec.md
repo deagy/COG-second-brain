@@ -74,7 +74,7 @@ P3 carries the only decisions: whether retention and ingested-content deletion a
 | CP-2 | PASS | P2 and P4 planned; P1/P3 built from the spec directly |
 | CP-3 | PASS | All five phases built |
 | CP-3v | PASS on round 4 | P1 took 2 rounds; P2/P3 took 4. Every defect was found by a verifier, none by the author afterwards |
-| CP-4 | **not run at phase time** | Integration verify skipped in all five phases; run retrospectively under AI-15 — see `evidence/CP-4-integration.md` |
+| CP-4 | FAIL:fixable → fixed | Skipped at phase time; run retrospectively under AI-15. Found the AC-7 guard never reached the repository root, leaving AC-2's two root-file corrections unprotected. Fixed in cadre `f378fee1`, falsified four ways — see `evidence/CP-4-integration.md` |
 | CP-5 | PASS | All 7 AC accepted against observed artifacts |
 | CP-6 | PASS | cadre `b534fb27`, CI run 33572609424 green on the runner |
 | CP-7 | PASS | `04-projects/harness/retro/2026-09-01-capability-parity.md` |
