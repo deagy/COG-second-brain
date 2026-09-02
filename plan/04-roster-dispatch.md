@@ -4,7 +4,7 @@ project: cog-cadre-integration
 change: 04-roster-dispatch
 created: 2026-09-02
 depends_on: ["01-run-record"]
-status: draft
+status: partially implemented
 tags: ["#plan", "#roster", "#dispatch", "#specialists"]
 ---
 
@@ -29,10 +29,13 @@ This is the most speculative change and it carries a hard external dependency th
 the other three do not: the roster and a sandboxed runner must be present in-vault
 before anything here can run. Two things have to be true first:
 
-- The roster is vendored into the vault (`05-knowledge/roster/` or a pinned copy of
-  `cadre/roster`, with a drift check against its origin the way change 1 vendors
-  the schema). Right now the roster lives in the external `~/sdk/cadre` repo, which
-  this vault does not contain.
+- The roster is vendored into the vault with a drift check against its origin the
+  way change 1 vendors the schema. **DONE (AC-1):** vendored at
+  `05-knowledge/cadre-roster/` from `cadre/roster` at revision `5c40d6ec`, with
+  `.claude/lib/cadre-roster-drift.sh` and a recorded combined digest in
+  `.claude/lib/cadre-roster.manifest.sha256`. The package is self-contained —
+  `roster.json` declares its own layout — so the copy stands on its own and the
+  drift check fails on any hand-edit.
 - A sandboxed dispatch path exists. The agentic-sdlc project notes that cadre's
   sandboxed dispatch (resolve role, compute sandbox, gate writes behind a token,
   spawn an agent CLI) and gloop's LLM tool-call loop are separate concerns, and the
@@ -46,8 +49,8 @@ pattern on the run-record schema.
 
 ## Where it lands
 
-- `05-knowledge/roster/` — the vendored roster with its origin revision and drift
-  check. New; depends on the roster being available.
+- `05-knowledge/cadre-roster/` — the vendored roster with its origin revision and
+  drift check. DONE (AC-1); see `PROVENANCE.md`.
 - A dispatch path — most likely an extension to `worker-executor` or a small new
   skill that resolves a role from the roster, computes a sandbox, and runs it. The
   shape is undecided pending the roster-vendoring decision.
@@ -58,9 +61,11 @@ pattern on the run-record schema.
 ## Acceptance criteria
 
 - `AC-1` The roster is vendored in-vault with a drift check that fails on an
-  out-of-date copy. (Prerequisite; not a change to COG itself.)
+  out-of-date copy. (Prerequisite; not a change to COG itself.) **DONE** —
+  `05-knowledge/cadre-roster/` with `.claude/lib/cadre-roster-drift.sh`.
 - `AC-2` A skill can resolve a named role from the roster and dispatch it through a
-  sandboxed runner. (Depends on AC-1 and a confirmed runner.)
+  sandboxed runner. (Depends on AC-1 and a confirmed runner.) **PENDING** — no
+  sandboxed runner is confirmed in-vault yet.
 - `AC-3` The dispatch writes a run-record naming the role and the sandbox.
 - `AC-4` A dispatched specialist's output is reviewable by a different agent than
   the one that produced it — the same peer-review property the other three changes
@@ -83,4 +88,22 @@ run. It is gated on change 1 succeeding as the vendoring reference.
 
 Confirm the roster is vendored in-vault and a sandboxed runner exists. Both are
 decisions outside this vault. Until then change 4 is documentation of a dependency,
+not work to do.
+
+## Implementation (committed on plan/cadre-cog-integration)
+
+AC-1 done. Vendored `cadre/roster` at revision `5c40d6ec` into
+`05-knowledge/cadre-roster/` (356 files) — self-contained, since `roster.json`
+declares its own layout (`catalog`, `routing`, `role_root`, `shared_policy_root`).
+Drift check: `.claude/lib/cadre-roster-drift.sh` recomputes the combined sha256 of
+every file and compares it to `.claude/lib/cadre-roster.manifest.sha256`; verified
+PASS on a clean copy and FAIL on an injected tamper file. `PROVENANCE.md` records
+the source, revision, digest, and re-vendoring steps.
+
+AC-2/AC-3/AC-4 pending. The dispatch behavior needs a confirmed sandboxed runner;
+cadre's sandboxed dispatch and gloop's tool-call loop are separate concerns and
+neither is confirmed as an in-vault runner. Until one is, change 4 is the
+roster-vendoring prerequisite (done) plus a description of the dispatch skill
+(not built).
+
 not work to do.
