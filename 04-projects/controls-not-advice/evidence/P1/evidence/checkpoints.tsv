@@ -1,0 +1,6 @@
+2026-09-02T02:07:03Z	CP-2	PASS	5 tasks; each disposition must name what a check would observe, or why nothing could
+2026-09-02T02:09:19Z	CP-3	PASS	14 items dispositioned: 3 control, 1 landed, 11 advice (2 flagged for challenge); live AI-3 defect found at guard_binaries_test.go:66
+2026-09-02T02:16:06Z	CP-3v	FAIL	round 1: 7 of 8 advice calls challenged; the narrowing used to rescue AI-3/AI-5 was withheld from items that would have required building something
+2026-09-02T02:27:09Z	CP-3v	PASS	round 3: AC-1, AC-4, AC-5 all PASS; one stale cross-reference fixed. Rounds 1-2 FAILed on under- then over-classification
+2026-09-02T02:33:02Z	CP-4	PASS	13 integration claims; AI-8 and AI-10 confirmed distinct; no control duplicates existing cadre tooling
+2026-09-02T02:33:02Z	CP-5	PASS	AC-1, AC-4, AC-5 accepted against observed artifacts
