@@ -63,3 +63,15 @@ AI-6 appears in two rows because it was two rules under one id, so the ids total
 Not dishonesty in any individual reason — the challenge says so explicitly, and it is right. The failure was that **the narrowing move was available to every item and applied only where it was cheap.** AI-3's prose was unmechanizable and a checkable half was extracted from it; AI-8's prose was unmechanizable and no attempt was made. The difference between them was not feasibility. It was that one had already been named as a control candidate before triage began, and the other would have meant building something.
 
 The spec predicted this in AC-4's own wording — *"`advice` is the cheap disposition and the lead is the one doing the classifying"* — and the prediction was accurate about the very phase that wrote it.
+
+## Reconciled after P2 built them
+
+CP-4 on P2 noted that three controls guarantee a narrower or different property than the table above promised. Disclosed in P2's build record at the time rather than discovered later, and recorded here so the triage does not read as delivered-as-promised:
+
+| ID | Promised here | Built |
+|---|---|---|
+| AI-3 | "a test invoking the Go toolchain without a preceding `LookPath("go")`" | *reaches `t.Fatal` when the tool is absent*. Requiring `LookPath` specifically was wrong — running the command and skipping on its error is an equally good guard and covers more, and three files doing it that way were false positives |
+| AI-13 | "a guard reporting the resolved path only on the failure branch" | *a **project** binary whose resolved path is discarded*. The general rule would have forced thirteen cosmetic edits: which `git` you found does not matter. It also guarantees less than the retro's incident, which turned on an unlogged **version**, not an unlogged path |
+| AI-4a | "an AC whose verification fetches an artifact its own phase has not yet shipped" | *an AC verified against a published artifact, where no line says which phase publishes it, and the criterion is not already `verified`*. Deciding which phase ships an artifact is semantic; asking the author to say so is not |
+
+None of these was a silent substitution, and each narrowing was forced by contact with real code rather than chosen for convenience. But the pattern is worth naming: **a disposition written before building is a hypothesis about what a check can observe**, and three of nine did not survive being built. That is a reasonable hit rate, not a failure of triage — it is the reason P1 came before P2 rather than the two being one phase.

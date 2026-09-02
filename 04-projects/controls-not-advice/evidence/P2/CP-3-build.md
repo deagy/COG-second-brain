@@ -54,3 +54,11 @@ Recorded because the pattern is consistent: every one passed review and failed o
 7. `tr ';' '\n' | while read` dropped the final clause — which was the unbounded one.
 
 And an eighth, in `phase-gates.sh`: `grep` exits 1 on no match, and under `set -e` with `pipefail` that killed the script mid-goal, printing one phase and returning non-zero. Indistinguishable from a real finding, on two goals that were clean.
+
+## Carried out of P2
+
+**The verified-skip trusts a string.** `spec-lint.sh` now skips a criterion whose traceability row reads `verified`, and it takes that word at face value — nothing cross-checks it against an evidence file or a recorded CP-5. A criterion marked verified without evidence would be skipped silently.
+
+Round 2 confirmed this by constructing a probe spec and judged it not a defect against AC-2's bar, since it does not currently occur. Recording it anyway, because it is the same shape as the defect this whole goal exists to close: a claim believed because it is written down. The cheap partial fix is to require the traceability row to cite a path, and to check the path exists.
+
+**AI-13 guarantees less than its retro's incident.** The originating story was a stale pipx `agentic-sdlc 0.13.2` silently satisfying a compatibility window because the version it reported was never logged. This control only guarantees a resolved *path* is not discarded for a project binary. What actually closed that story was tightening the compatibility floor plus the `t.Logf` at `provider_compatibility_test.go:133`, neither of which this check asserts. The control is real and falsified; it is not evidence the original incident could not recur.

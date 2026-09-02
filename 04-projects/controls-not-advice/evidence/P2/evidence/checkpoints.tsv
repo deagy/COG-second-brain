@@ -1,3 +1,6 @@
 2026-09-02T03:07:53Z	CP-2	PASS	9 controls in 2 homes; live-defect ones first; a built-but-uninvoked check is recorded as advice, not as a control
 2026-09-02T03:24:52Z	CP-3	PASS	9 controls built and falsified both directions; 8 bugs found by running them, none by reading them
 2026-09-02T03:33:51Z	CP-3v	FAIL	round 1: 9/9 reproduced, 7 pass; AI-4a/AI-4b claimed a passing direction never run, and fired on every closed spec
+2026-09-02T03:37:17Z	CP-3v	PASS	round 2: AC-2 passes; both directions reproduced on real artifacts; 7 others unregressed
+2026-09-02T03:42:29Z	CP-4	PASS	6 claims; no cross-phase regression from the AI-5 rule (pre/post script output byte-identical on all three goals)
+2026-09-02T03:42:29Z	CP-5	PASS	AC-2 accepted: 9 controls falsified both directions, independently reproduced

@@ -51,7 +51,7 @@ First-pass read on which could become checks, to be tested rather than trusted: 
 | Phase | Scope | AC covered | State |
 |---|---|---|---|
 | P1 | Triage all fourteen: disposition each with its reason, and evidence any closure | AC-1, AC-4, AC-5 | **done** |
-| P2 | Build every `control`, falsified in both directions | AC-2 | not started |
+| P2 | Build every `control`, falsified in both directions | AC-2 | **done** |
 | P3 | Land every `advice` item where it loads, with its reason | AC-3, AC-6 | not started |
 | P4 | Make the disposition question part of writing an action item | AC-7 | not started |
 
@@ -63,7 +63,7 @@ P4 last, because the question it adds to `/retro` should be phrased from what tr
 | AC | Phase | Evidence | Status |
 |---|---|---|---|
 | AC-1 | P1 | evidence/P1/CP-3-triage.md · 14 ids, each dispositioned with a reason | verified |
-| AC-2 | P2 | | pending |
+| AC-2 | P2 | evidence/P2/CP-5-acceptance.md — 9 controls, both directions, independently reproduced | verified |
 | AC-3 | P3 | | pending |
 | AC-4 | P1 | evidence/P1/CP-3v-challenge-round1.md — 7 of 8 challenged, all acted on or answered | verified |
 | AC-5 | P1 | evidence/P1/CP-3v-round3.md — the one unevidenced closure (AI-14) was withdrawn | verified |

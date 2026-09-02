@@ -2,35 +2,39 @@
 
 North-star: every open retro action is either a mechanical check that fails on its own defect, or is recorded as advice with a stated reason it cannot be one.
 Spec: 04-projects/controls-not-advice/spec.md · Registry: 04-projects/harness/ultragoals.md
-Current phase: P2 · Overall: **in progress**
+Current phase: P3 · Overall: **in progress**
 
 ## Phases
 | Phase | AC covered | State | Evidence | Notes |
 |---|---|---|---|---|
 | P0 | — | **done** | evidence/P0/ | 7 criteria, 4 phases, from a 14-item baseline |
 | P1 | AC-1, AC-4, AC-5 | **done** | evidence/P1/ | 9 control, 5 advice, 1 landed. Three CP-3v rounds: under-classified, then over-corrected, then clean. CP-4 PASS |
-| P2 | AC-2 | not started | evidence/P2/ | Build every `control`, falsified both directions |
+| P2 | AC-2 | **done** | evidence/P2/ | 9 controls across 3 repos, each falsified both directions. CP-3v took 2 rounds; CP-4 PASS |
 | P3 | AC-3, AC-6 | not started | evidence/P3/ | Land every `advice` item where it loads |
 | P4 | AC-7 | not started | evidence/P4/ | The disposition question becomes part of writing an action item |
 
 ## Open AC-n (no PASS row yet)
-AC-2 (P2), AC-3 and AC-6 (P3), AC-7 (P4). AC-1, AC-4 and AC-5 closed at P1.
+AC-3 and AC-6 (P3), AC-7 (P4). AC-1, AC-2, AC-4 and AC-5 closed.
 
 ## Next action (resume cold from here)
 
-**P2 — build the nine controls, each falsified in both directions.** The dispositions and their observables are in `evidence/P1/CP-3-triage.md`; build from that table, not from the original backlog wording, which is what round 1 got wrong.
+**P3 — land the five `advice` items where they load, and make the backlog distinguish the three dispositions.**
 
-Order them by whether the defect is already live in the tree, because those can be falsified against a real instance rather than an injected one:
+The five, from `evidence/P1/CP-3-triage.md`, each with the reason that must travel with it:
 
-1. **AI-3** — a test invoking the Go toolchain without a preceding `LookPath("go")`. Live defect at `internal/generators/guard_binaries_test.go:71`, which guards only on `git`, builds at :86 and `t.Fatalf`s at :89. `packaged_selector_test.go:105` does it correctly, so the fix has a model in the same package.
-2. **AI-13** — every `LookPath` site reports the resolved path only on the failure branch, so a passing run never says which binary it checked. Fix the guards first, then the check that keeps them honest.
-3. **AI-12** — `deprecated_symbols_test.go`: a `// Deprecated:` tag in source disagreeing with CHANGELOG or README.
-4. **AI-8, AI-10** — evidence-doc lints over `04-projects/**`. CP-4 confirmed these are distinct checks; whether they share one file is a P2 decision.
-5. **AI-1+AI-11** — port/extraction plan headings lint.
-6. **AI-4a, AI-4b** — the circular-verification-ordering spec lint, and the universal-negative count check.
-7. **AI-5** — encode the task-count rule, or record why `phase-gates.sh` cannot.
+| ID | Rule | Home |
+|---|---|---|
+| AI-2 | Verify a naming or destination target exists before putting the decision to the user | `CLAUDE.md` |
+| AI-6b | Where a criterion's literal and intended readings differ, the literal one governs | `WORKFLOW.md`, beside § "Amending a gated criterion", which covers the other half |
+| AI-7 | Never put a file write and the commit describing it in one compound command | `CLAUDE.md` § Git |
+| AI-9 | Check repository visibility before reasoning about who documentation reaches | `CLAUDE.md` |
+| AI-14 | Treat an environment note as a finding until shown otherwise | `CLAUDE.md`, and struck once AI-13's control covers its originating instance |
 
-## Watch for## Watch for
+AC-3 requires the reason to be **specific to that item** — "behavioural" is not a reason — and the rule to live somewhere read at session start, not only in the backlog. AC-6 requires the backlog itself to distinguish `control`, `advice` and landed, with its header explaining the split.
+
+AI-2 and AI-9 share one limitation and should say so in the same words: a decision made in conversation leaves no artifact to lint. If that ever becomes checkable, both close together.
+
+## Watch for## Watch for## Watch for
 
 That prediction was correct, and P1 failed on it twice in opposite directions before passing.
 
