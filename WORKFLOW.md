@@ -7,6 +7,8 @@
 
 **This document governs harness runs, and nothing else.** A session that never invoked the harness owes it no checkpoints, no lane classification, and no evidence ledger. Notes, briefs, research, drafts, and ordinary edits are not harness runs.
 
+A harness run with no lint-clean run-record is not a finished run: the run-record is the shared provenance object that makes this run auditable and interoperable with the agentic-lifecycle run-record shape.
+
 You are in a harness run when you invoked `/closed-loop`, `/ultragoal`, `/retro`, `/harvest`, or `/review-cockpit`; asked for the closed loop, proper verification, or an evidence trail in those words; or set `verification_harness: on` in `00-inbox/MY-PROFILE.md`. Otherwise you are not, and the two rules in `CLAUDE.md` § Verification Harness are the whole of what applies.
 
 Nothing here needs installing. The two helper scripts (`.claude/lib/checkpoint.sh`, `.claude/lib/lane-classify.sh`) ship executable, and the run directories are created on first use.
@@ -174,6 +176,7 @@ Run output lives under `04-projects/harness/`, which is created on the first har
 |---|---|
 | Spec + traceability matrix | `04-projects/<project>/specs/SPEC-NNN-<slug>.md` |
 | Run evidence bundle | `04-projects/harness/runs/<id>/evidence/` |
+| Run-record (shared provenance) | `04-projects/harness/runs/<id>/run-record.json` |
 | HTML report (ultragoal / big run) | `04-projects/<goal>/report.html` · `04-projects/harness/runs/<id>/report.html` |
 | Retro outputs | `04-projects/harness/retro/YYYY-MM-DD-<slug>.md` |
 | Harness backlog | `04-projects/harness/BACKLOG.md` |

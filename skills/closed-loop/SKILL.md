@@ -100,6 +100,7 @@ Record: `checkpoint.sh record <run-dir> CP-5 PASS|FAIL`
 
 - Append to `.claude/logs/loop-ledger.tsv`
 - Update spec traceability matrix statuses to `verified`
+- **Write the run-record.** Emit `04-projects/harness/runs/<id>/run-record.json` — the machine-enforceable provenance for this run (who ran it, what objective it was given, its current lifecycle phase, the evidence that backs it, what authority approved it, what findings were raised, what it invalidated). Map the V-model checkpoints to the run-record `current_lifecycle_phase` enum via the single source of truth in `05-knowledge/run-record.provenance.json` (CP-0 `intent` → CP-7 `feedback`); reference that mapping, do not re-type the enum. Lint it before finishing: `bash .claude/lib/run-record-lint.sh 04-projects/harness/runs/<id>` must exit 0. **A harness run with no lint-clean run-record is not a finished run.**
 - **`full` lane / big task:** generate an HTML rollup from `references/report-template.html` → `04-projects/harness/runs/<id>/report.html`, filled from `criteria.md` + `evidence/ledger.md` (criteria, AC traceability, verifier verdicts, post-condition observations). Self-contained; `SendUserFile` it or publish as an Artifact. Skip for `normal`/`tiny`.
 - Suggest `/retro <run-dir>` for CP-7
 

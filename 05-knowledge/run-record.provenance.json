@@ -1,0 +1,24 @@
+{
+  "_note": "Single source of truth for the vendored run-record schema's origin and for the COG-CP -> lifecycle-phase mapping. The schema file itself is pure JSON with no provenance or comments (a JSON Schema must stay machine-parseable); both live here so the schema is never re-declared in a skill or note (AC-5).",
+  "schema": {
+    "origin_repo": "cadre-kernel",
+    "origin_repo_path": "/home/deagy/sdk/cadre-kernel",
+    "origin_path": "kernel/contracts/run-record.schema.json",
+    "origin_revision": "d4fb0894bc1e206df01f2e016b1bc8db04be1aad",
+    "origin_sha256": "0a14c607a24414b7412cf413b56920ba3b3f0b76905af41288904344959ac218",
+    "vendored_at": "2026-09-02",
+    "drift_check": "sha256(05-knowledge/run-record.schema.json) must equal origin_sha256. A mismatch means the vendored copy was hand-edited and must be restored from the origin revision (AC-3). If the origin repo is present and its current sha256 differs, that is a re-vendor warning, not a hand-edit."
+  },
+  "cog_cp_to_lifecycle": {
+    "_note": "The run-record enum is a software-lifecycle sequence; COG's V-model is a different ordering. This mapping is a decision to record, not an inheritance. Recorded in exactly one file (this sidecar) and referenced by the closed-loop skill, not re-implemented (AC-5). Values are the run-record enum's actual members.",
+    "cp-0_intake": "intent",
+    "cp-1_spec": "requirements",
+    "cp-2_plan": "architecture",
+    "cp-3_build": "build",
+    "cp-3v_component_verify": "verify",
+    "cp-4_integration_verify": "verify",
+    "cp-5_acceptance": "evidence",
+    "cp-6_ship": "release-readiness",
+    "cp-7_retro": "feedback"
+  }
+}
