@@ -62,13 +62,20 @@ Worker implements. Returns deliverable path only.
 ## Phase 4 — CP-3v Component verify
 
 ```
-retry=0
+AMEND_BOUND=3
+attempt=0
 loop:
-  spawn task-verifier (fresh context, read-only)
+  spawn task-verifier (fresh context, read-only) — the re-reviewer must be a
+  different context than the one that made the prior amend (reviewer becomes author)
   merge EVIDENCE rows into evidence/ledger.md
   if PASS → break
   if FAIL:escalate → record CP-3v FAIL, escalate
-  if FAIL:fixable && retry < 2 → fix-agent → retry++
+  if FAIL:fixable:
+    attempt++
+    if attempt > AMEND_BOUND → record terminal FAIL:escalate telemetry row, escalate
+    record re-entry: checkpoint.sh record_reentry <run-dir> <attempt> "<reentry>" "<invalidates>" "<reason>"
+    fix-agent applies the amend, stating which criteria it amends and which
+    downstream criteria it invalidates (invalidation cascade) → loop
   else → escalate
 ```
 

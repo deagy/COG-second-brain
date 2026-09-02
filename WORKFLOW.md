@@ -55,7 +55,7 @@ No criterion ships without a matching evidence row. No evidence row without a cr
 | **CP-1** | Spec | blocking (`normal`+) | `## Acceptance criteria` with IDs (`AC-01`…) | spec itself + matrix |
 | **CP-2** | Plan | blocking (`normal`+) | Tasks reference `AC-n`; criteria falsifiable | `evidence/CP-2-plan.md` |
 | **CP-3** | Build | — | Worker deliverable exists | deliverable path |
-| **CP-3v** | Component verify | blocking | `task-verifier` PASS per task | `evidence/CP-3v-component.md` |
+| **CP-3v** | Component verify | blocking | `task-verifier` PASS per task; a `FAIL:fixable` is a denial naming what it invalidates and where to re-enter; terminal `FAIL:escalate` after 3 amend cycles | `evidence/CP-3v-component.md` |
 | **CP-4** | Integration verify | blocking (`full`+, multi-task) | `integration-verifier` PASS | `evidence/CP-4-integration.md` |
 | **CP-5** | Acceptance | blocking (mutations) | Post-condition observed (not tool return) | `evidence/CP-5-acceptance.md` |
 | **CP-6** | Ship | blocking (external) | Review Gate / your approval / deploy proof | `evidence/CP-6-ship.md` |
@@ -129,8 +129,8 @@ orchestrator (/closed-loop or a skill that invokes it)
         ▼
    CP-3v: task-verifier (read-only) ──► evidence rows per AC-n
         │
-        ├── FAIL:fixable ─► fix-agent (max 2) ─► re-verify
-        └── FAIL:escalate ─► stop
+         ├── FAIL:fixable ─▶ fix-agent (amend: names invalidates + reentry) ─▶ re-review by a different context
+         └── after 3 amend cycles ─▶ terminal FAIL:escalate (telemetry) ─▶ stop
         │
         ▼
    CP-4: integration-verifier (multi-task / full lane only)
