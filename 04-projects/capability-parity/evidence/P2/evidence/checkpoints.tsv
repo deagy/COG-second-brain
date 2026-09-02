@@ -1,2 +1,4 @@
 2026-09-01T21:19:19Z	CP-2	PASS	7 files; preserve the Python-era design reasoning as P3's input rather than deleting it
 2026-09-01T23:14:09Z	CP-3	PASS	7 files corrected; Python-era design preserved verbatim as P3 input; AC-6 admission moved next to the claim
+2026-09-02T00:53:08Z	CP-3v	PASS	round 4 (rounds 1-3 FAIL); AC-2 and AC-6 verified at cadre b534fb27 -- see CP-3v-round4-AC-2-3-4.md
+2026-09-02T00:53:08Z	CP-5	PASS	AC-2, AC-6 accepted against observed artifacts; CI run 33572609424

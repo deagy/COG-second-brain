@@ -110,6 +110,36 @@ Pointed at that commit today, this check reports
 **A local test exit code is evidence about a laptop.** Write the run id into
 the ledger, not the word "green".
 
+### And every phase must have been asked its gates
+
+```bash
+bash .claude/lib/phase-gates.sh 04-projects/<goal>
+```
+
+Non-zero means a phase never ran a required checkpoint, or ran one without
+recording it. Neither is a pass.
+
+**This is a gate rather than advice because it, too, has already failed
+silently.** The capability-parity ultragoal shipped all five phases and
+passed two north-star gates without ever running CP-4. Nothing noticed: the
+gates check acceptance criteria and CI, and a checkpoint that was never run
+leaves no failing artifact behind — only an absent row, which is
+indistinguishable from a row nobody thought to look for.
+
+CP-4 is not a formality. In the preceding ultragoal it ran five times and
+found recall's CI red on the tag its own criterion pinned, silent corpus
+corruption on store upgrade, cadre and gloop red since the commits their
+criteria cited, a criterion closed against an implementation that was still
+installable, and a stale interpreter shadowing the kernel on PATH. Every one
+was a cross-phase defect that the per-phase component checks had already
+passed over.
+
+The script distinguishes two failures, because they need different fixes: a
+checkpoint with neither a row nor an evidence file was **never asked**; one
+with an artifact but no row **ran unrecorded**, which means the work was done
+and the trail cannot be queried for it. A deliberate skip is recorded as
+`SKIP` with its reason — an auditable decision, unlike an absence.
+
 ```
 North-star acceptance:
   read spec.md matrix (all AC-n)
