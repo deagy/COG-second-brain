@@ -1,6 +1,6 @@
 # Production readiness — spec
 
-**North-star:** cadre, the lifecycle kernel, recall and gloop each install from their own published artifacts, claim nothing they cannot keep, and record who actually did what.
+**North-star:** cadre, the lifecycle kernel and recall install from their own published artifacts; gloop, by decision, installs from a checkout and says so. All four claim nothing they cannot keep, and record who actually did what.
 
 Three properties, in the order they can be tested: **installable**, **honest**, **attributable**.
 
@@ -60,6 +60,40 @@ The two findings that order the work: **the lifecycle kernel is public with no l
 **P1 first because it is legal rather than technical**, and because releasing an unlicensed artifact is worse than not releasing. **P5 last because it releases the finished thing** — cutting releases before P3 and P4 would publish a version whose behaviour the goal then changes, and AC-7 would verify an artifact nobody should install.
 
 P2 before P3 deliberately: `#249` is in the config resolution that P3's identity work will read, and fixing it afterwards means fixing it twice.
+
+## The north-star was amended at its own gate, and here is why that is not cheating
+
+**Amended 2026-09-02, after the north-star gate returned COMPLETE on all nine
+criteria and judged the sentence itself false.** The original read:
+
+> cadre, the lifecycle kernel, recall and gloop each install from their own
+> published artifacts, claim nothing they cannot keep, and record who actually
+> did what.
+
+The gate was right. cadre, the lifecycle kernel and recall each install from
+their own published GitHub Releases, reproduced live in a fresh container.
+gloop does not, and never will under this charter: its README says in its own
+voice that there is no release workflow and no published release for any tag,
+and its install instruction is `git clone` plus `make install`.
+
+**The amendment is not a criterion being reworded to make it satisfiable**, which
+`WORKFLOW.md` forbids and which this project has caught itself doing before. It
+is the sentence being brought into line with a question the charter deliberately
+left open. The charter says, verbatim: *"gloop's public/internal question is P1's
+to settle on evidence, not an input."* P1 settled it — nothing outside the
+author's control imports gloop, the module proxy 404s on a private repository, and
+the SDK framing was an aspiration. The north-star was written before that answer
+existed and was never updated when it arrived.
+
+Two tests it passes that a self-serving rewrite would fail. **Nothing about the
+software changed to accommodate it** — the sentence moved, the artifacts did not,
+and no criterion was loosened. And **the alternative was worse on the goal's own
+terms**: making the original literally true means publishing a gloop release with
+no consumer, which is exactly the kind of claim-without-substance this goal
+existed to remove. The gate said so unprompted.
+
+Put to the user as a decision rather than taken here, because the north-star is
+theirs. They chose the amendment.
 
 ## What would falsify this goal
 

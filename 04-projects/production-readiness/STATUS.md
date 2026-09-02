@@ -1,8 +1,8 @@
 # Production readiness — status ledger
 
-North-star: cadre, the lifecycle kernel, recall and gloop each install from their own published artifacts, claim nothing they cannot keep, and record who actually did what.
+North-star: cadre, the lifecycle kernel and recall install from their own published artifacts; gloop, by decision, installs from a checkout and says so. All four claim nothing they cannot keep, and record who actually did what.
 Spec: 04-projects/production-readiness/spec.md · Registry: 04-projects/harness/ultragoals.md
-Current phase: P7 closed, north-star gate re-run pending · Overall: **in progress**
+Current phase: closed · Overall: **done — north-star gate COMPLETE 2026-09-02**
 
 ## Phases
 | Phase | AC covered | State | Evidence | Notes |
@@ -35,54 +35,37 @@ AC-6 and AC-7 at P5; AC-3b at P6.
 - **Caller identity is being built, and the reason changed at charter.** With one operator there is nobody to impersonate, so this is not a defence against an adversary. What breaks without it is the evidence trail: a deletion record naming an actor nobody verified is a record of a string. That makes the target smaller than an auth system — derive from a source that already exists locally, refuse where none does.
 - **Retention and erasure stay declared.** No third party's content enters the store. What changes is where the declaration lives.
 
-## Next action (resume cold from here)
+## Outcome
 
-**North-star gate re-run dispatched** over all nine criteria, with AC-8 singled out for
-independent re-checking and the previous gate's weak citation (a 200 on a bare tag page)
-named so it is not repeated. CI is green at HEAD for all four by run id: cadre
-`bffec5cc` run 33676558157, cadre-kernel `d4fb0894`, recall `3bef2354`, gloop
-`1f37de47`. All five harness lints clean. CP-7 is written
-(`04-projects/harness/retro/2026-09-02-production-readiness.md`).
+**COMPLETE.** All nine criteria carry a PASS row, and the north-star gate re-verified
+every one against the artifacts itself rather than against the ledger — building the
+`cadre` binary from HEAD, running the refusal commands, mutation-testing the `#249`
+fix until the original defect returned, reading the releases API rather than a rendered
+tag page, and reproducing the clean-machine install in a fresh aarch64 container with
+no `~/sdk`, no Go and `claude` from npm only. Report: `evidence/northstar-gate.md`.
 
-Releases: cadre `cli-v0.7.5` / `plugin-v0.24.5`, cadre-kernel `v0.14.4`, recall
-`v0.3.3`, gloop none by decision. The three commits after `cli-v0.7.5` — `cd836b95`,
-`4697eb68`, `bffec5cc` — are documentation and generated-content fixes. AC-6 admits
-"a stated reason" for commits past a release, and that is the reason; it has to be
-stated at the gate rather than assumed.
+CI green at HEAD by run id for all four: cadre `bffec5cc` run 33676558157, cadre-kernel
+`d4fb0894`, recall `3bef2354`, gloop `1f37de47`. All five harness lints clean.
 
-**What P7 was, in one paragraph.** The north-star gate failed AC-8 six phases after P2
-closed it. P2 had verified that `release.yml` no longer publishes kernel releases; the
-criterion is about the kernel having one release *home*, which is a claim about the
-artifacts. Six were still live and downloadable. P2 had likewise read a closing
-*comment* on `#249` as the issue body being corrected — the body had never been edited,
-and a comment and an edit look identical to anyone reading the thread top to bottom.
-Both are the same defect: the check observed something narrower than the criterion
-named. Deleting the releases went to the user at CP-6, because it is irreversible and
-breaks the kernel fetch of eight published CLI releases (`cli-v0.5.0`–`cli-v0.6.5`,
-confirmed by reading the shim out of the extracted `cli-v0.6.5` binary with `strings`).
-They chose deletion, tags kept.
+**The gate passed nine of nine and then said the north-star sentence was false**, and
+it was right. The sentence named gloop alongside three subjects that genuinely install
+from published artifacts; gloop installs from a checkout, by the decision P1 was
+chartered to make on evidence. The sentence predated its own open question being
+answered. It was amended, with the reasoning and the two tests it had to pass recorded
+in `spec.md` § *The north-star was amended at its own gate*, and put to the user rather
+than taken here.
 
-**Then CP-4 found nine live documents** still installing the kernel from the retired
-home by four routes, all of them broken as well as misdirected — `kernel/` was deleted
-at `11eefd47` and the kernel is a Go binary now. Fixed at `cd836b95`, which went red on
-the runner while the full Go suite passed locally: `plugin/` is generated, and a source
-and its generated copy differed by one phrase. Regenerated at `4697eb68`.
+**The single most valuable thing this goal produced is the gate's first run**, which
+found AC-8 false six phases after P2 closed it. P2 verified the publishing workflow;
+the criterion named the artifacts. Nothing between P2 and the gate could have caught
+it, because every intervening check was scoped to its own phase and a phase cannot see
+what it already believes it verified.
 
-**The instruction that caused that red run was itself wrong**, which is the finding
-worth carrying forward. `AGENTS.md` named `go test ./internal/generators/` as the
-regeneration guard; that test proves the generator is deterministic against a temp
-directory, and only `cadre generate-plugin --check --output plugin` — run by
-`validate.yml`, by no test — catches a hand-edit to the committed tree. The guard the
-contributor document names and the guard that gates the merge were different checks,
-and the named one passes on exactly the defect the real one catches. Fixed at
-`bffec5cc`, filed as **AI-30**.
-
-**Housekeeping the workspace guard refuses to do for me:** four scratch worktrees from
-earlier phases are still registered — `/tmp/claude-1000/redcheck`, `/tmp/v4b-oldcommit`,
-`/tmp/v4c-clone`, `/tmp/v4d-falsify`. The last two carry a deliberate falsification
-mutation in `internal/knowledge/staged_db.go`, already recorded in P3's evidence.
-`git worktree remove` is blocked as a destructive git-metadata operation, so they need
-removing by hand.
+**Housekeeping the workspace guard refuses to do:** four scratch worktrees are still
+registered — `/tmp/claude-1000/redcheck`, `/tmp/v4b-oldcommit`, `/tmp/v4c-clone`,
+`/tmp/v4d-falsify`. The last two carry a deliberate falsification mutation in
+`internal/knowledge/staged_db.go`, recorded in P3's evidence. `git worktree remove` is
+blocked as a destructive git-metadata operation, so they need removing by hand.
 
 ## Found, and deliberately not fixed — no criterion covers it
 

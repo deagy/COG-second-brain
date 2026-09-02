@@ -57,11 +57,15 @@
 
 <header>
   <h1>Production readiness</h1>
-  <div class="meta">04-projects/production-readiness · lane full · 2026-09-01 → 2026-09-02 · 8 phases · outcome shipped</div>
+  <div class="meta">04-projects/production-readiness · lane full · 2026-09-01 → 2026-09-02 · 8 phases · north-star gate COMPLETE · outcome shipped</div>
 </header>
 
 <h2>North star</h2>
-<p class="northstar">cadre, the lifecycle kernel, recall and gloop each install from their own published artifacts, claim nothing they cannot keep, and record who actually did what. Before this goal the kernel was public with no licence while cadre's installer fetched it by version; gloop's README asserted MIT and two badges a private repository cannot support; every actor field was a string the caller typed; a retention request met <code>flag provided but not defined</code>; recall had tagged three releases that published nothing; and no kernel release since the extraction could actually be installed, because every one wrote checksums the install shim could not match.</p>
+<p class="northstar">cadre, the lifecycle kernel and recall install from their own published artifacts; gloop, by decision, installs from a checkout and says so. All four claim nothing they cannot keep, and record who actually did what. Before this goal the kernel was public with no licence while cadre's installer fetched it by version; gloop's README asserted MIT and two badges a private repository cannot support; every actor field was a string the caller typed; a retention request met <code>flag provided but not defined</code>; recall had tagged three releases that published nothing; and no kernel release since the extraction could actually be installed, because every one wrote checksums the install shim could not match.</p>
+
+<h2>The gate</h2>
+<p>The north-star gate ran twice. <strong>Its first run failed AC-8</strong>, six phases after P2 closed it: P2 had verified that the publishing workflow no longer targets the kernel's second release home, and the criterion is about the artifacts — six releases were still live and downloadable. The same run found that <code>#249</code>'s issue <em>body</em> had never been edited; only a closing comment addressed the stale Python. Both are one defect: the check observed something narrower than the criterion named. P7 closed them, and CP-4 then found nine more documents still installing the kernel from the retired home.</p>
+<p>The second run returned <strong>COMPLETE on all nine</strong>, re-verifying each against the artifacts rather than the ledger — building the binary from HEAD, mutation-testing the <code>#249</code> fix until the original defect returned, reading the releases API rather than a rendered tag page, and reproducing the clean-machine install in a fresh container. It then judged the north-star sentence itself <strong>false</strong>: it named gloop alongside three subjects that genuinely install from published artifacts, while gloop installs from a checkout by the decision P1 was chartered to make. The sentence predated its own open question being answered, and was amended with the reasoning recorded in the spec — not to make a criterion satisfiable, but because the alternative, publishing a release with no consumer, is the kind of claim this goal existed to remove.</p>
 
 <h2>Phases</h2>
 <div class="scroll">
