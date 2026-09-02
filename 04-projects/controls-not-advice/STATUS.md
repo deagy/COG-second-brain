@@ -2,7 +2,7 @@
 
 North-star: every open retro action is either a mechanical check that fails on its own defect, or is recorded as advice with a stated reason it cannot be one.
 Spec: 04-projects/controls-not-advice/spec.md · Registry: 04-projects/harness/ultragoals.md
-Current phase: north-star gate · Overall: **all four phases done; awaiting the north-star pass**
+Current phase: — · Overall: **DONE**. North-star gate COMPLETE; the claim is literally true of all 20 backlog rows
 
 ## Phases
 | Phase | AC covered | State | Evidence | Notes |
@@ -19,9 +19,15 @@ None. All seven carry PASS rows traced to observed artifacts.
 
 ## Next action (resume cold from here)
 
-The north-star gate: a fresh pass over all seven criteria, checking each against the artifact its evidence names rather than against this ledger.
+Nothing. The goal is closed.
 
-## Watch for## Watch for## Watch for## Watch for
+The gate returned COMPLETE on all seven criteria and then reported the north-star itself was not literally true: the backlog held 20 rows, not the 14 chartered, and five of them were dispositioned `advice` while stating only where they landed. Accepting that as a caveat was available and defensible. It would also have been reading a criterion generously at its own gate — the failure this goal landed a rule against in P3. The gap was closed instead, and round 2 confirmed the sentence now holds for every row.
+
+## Watch for## Watch for## Watch for## What this goal produced
+
+Nine checks that did not exist, across three repositories, each falsified against the defect that generated it — several against real history rather than fixtures. Five rules landed where they load, each with a reason specific to it. A backlog that says which of its rows anything could ever enforce, and a retro that asks the question when an item is written.
+
+## Watch for
 
 That prediction was correct, and P1 failed on it twice in opposite directions before passing.
 

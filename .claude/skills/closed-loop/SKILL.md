@@ -110,6 +110,23 @@ The retry count is observable; the judgment is not. A worker convinced this
 attempt differs in kind from the last will record it as a first attempt at a
 new method, and the count will agree with them.
 
+### When you built a check *and* a document telling people to satisfy it
+
+Test the pair, not each half. Write the artifact the document instructs —
+literally, following its own words — and run the check on it.
+
+A check verified against inputs you formatted yourself proves the check
+works. It proves nothing about whether anyone reading the instructions will
+produce those inputs. `retro/SKILL.md` taught three spellings of a
+disposition and the lint accepted a fourth, so an author following the
+skill failed on their first attempt, for a convention stated nowhere. Both
+halves were individually correct and independently verified; the defect
+lived only at the join.
+
+No check reaches this one. At authoring time there is no artifact to compare
+against — the defect is that two artifacts were never brought together, and
+nothing can observe that until someone does it.
+
 Copy verifier EVIDENCE rows into `evidence/CP-3v-component.md`.
 
 Record: `checkpoint.sh record <run-dir> CP-3v PASS|FAIL`

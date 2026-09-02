@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Controls, not advice: run report</title>
+<style>
+  :root {
+    --bg: #fbfbfa; --panel: #ffffff; --ink: #1a1a19; --muted: #6b6b68;
+    --line: #e4e4e1; --pass: #1a7f4b; --fail: #b4232a; --skip: #8a8a86;
+    --accent: #1a1a19;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #131313; --panel: #1b1b1a; --ink: #ececea; --muted: #9a9a96;
+      --line: #2c2c2a; --pass: #4ec281; --fail: #f2777c; --skip: #7d7d79;
+      --accent: #ececea;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #131313; --panel: #1b1b1a; --ink: #ececea; --muted: #9a9a96;
+    --line: #2c2c2a; --pass: #4ec281; --fail: #f2777c; --skip: #7d7d79;
+    --accent: #ececea;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 var(--sans); }
+  .wrap { max-width: 62rem; margin: 0 auto; padding: 3rem 1.5rem 6rem; }
+  header { border-bottom: 1px solid var(--line); padding-bottom: 1.5rem; margin-bottom: 2.5rem; }
+  h1 { font-size: 1.6rem; letter-spacing: -0.01em; margin: 0 0 .4rem; }
+  .meta { color: var(--muted); font: 13px/1.5 var(--mono); }
+  h2 { font-size: 1rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted);
+       margin: 2.75rem 0 .9rem; font-weight: 600; }
+  p { margin: 0 0 1rem; }
+  .northstar { background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+               padding: 1rem 1.15rem; border-radius: 3px; }
+  .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 3px; background: var(--panel); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: .6rem .8rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font: 600 12px/1.4 var(--mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  tr:last-child td { border-bottom: 0; }
+  td.id, td.cp { font-family: var(--mono); white-space: nowrap; }
+  .v { font: 600 12px/1.4 var(--mono); white-space: nowrap; }
+  .v.pass { color: var(--pass); } .v.fail { color: var(--fail); } .v.skip { color: var(--skip); }
+  .obs { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+  figure { margin: 1.25rem 0; }
+  figure img { display: block; max-width: 100%; border: 1px solid var(--line); border-radius: 3px; }
+  figcaption { color: var(--muted); font: 12.5px/1.5 var(--mono); margin-top: .5rem; }
+  .next { background: var(--panel); border: 1px solid var(--line); padding: 1rem 1.15rem; border-radius: 3px; }
+  footer { margin-top: 3.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line);
+           color: var(--muted); font: 12.5px/1.5 var(--mono); }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Controls, not advice</h1>
+  <div class="meta">ultragoal controls-not-advice &middot; lane full &middot; 2026-09-02 &middot; outcome shipped</div>
+</header>
+
+<h2>North star</h2>
+<p class="northstar">Every open retro action is now either a mechanical check that fails on its own defect, or advice with a stated reason it cannot be one. Before this goal the backlog held fourteen rows all reading <code>open</code>, nine of them working-practice notes, with no way to tell a rule nobody had built yet from one nobody could build &mdash; so both waited. One of them, <code>AI-5</code>, sat for four days naming the exact error the next ultragoal then committed in all five of its phases.</p>
+
+<h2>Phases</h2>
+<div class="scroll"><table>
+  <thead><tr><th>Phase</th><th>Scope</th><th>Covers</th><th>State</th></tr></thead>
+  <tbody>
+    <tr><td class="id">P1</td><td>Triage all fourteen: disposition each with its reason</td><td class="id">AC-1, AC-4, AC-5</td><td class="v pass">done</td></tr>
+    <tr><td class="id">P2</td><td>Build every control, falsified in both directions</td><td class="id">AC-2</td><td class="v pass">done</td></tr>
+    <tr><td class="id">P3</td><td>Land every advice item where it loads</td><td class="id">AC-3, AC-6</td><td class="v pass">done</td></tr>
+    <tr><td class="id">P4</td><td>Make the disposition question part of writing an action item</td><td class="id">AC-7</td><td class="v pass">done</td></tr>
+  </tbody>
+</table></div>
+
+<h2>Acceptance criteria</h2>
+<div class="scroll"><table>
+  <thead><tr><th>AC</th><th>Criterion</th><th>Phase</th><th>Verdict</th></tr></thead>
+  <tbody>
+    <tr><td class="id">AC-1</td><td>Every open item carries a disposition</td><td class="id">P1</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-2</td><td>Every control has a check that fails on its own defect</td><td class="id">P2</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-3</td><td>Every advice item states why it cannot be a control, and lives where it loads</td><td class="id">P3</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-4</td><td>The control/advice split is not self-assessed</td><td class="id">P1</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-5</td><td>Nothing is closed as superseded without evidence</td><td class="id">P1</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-6</td><td>The backlog distinguishes the three dispositions</td><td class="id">P3</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-7</td><td>The disposition question outlives this goal</td><td class="id">P4</td><td class="v pass">PASS</td></tr>
+  </tbody>
+</table></div>
+
+<h2>Evidence</h2>
+<p>Every row observed by a fresh-context pass that ran the artifacts rather than reading the claims about them. The gate was briefed to treat the traceability matrix and every acceptance file as claims, since the session that did the work wrote them.</p>
+<div class="scroll"><table>
+  <thead><tr><th>AC</th><th>CP</th><th>Observation</th><th>Artifact</th></tr></thead>
+  <tbody>
+    <tr><td class="id">AC-1</td><td class="cp">CP-5</td><td class="obs">Backlog read and counted independently: 14 original ids, AI-6 the only deliberate split</td><td class="obs"><code>04-projects/harness/BACKLOG.md</code></td></tr>
+    <tr><td class="id">AC-2</td><td class="cp">CP-5</td><td class="obs">Four of the nine falsifications reproduced by the gate itself, both directions — two Go tests, two shell lints</td><td class="obs"><code>evidence/P2/CP-3-build.md</code></td></tr>
+    <tr><td class="id">AC-3</td><td class="cp">CP-5</td><td class="obs">Five rules found in their homes; reasons judged non-interchangeable under adversarial reading</td><td class="obs"><code>CLAUDE.md</code>, <code>WORKFLOW.md</code></td></tr>
+    <tr><td class="id">AC-4</td><td class="cp">CP-5</td><td class="obs">All seven challenges traced to an action or an answer; one upheld as clean advice</td><td class="obs"><code>evidence/P1/CP-3v-challenge-round1.md</code></td></tr>
+    <tr><td class="id">AC-5</td><td class="cp">CP-5</td><td class="obs">AI-6a confirmed present, commit <code>6d09b29</code></td><td class="obs"><code>WORKFLOW.md:72</code></td></tr>
+    <tr><td class="id">AC-6</td><td class="cp">CP-5</td><td class="obs">20/20 rows carry one of three dispositions; header defines each and what closes it</td><td class="obs"><code>04-projects/harness/BACKLOG.md</code></td></tr>
+    <tr><td class="id">AC-7</td><td class="cp">CP-5</td><td class="obs">Rows written from the template&rsquo;s own instructions, run through the lint, passed</td><td class="obs"><code>.claude/lib/backlog-lint.sh</code></td></tr>
+    <tr><td class="id">&mdash;</td><td class="cp">CP-6</td><td class="obs">Green on their own runners at the commits the trail cites</td><td class="obs"><code>cadre fd2c2295</code>, <code>gloop 0088da3</code></td></tr>
+  </tbody>
+</table></div>
+
+<h2>The gate that mattered</h2>
+<p>The north-star gate returned COMPLETE on all seven criteria and then reported the north-star itself was not true. The backlog had grown to twenty rows &mdash; four added by the same day&rsquo;s other retro, plus one half of an older item &mdash; and five were dispositioned <code>advice</code> while stating only <em>where</em> they landed, never <em>why</em> no check reaches them. Every criterion passed while the sentence they exist to make true was false for a quarter of the file.</p>
+<p>Recording that as a caveat was available and defensible: the goal was chartered on fourteen items and the extra rows arrived from elsewhere. It would also have been reading a criterion generously at its own gate &mdash; the failure this goal landed a rule against in P3, in the document the gate was reading at the time. The gap was closed instead, and a second pass confirmed the claim now holds for every row.</p>
+
+<h2>What it cost</h2>
+<div class="scroll"><table>
+  <thead><tr><th>Where</th><th>What went wrong</th></tr></thead>
+  <tbody>
+    <tr><td>P1, twice</td><td>Round 1 called eleven of fourteen items <code>advice</code>, applying the narrowing that rescues unmechanizable prose only where it was cheap. Round 2 over-corrected under that criticism, promoting an item on an observable its own caveat admitted could not reach the defect, and closing another against an artifact that did not exist.</td></tr>
+    <tr><td>P2</td><td>Eight bugs, every one found by running a check rather than reading it. Three silently disabled a check while it reported success &mdash; a lint that printed a finding and exited 0, a greedy expansion that left a column empty, a loop that dropped the one clause that mattered.</td></tr>
+    <tr><td>P2</td><td>Three of nine dispositions did not survive being built. A disposition written before building is a hypothesis about what a check can observe.</td></tr>
+    <tr><td>P3</td><td>Two backlog rows contradicted the record they summarised &mdash; a claim corrected in one place and left standing in another, for the sixth time this session.</td></tr>
+    <tr><td>P4</td><td>The skill taught three spellings of a disposition and the lint accepted a fourth, so an author following the instructions failed on their first attempt, in the phase whose subject is making a rule stick.</td></tr>
+    <tr><td>Both conventions</td><td>Failed first on the tables that introduced them: six rows labelled <code>done</code> hours after the vocabulary was written, three <code>control</code> rows uncited after the citation rule was added.</td></tr>
+  </tbody>
+</table></div>
+
+<h2>Carried forward</h2>
+<div class="scroll"><table>
+  <thead><tr><th>Item</th><th>Why</th></tr></thead>
+  <tbody>
+    <tr><td>The row-versus-reality cross-check (<code>AI-21</code>)</td><td>Six of eight defects in P2 and P3 were a claim in one document contradicting another document or the code. Nothing checks whether a cited commit resolves, a named file exists, or a control guards what its row says. That is the next goal.</td></tr>
+    <tr><td><code>spec-lint.sh</code> trusts a string (<code>AI-22</code>)</td><td>It skips any criterion whose row reads <code>verified</code>, with no cross-check against evidence &mdash; the same shape as the defect this goal closed.</td></tr>
+    <tr><td>AI-13 guards less than its incident (<code>AI-23</code>)</td><td>The control guards a discarded path; the incident that named it turned on an unlogged version. Nothing covers the version case.</td></tr>
+    <tr><td>Test the pair, not each half (<code>AI-24</code>)</td><td>Landed as advice: at authoring time there is no artifact to compare against, and nothing observes that two artifacts were never brought together.</td></tr>
+  </tbody>
+</table></div>
+
+<h2>Next action</h2>
+<p class="next">None: goal closed. The four items above are recorded, not blocking.</p>
+
+<footer>
+  COG verification harness &middot; evidence <code>04-projects/controls-not-advice/evidence/</code> &middot; gate <code>evidence/northstar-gate.md</code>
+</footer>
+</div>
+</body>
+</html>

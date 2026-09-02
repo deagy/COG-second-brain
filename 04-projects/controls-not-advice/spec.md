@@ -82,4 +82,4 @@ P4 last, because the question it adds to `/retro` should be phrased from what tr
 | CP-4 | PASS | Ran on all four phases. Found 2 defects P3's component checks passed over, and 1 in P4 that CP-3v structurally could not see |
 | CP-5 | PASS | All 7 AC accepted against observed artifacts |
 | CP-6 | PASS | Vault, cadre `fd2c2295`, gloop `0088da3` |
-| CP-7 | pending | Retro |
+| CP-7 | PASS | `04-projects/harness/retro/2026-09-02-controls-not-advice.md` |
