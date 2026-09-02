@@ -161,6 +161,18 @@ Write `evidence/CP-5-acceptance.md`. **Traceability closure**: every AC in matri
 
 Record: `checkpoint.sh record <run-dir> CP-5 PASS|FAIL`
 
+### Falsifying a check
+
+Assert the injection landed before running the check. A `sed` that errors, a
+`str.replace` whose target moved, a heredoc into a path that does not
+exist — each leaves the check running against an unmodified file and
+reporting a clean pass, which reads exactly like the check being correct.
+
+That has now happened twice in one session, once reporting three consecutive
+false passes. A falsification that cannot fail is the same defect as a guard
+that cannot fail, one level up, and it is the more dangerous of the two
+because it certifies the other.
+
 ### After a revert
 
 `git checkout -- <file>` restores the file to HEAD, not to the state you
