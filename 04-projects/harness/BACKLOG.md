@@ -12,6 +12,8 @@ Every item is one of three things, and the difference decides what happens next.
 | **advice** | No check reaches it, for a reason specific to this item | Landing the rule somewhere read at session start — `CLAUDE.md` or a skill body — with its originating incident attached. A rule without its incident is a maxim, and a maxim gets skimmed |
 | **landed** | Already done | Evidence that the artifact exists, named. Not "it looks done" |
 
+**A `control` row cites where its check lives — a file, and a commit for anything shipped.** A `control` with no citation is *unbuilt*, and that is the state this file exists to make visible: the difference between a rule nobody has built yet and one nobody can build. Write `control — unbuilt` while it waits, so the distinction survives someone reading only this table.
+
 An `advice` reason has to answer **what a check would have to observe, and why that is unobservable.** A reason that would fit several items is not a reason for one of them. And a *cost* argument — a check is possible but not worth its infrastructure — must say so plainly rather than dressing itself as impossibility, or nobody can revisit it when the cost changes.
 
 Dispositioned by the `controls-not-advice` ultragoal (`04-projects/controls-not-advice/`), whose own premise is why this section exists: AI-5 sat open for four days as a working-practice note, and the next ultragoal committed the exact error it named.
