@@ -120,6 +120,11 @@ Convert the markdown document to Confluence storage format (XHTML):
 
 **CRITICAL: NEVER publish without explicit user approval.**
 
+This is a **G7** external mutation with the **Publisher** as deciding authority
+(`plan/authority-gates.md`). Record the approval in the run-record's `human_approvals`
+binding — authority, gate, timestamp, approver — before the page is created, then proceed
+only on explicit "yes".
+
 Present a summary to the user:
 
 ```
