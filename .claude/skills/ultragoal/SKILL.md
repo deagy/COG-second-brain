@@ -206,6 +206,22 @@ through:
   what such plans do and a self-declaration can be forgotten — which is the
   same omission it exists to catch.
 
+### And the citations have to resolve
+
+```bash
+bash .claude/lib/citation-lint.sh 04-projects/<goal>
+```
+
+Every `cadre \`sha\``-style commit citation is resolved in the repository it
+names, and every vault-relative path is opened. An evidence trail whose
+commits do not resolve is a trail to nowhere, and it fails quietly: a
+plausible sha invites no scrutiny.
+
+It checks the reference, not the claim around it. A row saying a control
+guards X, citing a test that exists and guards Y, passes — and that is where
+most of this harness's found defects have actually lived, so treat a clean
+run as evidence about references and nothing more.
+
 ```
 North-star acceptance:
   read spec.md matrix (all AC-n)
