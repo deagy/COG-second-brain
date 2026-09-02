@@ -4,7 +4,7 @@ project: cog-cadre-integration
 change: 04-roster-dispatch
 created: 2026-09-02
 depends_on: ["01-run-record"]
-status: partially implemented
+status: implemented
 tags: ["#plan", "#roster", "#dispatch", "#specialists"]
 ---
 
@@ -16,9 +16,10 @@ COG's workers are generic — data-collector, researcher, file-ops, executor,
 publisher. When a skill needs a Go implementation reviewed by someone who is not
 the author, or a technical write-up, it currently reuses a generalist. This change
 lets a skill resolve domain-specialist roles from the cadre roster (the 159-role
-catalog — go-implementer, code-reviewer, system-architect, technical-writer) and
-dispatch them through a sandboxed runner, writing a run-record back so the
-execution is audited the same way COG's own work is.
+catalog — `application-engineer`, `code-reviewer`, `cloud-architect`,
+`architecture-diagram-author`) and dispatch them through a sandboxed runner,
+writing a run-record back so the execution is audited the same way COG's own work
+is.
 
 The roster is the one asset the agentic-sdlc braindumps say is worth keeping
 verbatim. It already exists; this change consumes it.
@@ -36,11 +37,15 @@ before anything here can run. Two things have to be true first:
   `.claude/lib/cadre-roster.manifest.sha256`. The package is self-contained —
   `roster.json` declares its own layout — so the copy stands on its own and the
   drift check fails on any hand-edit.
-- A sandboxed dispatch path exists. The agentic-sdlc project notes that cadre's
-  sandboxed dispatch (resolve role, compute sandbox, gate writes behind a token,
-  spawn an agent CLI) and gloop's LLM tool-call loop are separate concerns, and the
-  roster's execution orchestration is not yet fully settled in-vault. There is no
-  confirmed in-vault runner to dispatch through.
+- A sandboxed dispatch path exists. The roster's `runner-capabilities.json`
+  confirms the runner: claude-code agent teams dispatch a role as
+  `agents:<role-id>` (or a project-local override) behind the
+  `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` flag, with `native_workspace_isolation`
+  of a worktree and a blocking `PreToolUse` hook that enforces the sandbox. The
+  sandbox a role runs in is fixed by its `capability` tier in the catalog
+  (`read_only` -> read-only; every authoring/operator tier -> workspace-write),
+  which is exactly what the dispatch resolves. This was the gating dependency; it
+  is now met.
 
 Until both are true, change 4 is a description, not a build. It is listed so the
 plan is complete and so the roster-vendoring work is visible as its prerequisite,
@@ -51,9 +56,11 @@ pattern on the run-record schema.
 
 - `05-knowledge/cadre-roster/` — the vendored roster with its origin revision and
   drift check. DONE (AC-1); see `PROVENANCE.md`.
-- A dispatch path — most likely an extension to `worker-executor` or a small new
-  skill that resolves a role from the roster, computes a sandbox, and runs it. The
-  shape is undecided pending the roster-vendoring decision.
+- The dispatch path — `roster-dispatch` skill (`.claude/skills/roster-dispatch/`),
+  which resolves a role, loads its `AGENT.md`, computes the sandbox, dispatches it,
+  writes a run-record, and routes the output to a different agent for review. The
+  resolver (``.claude/lib/cadre-roster-resolve.sh``) and run-record generator
+  (`.claude/lib/cadre-dispatch-record.py``) are its two library helpers.
 - The run-record (change 1) records which role executed the work and under what
   sandbox — the audit trail that makes roster dispatch no less auditable than COG's
   own agents.
@@ -64,31 +71,42 @@ pattern on the run-record schema.
   out-of-date copy. (Prerequisite; not a change to COG itself.) **DONE** —
   `05-knowledge/cadre-roster/` with `.claude/lib/cadre-roster-drift.sh`.
 - `AC-2` A skill can resolve a named role from the roster and dispatch it through a
-  sandboxed runner. (Depends on AC-1 and a confirmed runner.) **PENDING** — no
-  sandboxed runner is confirmed in-vault yet.
-- `AC-3` The dispatch writes a run-record naming the role and the sandbox.
+  sandboxed runner. (Depends on AC-1 and a confirmed runner.) **DONE** — the
+  `roster-dispatch` skill resolves a role via `cadre-roster-resolve.sh`, which
+  reports the sandbox mode fixed by the role's `capability` tier, and dispatches it
+  through the confirmed runner (claude-code agent teams, gated by a `read_only` /
+  workspace-write sandbox).
+- `AC-3` The dispatch writes a run-record naming the role and the sandbox. **DONE**
+  — `cadre-dispatch-record.py` emits a schema-valid run-record (validated by
+  `run-record-lint.sh`) whose `scope`, specialist attestation, and build/verify
+  gates name the dispatched role and its sandbox.
 - `AC-4` A dispatched specialist's output is reviewable by a different agent than
   the one that produced it — the same peer-review property the other three changes
-  assume.
+  assume. **DONE** — the skill routes the output to a different agent for review;
+  the lead that dispatched the specialist cannot be the reviewer.
 
 ## Files touched
 
-Depends entirely on the roster-vendoring decision. Likely new:
-`05-knowledge/roster/`. Likely edited: `worker-executor.md` or a new skill entry.
+- `.claude/skills/roster-dispatch/SKILL.md` — the dispatch skill (AC-2/3/4).
+- `.claude/lib/cadre-roster-resolve.sh` — resolve a role from the catalog; prints
+  the sandbox mode, model/effort, and AGENT.md path (`--list`, `--key` helpers).
+- `.claude/lib/cadre-dispatch-record.py` — emit a schema-valid run-record naming
+  the dispatched role and sandbox.
+- `05-knowledge/cadre-roster/` — the vendored roster (AC-1, prerequisite).
 
 ## Risk
 
-High, primarily from the external dependency and the fact that the execution
-orchestration concern is not yet settled in the agentic-sdlc project. The change
-itself is low-complexity once the prerequisites exist; the risk is starting it
-before the roster and runner are available, which would produce a plan that cannot
-run. It is gated on change 1 succeeding as the vendoring reference.
+Low now that the prerequisites are met: the roster is vendored and drift-checked,
+and the runner (claude-code agent teams) is confirmed in `runner-capabilities.json`.
+The remaining risk is operational, not architectural — a `read_only` specialist
+dispatched through `spawn_agent` (Cline) instead of claude-code's native
+`PreToolUse` hook is gated by a behavioral contract, not a hard tool block, so the
+skill fails closed by treating a `read_only` write as a sandbox violation.
 
 ## Unblock
 
-Confirm the roster is vendored in-vault and a sandboxed runner exists. Both are
-decisions outside this vault. Until then change 4 is documentation of a dependency,
-not work to do.
+Unblocked. The roster is vendored in-vault (AC-1) and the sandboxed runner is
+confirmed in `runner-capabilities.json`; change 4 is built, not just documented.
 
 ## Implementation (committed on plan/cadre-cog-integration)
 
@@ -100,10 +118,21 @@ every file and compares it to `.claude/lib/cadre-roster.manifest.sha256`; verifi
 PASS on a clean copy and FAIL on an injected tamper file. `PROVENANCE.md` records
 the source, revision, digest, and re-vendoring steps.
 
-AC-2/AC-3/AC-4 pending. The dispatch behavior needs a confirmed sandboxed runner;
-cadre's sandboxed dispatch and gloop's tool-call loop are separate concerns and
-neither is confirmed as an in-vault runner. Until one is, change 4 is the
-roster-vendoring prerequisite (done) plus a description of the dispatch skill
-(not built).
+AC-2 done. `roster-dispatch` skill resolves a role via
+`cadre-roster-resolve.sh`, which reads `catalog.yaml` and prints the role's
+`capability`-derived `sandbox_mode` (read-only vs workspace-write, per
+`runner-capabilities.json` `capability_tiers`), model, codex model, reasoning
+effort, and the AGENT.md path. The skill loads the AGENT.md, dispatches the role
+through the confirmed runner (claude-code agent teams behind
+`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`, sandbox enforced by the runner's
+`PreToolUse` hook, or a behavioral contract under Cline's `spawn_agent`), and
+routes the output to a different agent for review.
 
-not work to do.
+AC-3 done. `cadre-dispatch-record.py` emits a schema-valid run-record (v2) that
+names the dispatched role and sandbox in `scope`, the specialist attestation, and
+the build/verify gates; it maps the catalog phase onto the schema's agentic-sdlc
+lifecycle enum and validates clean under `run-record-lint.sh`.
+
+AC-4 done. The skill routes the output to a different agent than the one that
+produced it; the dispatching lead cannot be the reviewer.
+
