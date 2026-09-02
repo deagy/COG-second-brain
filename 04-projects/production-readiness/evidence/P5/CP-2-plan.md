@@ -11,8 +11,17 @@ Release all four, then prove a clean machine reaches a working state.
 | T-03 | cadre: release the CLI and the plugin from HEAD | AC-6 |
 | T-04 | gloop: settle its release story on evidence — cut one, or state the reason in the repo | AC-6 |
 | T-05 | Install into a container that has none of the four, run the two commands | AC-7 |
+| T-06 | Publish `linux/arm64` again — added mid-phase, see below | AC-7 |
 
-Five tasks, so CP-4 is owed.
+Five tasks planned, six run, so CP-4 is owed.
+
+**T-06 was not planned.** T-05's first clean install produced a `cadre` that
+could not obtain a binary for aarch64 Linux, which is the architecture this
+project is written on. The exclusion was deliberate and documented, and its
+recorded reason — "either a native arm64 runner or a cross toolchain" — had
+expired. Added rather than deferred because AC-7 is not satisfiable on this
+machine without it, and because the criterion's whole point is the machine that
+has nothing.
 
 ## What measuring first already found
 

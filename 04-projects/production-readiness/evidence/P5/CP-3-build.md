@@ -100,3 +100,44 @@ which this phase has now seen three times in another repository.
 
 Covered in `CP-5-acceptance.md`. Both defects it found were invisible from a
 machine that already had a kernel, a Go toolchain and four checkouts.
+
+## T-06 · arm64 Linux, added after the container refused to install
+
+Not in the CP-2 plan. Added because AC-7 could not pass on the machine this
+project is written on, and the reason was not a bug — it was a recorded decision
+whose reason had expired.
+
+The container installed cleanly, fetched kernel 0.14.4, and then:
+
+```
+cadre: could not obtain the cadre binary for this platform.
+  platform:  Linux/aarch64
+  version:   0.7.1
+  * an unsupported platform -- released binaries cover linux/amd64,
+    linux/arm64, darwin/amd64, darwin/arm64 and windows/amd64
+```
+
+`cli-v0.7.1` publishes no `cadre-v0.7.1-linux-arm64.tar.gz`. **The message names
+`linux/arm64` and `darwin/amd64` — the exact two platforms the CLI deliberately
+excludes.** It was the repository's general matrix, typed by hand into the shim,
+so it sent the only people who see it looking for a network fault. It is now
+rendered from `release.PlatformsFor(release.ProgramCLI)`.
+
+The exclusion itself was honest and documented: the CLI links sqlite, so arm64
+needed cgo, which on a cross build meant an aarch64 toolchain installed with
+`apt` — and `apt-get` stalled against the mirror on four releases running,
+burning the job budget with every other platform already built. **The entry
+named what would end it**: "either a native arm64 runner or a cross toolchain".
+GitHub's `ubuntu-24.04-arm` is that native runner. The leg being added is not the
+leg that kept failing.
+
+Without the reason stored beside the exclusion there would have been nothing to
+notice had expired. A bare list of unsupported platforms outlives its own
+justification; this one carried its own expiry condition and met it.
+
+Two more guards fired on the change, both correct:
+`TestThisRepositorysChangelogHasAnEntryForItsCurrentVersion` (a release cut then
+would have published an empty body) and `TestEveryRunnerLabelIsReviewed`, which
+refused `ubuntu-24.04-arm` until it was added to the approved list with a note —
+pinned to a version rather than a floating arm label, because this leg builds cgo
+against the runner's glibc and the wheel it produces claims `manylinux_2_17`.
