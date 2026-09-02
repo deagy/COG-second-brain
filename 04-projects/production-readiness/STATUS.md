@@ -66,6 +66,23 @@ mutation in `internal/knowledge/staged_db.go`, already recorded in P3's evidence
 `git worktree remove` is blocked as a destructive git-metadata operation, so they need
 removing by hand.
 
+## Found, and deliberately not fixed — no criterion covers it
+
+`~/sdk/cadre-kernel/kernel/README.md` is that repository's only README, and it
+documents a **Python** distribution: `pip install`, `python3 -m agentic_sdlc`,
+`kernel/requirements-validation.txt`, `agentic_sdlc/` as the entry point. The
+repository contains zero `.py` files — it is a Go module publishing a Go binary,
+and its releases carry `agentic-sdlc-v0.14.4-<os>-<arch>.tar.gz`.
+
+Found while fixing P7's CP-4 finding, because cadre's broken instructions linked to
+it. It is AC-3b's shape — every claim in the documentation holding against the
+binary — applied to a repository AC-3b does not cover, and this goal has no
+criterion for cadre-kernel's documentation. Fixing it would be a nine-phase goal
+growing a tenth phase nobody chartered, so it is recorded here rather than done.
+
+It is worth doing. `cadre-kernel` is public, Apache-2.0, and this is the file
+someone lands on.
+
 ## Watch for
 
 **This goal is checkable almost entirely from a working checkout, which is the position that cannot see an installation defect.** Seven of the eight criteria can be satisfied without ever leaving a machine that has all four repositories present and built. AC-7 exists because of that, and it is last — so the temptation at the end will be to accept six months of green checks in place of one clean-machine install. This project has already recorded a guard that passed locally for months off a sibling checkout that exists on no runner.
