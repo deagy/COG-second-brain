@@ -216,6 +216,31 @@ through:
   what such plans do and a self-declaration can be forgotten — which is the
   same omission it exists to catch.
 
+### And the repositories have to be honest about what they publish
+
+```bash
+bash .claude/lib/release-hygiene.sh <each repo the trail makes claims about>
+```
+
+Two properties, both found by a person looking rather than by a check:
+
+- **A tag with no release behind it.** recall carried `v0.3.0`, `v0.3.1` and
+  `v0.3.2` — three tags whose pipeline published nothing, for two reasons at
+  once: a tag pushed with the workflow's own `GITHUB_TOKEN` triggers no
+  further workflow, and the release job lacked a checkout its fail-closed
+  contract guard needed. A tag with no release looks exactly like a tag whose
+  release you have not looked for yet.
+- **A repository carrying no licence of its own.** Nothing in any of the four
+  gates on it, and recall's `go-licenses` checks *dependency* licences and
+  would not notice. The lifecycle kernel was public and unlicensed while
+  cadre's installer fetched it by version.
+
+Exceptions are legitimate and each one carries its reason in the script.
+A stale exception — a tag that no longer exists, a licence exception for a
+repository that has since acquired one — is a failure, not a no-op. An
+exception list nobody prunes grows until it covers the next real defect,
+and every entry still reads as deliberate.
+
 ### And the citations have to resolve
 
 ```bash

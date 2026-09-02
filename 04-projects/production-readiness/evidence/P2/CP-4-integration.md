@@ -9,7 +9,7 @@ EVIDENCE AC-8 | CP-4 | PASS | The three callers CP-3v did not check (`internal/c
 
 EVIDENCE AC-8 | CP-4 | PASS | P1's AC-2 evidence (`evidence/P1/CP-5-acceptance.md:5`) reads cadre's fetch set from `plugin_generation.go`/`install.sh`/`install.ps1` as `github.com/deagy/cadre` + `github.com/deagy/cadre-kernel`. That shim (`internal/generators/plugin_generation.go:283`) already pointed at `deagy/cadre-kernel/releases` before P2 touched anything. P2's removed `release.yml` kernel-publish job watched `internal/kernel/provider.go`, which the earlier kernel split (`11eefd47 WIP: delete the lifecycle kernel from cadre`) had already deleted from this repo — it was dead scaffolding, not what made P1's claim true. `cadre-kernel` independently carries `LICENSE` (Apache-2.0, `8da1b13`) and a published `v0.14.2` release. P1 and P2 are consistent. | `/home/deagy/sdk/cadre-kernel` (`git log`, `gh release list`), `/home/deagy/sdk/cadre` `internal/generators/plugin_generation.go:195-283`
 
-EVIDENCE AC-8 | CP-4 | PASS | `.github/workflows/release.yml` parses (`yaml.safe_load`); jobs are exactly `changed`, `plugin`, `cli`, `cli-publish`; `needs:` graph is `plugin→changed`, `cli→changed`, `cli-publish→[changed, cli]` — no job references `needs.changed.outputs.kernel`, and the `changed` job's `outputs:` block no longer declares a `kernel` output. Job graph is intact for what it publishes. | `/home/deagy/sdk/cadre/.github/workflows/release.yml`
+EVIDENCE AC-8 | CP-4 | SUPERSEDED | `.github/workflows/release.yml` parses (`yaml.safe_load`); jobs are exactly `changed`, `plugin`, `cli`, `cli-publish`; `needs:` graph is `plugin→changed`, `cli→changed`, `cli-publish→[changed, cli]` — no job references `needs.changed.outputs.kernel`, and the `changed` job's `outputs:` block no longer declares a `kernel` output. Job graph is intact for what it publishes. | `/home/deagy/sdk/cadre/.github/workflows/release.yml`
 
 EVIDENCE AC-8 | CP-4 | PASS | Issue #249's closing claim — "the Go gate is unconditional... `internal/cli/knowledge.go:389`" — verified independently by reading `resolveRetrievalScope` (unconditional `len(sources)==0 && !allSources` check, no tier branch) and by building the binary and running `cadre knowledge search --classification public "q"` with no `--source`/`--all-sources`: refused identically (exit 2, same error text) both from a directory under a git-less `$HOME` (would have aliased to global-fallback pre-fix) and from a project-local `.git` directory. | `/home/deagy/sdk/cadre/internal/cli/knowledge.go:377-408`; live run of `/tmp/claude-1000/cadre-test`
 
@@ -66,3 +66,27 @@ Exit 0.
 ## Repository state (left clean)
 
 All five repositories (`cadre`, `cadre-kernel`, `recall`, `gloop`, `cog-second-brain`) confirmed `nothing to commit, working tree clean` after this verification. No files were edited. Build artifacts (`/tmp/claude-1000/cadre-test`, scratch git-init directories under `/tmp/claude-1000/`) are outside all four repositories.
+
+---
+
+## Correction, 2026-09-02
+
+**The `release.yml` job-graph row above is marked `SUPERSEDED`, and its
+observation is left exactly as written.** What it observed was true: the job
+graph was intact, the `kernel` output was gone, and no job referenced it. What
+it did not observe was whether the six kernel releases that job had already
+published were still being served — and AC-8's words are *"the lifecycle kernel
+has one release home, not two"*, which is a claim about the artifacts.
+
+They were still there, with downloadable assets, for six more phases. The
+north-star gate found them; P7 deleted them and re-verified against the releases
+API. See `evidence/P7/CP-5-acceptance.md`.
+
+The same phase read a closing *comment* on `#249` as the issue body being
+corrected. The body had never been edited.
+
+`.claude/lib/evidence-lint.sh` now fires on this shape — a CP-4 or CP-5 PASS
+whose observation is about publishing machinery, for a criterion whose own words
+name the published thing, with no external observation in the artifact field.
+Run against this bundle it finds this row and no other, which is how it was
+falsified.
