@@ -174,3 +174,45 @@ step.
 The count check was right and in the wrong place: correct, and reached only after
 a twenty-minute build matrix. Nothing was tagged, because the tag step runs after
 the wheel verification — so the failure cost time and published nothing wrong.
+
+## T-07 · the kernel was installed and unreachable
+
+Also not planned. The second arm64 container run got further than the first and
+stopped in a new place:
+
+```
+### AC-7 command 1: cadre sdlc --version
+cadre: install Agentic SDLC v0.14.4+ from https://github.com/deagy/cadre-kernel
+  -> exit 1
+
+### what the install actually put on disk
+    agentic-sdlc-v0.14.4
+    cadre-v0.7.2-linux-arm64
+```
+
+**The kernel was there.** `install.sh --with-lifecycle` had downloaded and verified
+`agentic-sdlc-v0.14.4` into the cache, and `cadre sdlc` said to go install it.
+
+`install.sh` puts no kernel on `PATH` and sets no `AGENTIC_SDLC_BIN`; it runs the
+packaged lifecycle shim once to warm the cache and leaves the shim inside the
+checkout. Every resolver looked at `AGENTIC_SDLC_BIN` then `PATH`, and the last
+resort below those read `<repoRoot>/bin/agentic-sdlc` — true while the kernel
+shipped in the cadre repository, and a path that has not existed since P1 of the
+preceding ultragoal extracted it.
+
+Three implementations of "where is the kernel" — `DispatchSDLC`, `ResolveKernel`
+(which `cadre doctor` and `cadre select` use), and `agentic_sdlc.bin_path`'s
+computed default. Fixing only the one AC-7 exercises would have repeated this
+phase's own recorded defect: a fix that lands in one place and not its sibling.
+`PackagedKernelShim` is now the shared last resort for the first two; the third is
+`which agentic-sdlc`, which is an explicit operator choice and correctly unchanged.
+
+It stays *last*. An `agentic-sdlc` the operator installed is a decision about which
+kernel runs, and a fallback that overrode it would silently replace their kernel
+with a downloaded one. `TestPATHStillBeatsThePackagedShim` holds that, and fails
+when the order is inverted.
+
+**The fixture had been passing against a path the repository stopped having.**
+`TestDispatchSDLC_UsesInTreeFallback` built its fake at `<repoRoot>/bin/agentic-sdlc`
+— the test agreed with the code and neither agreed with a checkout. That is why no
+suite caught this and a container did.

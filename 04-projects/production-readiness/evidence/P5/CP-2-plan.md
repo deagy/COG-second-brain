@@ -12,10 +12,16 @@ Release all four, then prove a clean machine reaches a working state.
 | T-04 | gloop: settle its release story on evidence — cut one, or state the reason in the repo | AC-6 |
 | T-05 | Install into a container that has none of the four, run the two commands | AC-7 |
 | T-06 | Publish `linux/arm64` again — added mid-phase, see below | AC-7 |
+| T-07 | Make `cadre sdlc` find the kernel a plugin install produces | AC-7 |
 
-Five tasks planned, six run, so CP-4 is owed.
+Five tasks planned, seven run, so CP-4 is owed.
 
-**T-06 was not planned.** T-05's first clean install produced a `cadre` that
+**T-06 and T-07 were not planned.** Each came from running T-05 and reading what
+it said, and each moved the failure one step further along the install rather than
+resolving it — which is what a criterion tested end to end does, and what six
+months of green component checks had not.
+
+T-05's first clean install produced a `cadre` that
 could not obtain a binary for aarch64 Linux, which is the architecture this
 project is written on. The exclusion was deliberate and documented, and its
 recorded reason — "either a native arm64 runner or a cross toolchain" — had
