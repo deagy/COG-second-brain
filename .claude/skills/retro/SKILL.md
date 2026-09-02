@@ -52,12 +52,25 @@ Copy `references/retro-template.md` to:
 
 `04-projects/harness/retro/YYYY-MM-DD-<slug>.md`
 
-Fill all sections. Action items get IDs (`AI-01`…).
+Fill all sections. Action items get IDs (`AI-01`…) **and a disposition**.
+
+For each one, ask: **can a check observe this defect?**
+
+- **`control`** — yes. Name the observable: what would a program look at, and what would make it fail. If you cannot state that, it is not a control yet.
+- **`advice`** — no. State what a check would have to observe and *why that is unobservable*, specific to this item. A reason that would fit three other items is not a reason for this one. If a check is possible but not worth its infrastructure, say that as a cost argument — otherwise nobody can revisit it when the cost changes.
+
+Both are legitimate. Advice is not a lesser answer, and a backlog of advice is not a failure — but a backlog that cannot tell the two apart is, because an unbuildable rule and an unbuilt one then look identical and both wait forever.
+
+The evidence for asking at all: `AI-5` sat open as a working-practice note for four days, and the next ultragoal committed the exact error it named. Fourteen items had accumulated before anyone asked which of them anything could enforce.
 
 ## Phase 5 — Feed forward
 
 1. **Harvest**: append action items + lessons to today's harvest staging
-2. **Backlog**: add `AI-n` rows to `04-projects/harness/BACKLOG.md` if harness work
+2. **Backlog**: add `AI-n` rows to `04-projects/harness/BACKLOG.md` if harness work. **Every row carries its disposition — never a bare `open`.** A `control` cites where its check lives, or reads `control — unbuilt` while it waits; an `advice` cites where the rule landed. See that file's header for what closes each. Then:
+
+   ```bash
+   bash .claude/lib/backlog-lint.sh
+   ```
 3. **STATUS.md**: if an ultragoal phase, advance the phase state + log open `AC-n`
 4. **Spec checkpoint log**: update spec `## Checkpoint log` CP-7 row
 5. Record: `bash .claude/lib/checkpoint.sh record <run-dir> CP-7 PASS "retro: <path>"`

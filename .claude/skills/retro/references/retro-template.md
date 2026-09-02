@@ -27,6 +27,8 @@ Where the run lost time or nearly went wrong. One line each, concrete.
 
 `AI-n` rows go to `04-projects/harness/BACKLOG.md`. Skill or `CLAUDE.md` patches are proposed here, applied only with approval.
 
-| ID | Action | Target file | Status |
+Each row states whether a check can observe the defect. `control` names the observable; `advice` says what a check would have to see and why it cannot. Both are legitimate answers; leaving it blank is not.
+
+| ID | Action | Target file | Disposition |
 |---|---|---|---|
-| AI-1 | | | proposed |
+| AI-1 | | | control — unbuilt \| advice — <why no check reaches it> |
