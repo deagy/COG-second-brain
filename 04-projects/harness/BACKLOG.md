@@ -2,6 +2,14 @@
 
 Action items from retros. `AI-n` ids are scoped to their retro.
 
+**Which means the same id appears more than once, and the `From` column is the
+other half of it.** Three retros now share the `AI-19`–`AI-26` range —
+capability-parity, controls-not-advice and production-readiness. A `grep` for
+`AI-22` returns two unrelated items with different dispositions, which has
+already caused one misreading in the session that noticed it. Cite an item as
+*retro + id*, never id alone, and read the `From` column before believing a
+disposition.
+
 ## The three dispositions
 
 Every item is one of three things, and the difference decides what happens next. A backlog where every row reads `open` cannot tell them apart, so nothing gets done: an unbuildable rule and an unbuilt one look identical, and both wait.

@@ -100,8 +100,8 @@ caught by counting the tree.
 
 | ID | Action | Target file | Disposition |
 |---|---|---|---|
-| AI-19 | A tag with no release behind it. recall carries three (`v0.3.0`–`v0.3.2`). This is the check that would have caught P5's opening finding without a person looking. | each of the four repos | **control — unbuilt** — observable as `gh release list` vs `git tag` per repository; needs a home that runs it |
-| AI-20 | A repository with no `LICENSE` of its own. Nothing in any of the four gates on it; recall's `go-licenses` checks *dependency* licences and would not notice. | each of the four repos | **control — unbuilt** — observable as a file-existence assert in each repo's own suite, gloop excepted by recorded decision |
+| AI-19 | A tag with no release behind it. recall carries three (`v0.3.0`–`v0.3.2`). This is the check that would have caught P5's opening finding without a person looking. | each of the four repos | **control** — `.claude/lib/release-hygiene.sh`, commit `19bbaf3`, wired into the ultragoal gate. Falsified both ways against the original defect |
+| AI-20 | A repository with no `LICENSE` of its own. Nothing in any of the four gates on it; recall's `go-licenses` checks *dependency* licences and would not notice. | each of the four repos | **control** — `.claude/lib/release-hygiene.sh`, commit `19bbaf3`. One script over all four repos rather than four suite assertions, so a repo that gains a licence invalidates its own exception |
 | AI-21 | A release job that publishes from a commit whose validate run is red. | `.github/workflows/release.yml` ×4 | **advice** — the release job *could* require the validate conclusion, so this is a cost argument, not an impossibility: it serialises every release behind a full matrix. Landed as the practice of checking `ci-status.sh` before cutting |
 | AI-22 | A guard deleted by a later edit leaves no failing artifact. P6's `TestDispatchHasNoUnlistedSpecialCase` was removed by my own scripted rewrite and went unnoticed for five rounds. | gloop `internal/docguard/` | **control** — gloop `TestTheGuardSetOnlyGrows`, commit `1f37de4`. It names all 20 guards by hand, which is the point: adding one requires editing the list, and removing one fails |
 | AI-23 | A hand-kept list beside a contract that could generate it. Three instances in P5 alone — the launcher's platform message, the wheel here-doc, `CADRE_KERNEL_REF` — each with a comment claiming it was kept in step. | cadre | **control** — `TestTheWheelPlatformsMatchTheContract` and `TestTheWorkflowKernelPinMatchesTheProviderPin`, commit `5c40d6ec`; the launcher's list now renders from `release.PlatformsFor` |
@@ -109,9 +109,30 @@ caught by counting the tree.
 | AI-25 | A guard that parses a document to check it will keep disagreeing with the document. Generate the expected artifact from the source of truth and assert the document contains it. | working practice | **advice** — the direction of a guard is a design judgment, not a pattern; landed in `.claude/skills/closed-loop/SKILL.md` § CP-3 alongside AI-16, with the three-round `--config` incident attached |
 | AI-26 | A test fixture shared across subcommands, or a normaliser applied to output, can erase the signal the test exists to read. | working practice | **advice** — indistinguishable from a legitimately empty result at the point a check could look. What separates them is whether the *absence* was ever falsified, which is the CP-3v discipline already in place |
 | AI-30 | A document naming which check to run can name the wrong one. `AGENTS.md` said the regeneration guard is `go test ./internal/generators/`; only `cadre generate-plugin --check --output plugin` catches a hand-edit to the committed `plugin/` tree, and no test runs it. The full Go suite passed locally while the runner failed on one word of difference. | cadre `AGENTS.md` | **control — unbuilt** — read the command out of `validate.yml` and assert `AGENTS.md` names it. Generating the expectation from the source of truth rather than parsing the prose, which is AI-25's method |
-| AI-28 | Verify the class of artifact the criterion names. AC-8 says the kernel has one release *home*; P2 checked the *workflow* that publishes to it, and was wrong for six phases. A criterion about artifacts is not answered by the machinery that produces them, and the two are indistinguishable from inside the machinery. | `.claude/skills/closed-loop/SKILL.md` § CP-5 | **control — unbuilt** — partially observable: a CP-5 row whose cited artifact is a source file, workflow, or config, for a criterion whose text names a published or external thing, is a detectable mismatch. It would not have caught the issue-body clause, where both the comment and the body are the same kind of artifact |
+| AI-28 | Verify the class of artifact the criterion names. AC-8 says the kernel has one release *home*; P2 checked the *workflow* that publishes to it, and was wrong for six phases. A criterion about artifacts is not answered by the machinery that produces them, and the two are indistinguishable from inside the machinery. | `.claude/skills/closed-loop/SKILL.md` § CP-5 | **control** — `.claude/lib/evidence-lint.sh` § machinery, commit `19bbaf3`. Narrower and better than this disposition guessed: it keys on the *observation* being about publishing machinery, not on the cited artifact's file extension. One finding on this goal — P2's row, now `SUPERSEDED` — and zero across the three other goals. Still does not reach the issue-body clause, where both the comment and the body are the same kind of artifact |
 | AI-29 | An HTTP 200 is evidence that a URL renders, not that the thing behind it exists. `releases/tag/<tag>` returns 200 for a bare git tag with no release; the gate's own FAIL cited that 200 as proof of a live release. Where an API can answer the question, the HTML page cannot. | working practice | **advice** — landed in `.claude/skills/closed-loop/SKILL.md` § CP-5. No check reaches it: the defect is choosing the weaker of two available observations, and the weaker one returns a plausible success |
 | AI-27 | `TestDispatchSDLC_UsesInTreeFallback` built its fake kernel at a path the production code read and the repository never had; test and code moved together, neither moved with the repository. | cadre `internal/cli/` | **advice** — a path a resolver treats as in-tree *could* be asserted to exist in the real checkout, but most such paths are legitimately absent until something creates them, and the check would be wrong more often than right. Cost argument: the general form is not worth it; the specific fixture is fixed |
+
+**Three of these were built after the goal closed**, and two things came out of
+building them that the dispositions had guessed wrong.
+
+**AI-28's disposition described the wrong trigger.** It proposed firing on a row whose
+*cited artifact* is a source file, workflow or config. Built that way it fires on
+legitimate rows — a component check citing a test file is doing its job — and misses
+the precision case entirely. What separates the defect from correct work is whether
+the *observation* is about publishing machinery while the criterion names the published
+thing, with no external observation anywhere in the row. Built that way it finds P2's
+row and nothing else across four goals.
+
+**AI-20 proposed the wrong home.** "A file-existence assert in each repo's own suite"
+is four assertions that each pass while a repository quietly loses its licence file's
+recognition, and none of them can see the exception. One script over all four, reading
+the GitHub licence API, means a repository that *gains* a licence invalidates its own
+exception — which is the property that keeps an exception list from rotting.
+
+**A disposition written before building is a hypothesis about what a check can
+observe.** That was the previous ultragoal's finding, where three of nine did not
+survive being built. Two of three did not survive here.
 
 Two proposed patches, applied:
 
