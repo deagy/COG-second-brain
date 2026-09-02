@@ -3,3 +3,4 @@
 2026-09-02T16:40:43Z	CP-3v	FAIL	round 1: 15 claims; found T-07's fix unreachable on the no-Go launcher path independently, and AC-6 open on cadre's unreleased HEAD
 2026-09-02T16:57:08Z	CP-5	PASS	AC-6 and AC-7 accepted at cli-v0.7.5 / kernel v0.14.4 / recall v0.3.3; five container runs, each moving the failure
 2026-09-02T17:03:41Z	CP-3v	PASS	round 2: 17 claims, every guard falsified by mutation; round 1's failing sequence reproduced and now passes
+2026-09-02T17:09:04Z	CP-4	PASS	17 claims; independent container run; found five superseded releases still live and pinnable, now marked
