@@ -76,4 +76,4 @@ Declaring it done from a developer machine. Every criterion except AC-7 is check
 | AC-5 | P4 | evidence/P4/CP-5-acceptance.md · cadre `0e249942`, run 33648430913 | verified |
 | AC-6 | P5 | evidence/P5/CP-5-acceptance.md · cadre `cli-v0.7.5`, kernel `v0.14.4`, recall `v0.3.3` | verified |
 | AC-7 | P5 | evidence/P5/ac7-clean-machine.log · `docker run --rm` aarch64, no Go, nothing on `~/sdk` | verified |
-| AC-8 | P2 | evidence/P2/CP-5-acceptance.md · cadre `0f4bd58c`, run 33635041600 | verified |
+| AC-8 | P2, **reopened at the north-star gate, closed in P7** | evidence/P7/CP-5-acceptance.md · cadre `0f4bd58c`, run 33635041600 · issue `#249` body edited `2026-09-02T19:35:17Z` · six `kernel-v*` releases deleted from `deagy/cadre` | verified |

@@ -1,0 +1,5 @@
+2026-09-02T19:42:02Z	CP-2	PASS	2 tasks, both AC-8
+2026-09-02T19:42:02Z	CP-3	PASS	issue body corrected; six kernel releases deleted, tags kept
+2026-09-02T19:49:26Z	CP-3v	PASS	fresh verifier, 3 clauses, fix falsified by removing the guard
+2026-09-02T19:49:26Z	CP-4	PASS	no cross-phase regression; AC-7 reproduced live; found 9 docs installing the kernel from the retired home, fixed in cd836b95
+2026-09-02T19:49:26Z	CP-5	PASS	AC-8 all three clauses observed on the artifacts

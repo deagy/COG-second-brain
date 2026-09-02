@@ -136,6 +136,16 @@ Pointed at that commit today, this check reports
 **A local test exit code is evidence about a laptop.** Write the run id into
 the ledger, not the word "green".
 
+**Cutting a release is the same check, one step earlier.** In most of these
+repositories the release job and the validate job trigger on the same push and
+neither waits for the other, so a release can publish from a commit whose suite
+is failing — `cli-v0.7.0` and `plugin-v0.24.0` both did. Run `ci-status.sh`
+against the commit *before* tagging it, not only before the gate.
+
+The release job could require the validate run's conclusion, and that is a cost
+decision rather than an impossibility: it serialises every release behind a full
+matrix. Until someone decides that trade is worth it, this is a step you run.
+
 ### And every phase must have been asked its gates
 
 ```bash

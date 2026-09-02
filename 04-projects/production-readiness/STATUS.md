@@ -2,21 +2,31 @@
 
 North-star: cadre, the lifecycle kernel, recall and gloop each install from their own published artifacts, claim nothing they cannot keep, and record who actually did what.
 Spec: 04-projects/production-readiness/spec.md · Registry: 04-projects/harness/ultragoals.md
-Current phase: north-star gate · Overall: **in progress**
+Current phase: P7 closed, north-star gate re-run pending · Overall: **in progress**
 
 ## Phases
 | Phase | AC covered | State | Evidence | Notes |
 |---|---|---|---|---|
 | P0 | — | **done** | evidence/P0/ | 8 criteria, 5 phases, from a measured four-repository assessment |
 | P1 | AC-1, AC-2, AC-3 | **done** | evidence/P1/ | Kernel licensed; gloop settled internal and made true; AC-07b closed. 3 CP-3v rounds + 1 CP-4 |
-| P2 | AC-8 | **done** | evidence/P2/ | `#249` fixed with 2 falsified tests and its record corrected; kernel release husk removed |
+| P2 | AC-8 | **done, but wrong** | evidence/P2/ | `#249` fixed with 2 falsified tests. Its other two claims were false: the issue *body* was never edited (only a closing comment), and "kernel release husk removed" meant the publishing job, not the six live releases. Reopened at the gate, closed in P7 |
 | P3 | AC-4 | **done** | evidence/P3/ | Observed-beside-asserted on all four actor sites. **4 CP-3v rounds**, three failures from one root cause: a column addition's blast radius |
 | P4 | AC-5 | **done** | evidence/P4/ | ~15 reach-paths refuse by name. CP-4 caught the refusal reading a flag's value as a request |
 | P5 | AC-6, AC-7 | **done** | evidence/P5/ | Nine tasks for five planned. Six container runs, each moving the failure. CP-3v round 2 and CP-4 both PASS |
 | P6 | AC-3b | **done** | evidence/P6/ | 22 false claims, 20 guards. Nine CP-3v rounds, an escalation the user resolved, and CP-4 found a guard that had been silently deleted |
+| P7 | AC-8 (reopened) | **done** | evidence/P7/ | Opened by the north-star gate's FAIL. `#249`'s body corrected; six `kernel-v*` releases deleted from `deagy/cadre`, tags kept. CP-4 then found nine live documents still installing the kernel from the retired home |
 
 ## Open AC-n (no PASS row yet)
-None. All nine criteria carry a PASS row: AC-1, AC-2, AC-3 at P1; AC-8 at P2; AC-4 at P3; AC-5 at P4; AC-6 and AC-7 at P5; AC-3b at P6.
+
+None — but AC-8's history is the thing to read here, not its current state. It carried
+a PASS row from P2 for six phases while two of its three clauses were false, and the
+north-star gate is what found that. Its PASS now rests on P7's evidence: the `#249`
+body re-fetched after editing, the releases API returning zero kernel releases in
+`deagy/cadre` against `cadre-kernel` serving `v0.14.4` at 200, and a fresh verifier
+that falsified the fix by removing the guard and watching the original defect return.
+
+The other eight carry PASS rows: AC-1, AC-2, AC-3 at P1; AC-4 at P3; AC-5 at P4;
+AC-6 and AC-7 at P5; AC-3b at P6.
 
 ## Decisions taken at charter
 
@@ -27,39 +37,34 @@ None. All nine criteria carry a PASS row: AC-1, AC-2, AC-3 at P1; AC-8 at P2; AC
 
 ## Next action (resume cold from here)
 
-**P5 is at CP-5 PASS, awaiting CP-3v round 2 and CP-4.** Both verifiers are
-dispatched. When they return: merge their rows into `evidence/P5/ledger.md`, mark P5
-done, then P6.
+**Waiting on cadre CI for `cd836b95`** (validate run 33675564709, pending at the time
+of writing). When it is green, re-run the north-star gate over all nine criteria with
+a fresh verifier, then CP-7 is already written
+(`04-projects/harness/retro/2026-09-02-production-readiness.md`).
 
 Releases: cadre `cli-v0.7.5` / `plugin-v0.24.5`, cadre-kernel `v0.14.4`, recall
-`v0.3.3`, gloop none by decision. All at `HEAD`, all runs green.
+`v0.3.3`, gloop none by decision. `cd836b95` is a documentation commit on top of
+`cli-v0.7.5` and does not need a new release to satisfy AC-6, which admits "a stated
+reason" — but that reason has to be stated at the gate, not assumed.
 
-**AC-7 took six container runs and each one moved the failure.** The defects, in
-order found: `install.sh` refuses with no AI runner on PATH; every kernel release
-since the extraction wrote `SHA256SUMS` the install shim could not match, so
-`cadre sdlc` could never install a kernel; `install.sh`'s `cadre` needed a Go
-toolchain its own instructions never mention; no `linux/arm64` CLI was published,
-and the diagnostic named `linux/arm64` among the platforms it covers; `cadre sdlc`
-could not find the kernel the installer had just cached, through four separate
-resolvers; and `cadre doctor` reported no kernel while `cadre sdlc` ran one.
+**What P7 was, in one paragraph.** The north-star gate failed AC-8 six phases after P2
+closed it. P2 had verified that `release.yml` no longer publishes kernel releases; the
+criterion is about the kernel having one release *home*, which is a claim about the
+artifacts. Six were still live and downloadable. P2 had likewise read a closing
+*comment* on `#249` as the issue body being corrected — the body had never been edited,
+and a comment and an edit look identical to anyone reading the thread top to bottom.
+Both are the same defect: the check observed something narrower than the criterion
+named. Deleting the releases went to the user at CP-6, because it is irreversible and
+breaks the kernel fetch of eight published CLI releases (`cli-v0.5.0`–`cli-v0.6.5`,
+confirmed by reading the shim out of the extracted `cli-v0.6.5` binary with `strings`).
+They chose deletion, tags kept.
 
-**P6 is AC-3b** — a claim-by-claim audit of gloop's documentation against the binary.
-Two findings already gathered, from `gloop --help` at `3715bef`: its usage line reads
-`Usage: gloop gloop`, and its Examples block opens with `# Select agents for a task`
-followed by no command — `gloop select` was removed in P1 and the comment survived.
-Scope: `README.md` is 555 lines and `docs/` is 8,060 across 23 files, most of them
-dated phase reviews, so the phase's first job is deciding which are live documents
-and which are records — the exemption class P1 applied to cadre's
-`DESIGN-NOTES-deletion-and-retention.md`.
-
-Then the north-star gate over all nine criteria, the HTML report the ultragoal skill calls for, and CP-7.
-
-**Housekeeping the workspace guard refuses to do for me:** four scratch worktrees
-from earlier phases are still registered — `/tmp/claude-1000/redcheck`,
-`/tmp/v4b-oldcommit`, `/tmp/v4c-clone`, `/tmp/v4d-falsify`. The last two carry a
-deliberate falsification mutation in `internal/knowledge/staged_db.go`, already
-recorded in P3's evidence. `git worktree remove` is blocked as a destructive
-git-metadata operation, so they need removing by hand.
+**Housekeeping the workspace guard refuses to do for me:** four scratch worktrees from
+earlier phases are still registered — `/tmp/claude-1000/redcheck`, `/tmp/v4b-oldcommit`,
+`/tmp/v4c-clone`, `/tmp/v4d-falsify`. The last two carry a deliberate falsification
+mutation in `internal/knowledge/staged_db.go`, already recorded in P3's evidence.
+`git worktree remove` is blocked as a destructive git-metadata operation, so they need
+removing by hand.
 
 ## Watch for
 

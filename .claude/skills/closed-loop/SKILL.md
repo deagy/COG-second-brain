@@ -75,10 +75,39 @@ Two mechanical habits, because careful reading demonstrably did not
 substitute for either: check every occurrence in a file rather than the
 first, and check for near-duplicate paragraphs, where one of a pair is stale.
 
+**An exclusion carries its own expiry, so write the reason next to it.**
+`linux/arm64` was excluded from a platform list because it "needs either a native
+arm64 runner or a cross toolchain". The runner arrived; the reason lapsed and the
+exclusion did not, and a clean-machine install found it by having no binary to
+fetch. No check can evaluate whether a prose reason still holds — but a bare
+entry in a list of unsupported things outlives its justification invisibly,
+whereas a stated reason can at least be read and found spent.
+
 No check reaches this one, and the reason is worth stating: **nothing
 observes an enumeration that was never run.** A search scoped too narrowly
 produces output indistinguishable from a complete one, and the hits it
 missed are missing from the evidence as well.
+
+**A guard that parses a document to check it will keep disagreeing with the
+document.** Generate the expected block from the source of truth and assert
+the document contains it, verbatim.
+
+gloop's `--config` table resisted three attempts written the other way round.
+Each attempt parsed the README's table and each disagreed for a new reason:
+one accused the README where the README was right (`config update` fails
+argument validation before it ever reads `--config`), one searched the whole
+file instead of the table so deleting a row left it green, one shared a
+fixture between subcommands that overwrote the evidence it existed to read.
+The fourth attempt enumerated the subcommands from the binary, classified
+each by running it, rendered the table, and asserted the README contained
+that block. The failure mode left over — the binary silently dropping a
+subcommand from help — is a different check, against the dispatcher's own
+registry.
+
+The direction is the design decision, and no check observes it: a guard
+pointed the wrong way is a working guard that happens to be wrong. What
+signals it is three rounds failing on the same shape, which is what
+`AI-18`'s escalation is for.
 
 ## Phase 4 — CP-3v Component verify
 
@@ -109,6 +138,31 @@ the attempt costs a round, and the round after it if you are wrong again.
 The retry count is observable; the judgment is not. A worker convinced this
 attempt differs in kind from the last will record it as a first attempt at a
 new method, and the count will agree with them.
+
+### A fixture can destroy the evidence it exists to produce
+
+Two shapes, both of which passed and meant nothing:
+
+- **A fixture shared across subcommands.** One pair of files reused for
+  `config setup` and `config update`; the second run overwrote the first, and the
+  result was an empty row that read as a clean negative finding.
+- **A normaliser applied to the output.** Path normalisation erased the config
+  writers' only signal — the line `Wrote config to <path>` — so the test saw
+  nothing where the thing it was checking for had been.
+
+At the moment a check could look, an erased signal and a legitimately empty result
+are the same value. What separates them is falsifying the *absence*: make the thing
+appear, and confirm the check now sees it. That is CP-3v's existing discipline
+pointed at a negative result instead of a positive one.
+
+Related, and not fixable by a check: **a fixture can agree with the code and not
+with the repository.** A test built its fake binary at a path the production code
+read and the checkout never had; the two moved together through a refactor and
+neither moved with the repository, so the test passed for as long as the code was
+wrong in the same direction. Asserting that every in-tree path a resolver names
+exists in a real checkout would be wrong more often than right — most are
+legitimately absent until something creates them — so this stays a thing to look
+for rather than a rule to enforce.
 
 ### When you built a check *and* a document telling people to satisfy it
 
@@ -156,6 +210,23 @@ For each mutation, observe artifact (curl, screenshot, re-fetch). Emit:
 `EVIDENCE AC-n | CP-5 | PASS | <observation> | <artifact>`
 
 **UI/UX flow changes:** the post-condition is *visual*. Screenshot every meaningful state with whatever browser tooling the environment has, then read the image and confirm no overflow, misalignment, clipping, wrong color, or broken responsive layout before PASS. The Observation must describe what you saw; the artifact is the screenshot/GIF in `evidence/`. Fix any visual defect and re-capture. See CLAUDE.md → Visual Verification.
+
+**Observe the class of artifact the criterion names, and prefer the observation
+that can say no.** Two failures, both from the same run:
+
+- A criterion read "the lifecycle kernel has one release *home*, not two." The
+  phase checked that the publishing *workflow* no longer targeted the second one
+  and recorded PASS. Six phases later the north-star gate found six releases with
+  downloadable assets still served from it. A workflow that has stopped publishing
+  and a repository that serves nothing are indistinguishable from inside the
+  workflow file, and nothing in that phase left it. If the criterion names a
+  published thing, the evidence has to be the published thing.
+- The gate that caught it cited `curl` on `.../releases/tag/<tag>` returning **200**
+  as proof the release was live. That URL returns 200 for a bare git tag with no
+  release behind it — it did so afterwards, with the releases deleted. Where an
+  API can answer the question directly, an HTML page answering a nearby question
+  is not the observation to cite. The verdict was right and the citation was weak,
+  which is the combination nobody re-reads.
 
 Write `evidence/CP-5-acceptance.md`. **Traceability closure**: every AC in matrix has ≥1 PASS row in ledger.
 
