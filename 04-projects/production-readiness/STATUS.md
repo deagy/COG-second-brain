@@ -2,7 +2,7 @@
 
 North-star: cadre, the lifecycle kernel, recall and gloop each install from their own published artifacts, claim nothing they cannot keep, and record who actually did what.
 Spec: 04-projects/production-readiness/spec.md · Registry: 04-projects/harness/ultragoals.md
-Current phase: P6 · Overall: **in progress**
+Current phase: north-star gate · Overall: **in progress**
 
 ## Phases
 | Phase | AC covered | State | Evidence | Notes |
@@ -13,10 +13,10 @@ Current phase: P6 · Overall: **in progress**
 | P3 | AC-4 | **done** | evidence/P3/ | Observed-beside-asserted on all four actor sites. **4 CP-3v rounds**, three failures from one root cause: a column addition's blast radius |
 | P4 | AC-5 | **done** | evidence/P4/ | ~15 reach-paths refuse by name. CP-4 caught the refusal reading a flag's value as a request |
 | P5 | AC-6, AC-7 | **done** | evidence/P5/ | Nine tasks for five planned. Six container runs, each moving the failure. CP-3v round 2 and CP-4 both PASS |
-| P6 | AC-3b | in progress | evidence/P6/ | Audit gloop's docs claim by claim against the binary |
+| P6 | AC-3b | **done** | evidence/P6/ | 22 false claims, 20 guards. Nine CP-3v rounds, an escalation the user resolved, and CP-4 found a guard that had been silently deleted |
 
 ## Open AC-n (no PASS row yet)
-AC-3b (P6) is the only one left. AC-1, AC-2, AC-3 closed at P1; AC-8 at P2; AC-4 at P3; AC-5 at P4; AC-6 and AC-7 at P5.
+None. All nine criteria carry a PASS row: AC-1, AC-2, AC-3 at P1; AC-8 at P2; AC-4 at P3; AC-5 at P4; AC-6 and AC-7 at P5; AC-3b at P6.
 
 ## Decisions taken at charter
 

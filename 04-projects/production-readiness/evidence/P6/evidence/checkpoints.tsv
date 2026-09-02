@@ -10,3 +10,5 @@
 2026-09-02T18:56:38Z	CP-3v	FAIL	round 8: 1 false claim, in the paragraph round 7 had quoted — I fixed the section it cited and not the claim it was about, which is AI-16 twice in one file
 2026-09-02T19:06:24Z	CP-3v	PASS	round 9: no new false claim across all six live documents; 21 fixed over nine rounds, 14 guards all falsified. The binary's own --help was corrected as residue
 2026-09-02T19:19:56Z	CP-4	FAIL	round 1: a guard deleted by a scripted rewrite and unnoticed for five rounds, a 16MB binary committed by the README's own build instruction, and a guard count never measured
+2026-09-02T19:25:55Z	CP-4	PASS	round 2: all three round-1 fixes verified by mutation, three more guards independently falsified, guard count measured and agreeing across three sources, cross-repo fixtures still pass
+2026-09-02T19:25:55Z	CP-5	PASS	AC-3b accepted: 22 false claims fixed, 20 guards all falsified, CP-3v round 9 and CP-4 round 2 both PASS

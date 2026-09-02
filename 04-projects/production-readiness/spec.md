@@ -55,7 +55,7 @@ The two findings that order the work: **the lifecycle kernel is public with no l
 | P3 | Caller identity: derive the actor fields, or refuse | AC-4 | **done** |
 | P4 | Refuse the absent capability where it is reached for | AC-5 | **done** |
 | P5 | Release all four, then prove a clean machine reaches a working state | AC-6, AC-7 | **done** |
-| P6 | Audit gloop's documentation claim by claim against the binary | AC-3b | in progress |
+| P6 | Audit gloop's documentation claim by claim against the binary | AC-3b | **done** |
 
 **P1 first because it is legal rather than technical**, and because releasing an unlicensed artifact is worse than not releasing. **P5 last because it releases the finished thing** — cutting releases before P3 and P4 would publish a version whose behaviour the goal then changes, and AC-7 would verify an artifact nobody should install.
 
@@ -71,7 +71,7 @@ Declaring it done from a developer machine. Every criterion except AC-7 is check
 | AC-1 | P1 | evidence/P1/CP-5-acceptance.md · cadre-kernel `8da1b13` | verified |
 | AC-2 | P1 | evidence/P1/CP-5-acceptance.md · fetch set read from `plugin_generation.go` | verified |
 | AC-3 | P1 | evidence/P1/CP-5-acceptance.md · gloop `04c356a` | verified |
-| AC-3b | P6 | | pending |
+| AC-3b | P6 | evidence/P6/CP-5-acceptance.md · gloop `1f37de4` | verified |
 | AC-4 | P3 | evidence/P3/CP-5-acceptance.md · cadre `4da28060`, run 33643385856 | verified |
 | AC-5 | P4 | evidence/P4/CP-5-acceptance.md · cadre `0e249942`, run 33648430913 | verified |
 | AC-6 | P5 | evidence/P5/CP-5-acceptance.md · cadre `cli-v0.7.5`, kernel `v0.14.4`, recall `v0.3.3` | verified |
