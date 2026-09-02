@@ -54,10 +54,18 @@ while IFS= read -r entry; do
       ;;
     *"**advice**"*)
       # Advice has to land somewhere read at session start, and say so.
-      if ! printf '%s' "$disposition" | grep -qE 'CLAUDE\.md|WORKFLOW\.md|SKILL\.md|landed'; then
+      named=$(printf '%s' "$disposition" | grep -oE '`?[A-Za-z0-9_./-]*(CLAUDE|WORKFLOW|SKILL)\.md`?' | head -1 | tr -d '`')
+      if [ -z "$named" ]; then
         printf '%s:%s  %s is advice that does not say where it landed\n' "$backlog" "$line" "$id"
         printf '    A rule only in the backlog is a rule nobody reads. Name the file that\n'
         printf '    carries it -- CLAUDE.md, WORKFLOW.md, or a skill body.\n'
+        findings=$((findings + 1))
+      elif [ ! -f "$named" ] && [ ! -f "$(dirname "$backlog")/../../$named" ]; then
+        # A substring match would accept any string containing "SKILL.md".
+        # Resolving it is the one piece of content-truth this check can
+        # afford: the file either exists or it does not.
+        printf '%s:%s  %s cites %s, which does not exist\n' "$backlog" "$line" "$id" "$named"
+        printf '    A rule landed in a file nobody can open has not landed.\n'
         findings=$((findings + 1))
       fi
       ;;

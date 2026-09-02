@@ -32,3 +32,11 @@ The second row is the one worth keeping: it is the state **after** the conventio
 It verifies a row **answers** the question, not that the answer is **true**. A `control` citing a file that does not exist, or a commit that does not resolve, passes here. P3's CP-4 found two rows whose shape was perfect and whose content was wrong — AI-14 claiming coverage AI-13 does not give, and AI-1 labelling a built control as advice.
 
 Shape is what this phase can afford. The content cross-check is carried out of P3 as the next goal, and the script's own header says so rather than letting a reader assume it is covered.
+
+## Strengthened after CP-3v
+
+The advice-location check was a bare substring match: any string containing `SKILL.md` satisfied it, including a path to nothing. It now resolves the cited file and fails if it does not exist — the one piece of content-truth this check can afford, since a file either opens or it does not. Falsified: a row citing `.claude/skills/nonexistent/SKILL.md` fails.
+
+That closes a gap between what the script did and what its header claimed. The header said the check verifies a row *answers* the question rather than that the answer is *true*; a rule pointing at a file nobody can open has not landed, and calling that "answered" was too generous a reading of its own limitation.
+
+**Correction to the record:** the commit I supplied to CP-3v for the six `done` rows was `5a73393`, which is wrong. The correct commit is `d188941`, and it does produce the claimed 20 findings at exit 1. The build record cites no SHAs, so nothing written down was wrong — but the verifier was handed a bad one and had to find the right one itself.
