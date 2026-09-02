@@ -71,6 +71,10 @@ The evidence for asking at all: `AI-5` sat open as a working-practice note for f
    ```bash
    bash .claude/lib/backlog-lint.sh
    ```
+
+   It reads the word and ignores the decoration, so `control`, **control** and
+   **`control`** are the same answer. What it will not accept is a row that
+   answers nothing.
 3. **STATUS.md**: if an ultragoal phase, advance the phase state + log open `AC-n`
 4. **Spec checkpoint log**: update spec `## Checkpoint log` CP-7 row
 5. Record: `bash .claude/lib/checkpoint.sh record <run-dir> CP-7 PASS "retro: <path>"`

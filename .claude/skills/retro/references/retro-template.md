@@ -31,4 +31,5 @@ Each row states whether a check can observe the defect. `control` names the obse
 
 | ID | Action | Target file | Disposition |
 |---|---|---|---|
-| AI-1 | | | control — unbuilt \| advice — <why no check reaches it> |
+| AI-1 | | | **control** — <where the check lives, or `unbuilt`> |
+| AI-2 | | | **advice** — <what a check would have to see, why it cannot, and where the rule landed> |

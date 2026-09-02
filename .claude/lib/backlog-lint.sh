@@ -31,8 +31,16 @@ while IFS= read -r entry; do
   # The disposition is the last column.
   disposition=$(printf '%s' "$row" | sed -E 's/.*\|([^|]*)\|[[:space:]]*$/\1/')
 
-  case "$disposition" in
-    *"**control**"*|*"**advice**"*|*"**landed**"*) ;;
+  # Match the word, not its decoration. `control`, **control**, **`control`**
+  # and plain control are the same answer, and an author should not have to
+  # guess which emphasis a script wants. CP-4 found the skill teaching three
+  # different forms, none of which was the one form the script accepted --
+  # so a retro author following the instructions failed the lint on their
+  # first attempt, for a convention stated nowhere.
+  kind=$(printf '%s' "$disposition" | tr -d '`*' | sed -E 's/^[[:space:]]*([a-z]+).*/\1/')
+
+  case "$kind" in
+    control|advice|landed) ;;
     *)
       printf '%s:%s  %s has no disposition\n' "$backlog" "$line" "$id"
       printf '    Every row is control, advice or landed. "open" says a row is unfinished\n'
@@ -43,8 +51,8 @@ while IFS= read -r entry; do
   esac
 
   # A control has to say where its check lives, or that it has none yet.
-  case "$disposition" in
-    *"**control**"*)
+  case "$kind" in
+    control)
       if ! printf '%s' "$disposition" | grep -qE '`[0-9a-f]{7,}`|unbuilt|merged with'; then
         printf '%s:%s  %s is a control citing no commit and not marked unbuilt\n' "$backlog" "$line" "$id"
         printf '    A built control and an unbuilt one must not read the same. Cite the commit,\n'
@@ -52,7 +60,7 @@ while IFS= read -r entry; do
         findings=$((findings + 1))
       fi
       ;;
-    *"**advice**"*)
+    advice)
       # Advice has to land somewhere read at session start, and say so.
       named=$(printf '%s' "$disposition" | grep -oE '`?[A-Za-z0-9_./-]*(CLAUDE|WORKFLOW|SKILL)\.md`?' | head -1 | tr -d '`')
       if [ -z "$named" ]; then

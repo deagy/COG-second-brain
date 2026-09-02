@@ -40,3 +40,13 @@ The advice-location check was a bare substring match: any string containing `SKI
 That closes a gap between what the script did and what its header claimed. The header said the check verifies a row *answers* the question rather than that the answer is *true*; a rule pointing at a file nobody can open has not landed, and calling that "answered" was too generous a reading of its own limitation.
 
 **Correction to the record:** the commit I supplied to CP-3v for the six `done` rows was `5a73393`, which is wrong. The correct commit is `d188941`, and it does produce the claimed 20 findings at exit 1. The build record cites no SHAs, so nothing written down was wrong — but the verifier was handed a bad one and had to find the right one itself.
+
+## What CP-4 found: the skill taught a format the check rejected
+
+`retro/SKILL.md` Phase 4 wrote **`control`**, Phase 5 wrote `control`, and the template wrote plain `control — unbuilt`. The lint accepted only `**control**` — the form the existing backlog rows happened to use, and a convention stated nowhere. **An author following either document failed the check on their first attempt**, for a reason neither document could have told them.
+
+CP-3v did not catch it because it validated the script against rows it had formatted itself, plus a live backlog that was already correct. Both directions were tested; neither direction came from the skill's own instructions. A check and the document teaching people to satisfy it are two artifacts, and testing one against itself proves nothing about the pair.
+
+Fixed on both sides. The lint reads the word and ignores decoration — `control`, **control** and **`control`** are one answer, because an author should not have to guess which emphasis a script wants — and the template now shows a `control` row and an `advice` row in the form the lint accepts. A row that answers nothing still fails.
+
+This is the integration defect this checkpoint exists for, in its clearest form yet: two artifacts each correct alone, disagreeing at the join, in a phase whose entire subject is making a rule stick.
