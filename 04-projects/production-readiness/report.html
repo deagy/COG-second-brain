@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Production readiness: ultragoal report</title>
+<style>
+  :root {
+    --bg: #fbfbfa; --panel: #ffffff; --ink: #1a1a19; --muted: #6b6b68;
+    --line: #e4e4e1; --pass: #1a7f4b; --fail: #b4232a; --skip: #8a8a86;
+    --accent: #1a1a19;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #131313; --panel: #1b1b1a; --ink: #ececea; --muted: #9a9a96;
+      --line: #2c2c2a; --pass: #4ec281; --fail: #f2777c; --skip: #7d7d79;
+      --accent: #ececea;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #131313; --panel: #1b1b1a; --ink: #ececea; --muted: #9a9a96;
+    --line: #2c2c2a; --pass: #4ec281; --fail: #f2777c; --skip: #7d7d79;
+    --accent: #ececea;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 var(--sans); }
+  .wrap { max-width: 62rem; margin: 0 auto; padding: 3rem 1.5rem 6rem; }
+  header { border-bottom: 1px solid var(--line); padding-bottom: 1.5rem; margin-bottom: 2.5rem; }
+  h1 { font-size: 1.6rem; letter-spacing: -0.01em; margin: 0 0 .4rem; }
+  .meta { color: var(--muted); font: 13px/1.5 var(--mono); }
+  h2 { font-size: 1rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted);
+       margin: 2.75rem 0 .9rem; font-weight: 600; }
+  p { margin: 0 0 1rem; }
+  .northstar { background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+               padding: 1rem 1.15rem; border-radius: 3px; }
+  .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 3px; background: var(--panel); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: .6rem .8rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font: 600 12px/1.4 var(--mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  tr:last-child td { border-bottom: 0; }
+  td.id, td.cp { font-family: var(--mono); white-space: nowrap; }
+  .v { font: 600 12px/1.4 var(--mono); white-space: nowrap; }
+  .v.pass { color: var(--pass); } .v.fail { color: var(--fail); } .v.skip { color: var(--skip); }
+  .obs { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+  figure { margin: 1.25rem 0; }
+  figure img { display: block; max-width: 100%; border: 1px solid var(--line); border-radius: 3px; }
+  figcaption { color: var(--muted); font: 12.5px/1.5 var(--mono); margin-top: .5rem; }
+  .next { background: var(--panel); border: 1px solid var(--line); padding: 1rem 1.15rem; border-radius: 3px; }
+  footer { margin-top: 3.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line);
+           color: var(--muted); font: 12.5px/1.5 var(--mono); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Production readiness</h1>
+  <div class="meta">04-projects/production-readiness · lane full · 2026-09-01 → 2026-09-02 · 7 phases · outcome shipped</div>
+</header>
+
+<h2>North star</h2>
+<p class="northstar">cadre, the lifecycle kernel, recall and gloop each install from their own published artifacts, claim nothing they cannot keep, and record who actually did what. Before this goal the kernel was public with no licence while cadre's installer fetched it by version; gloop's README asserted MIT and two badges a private repository cannot support; every actor field was a string the caller typed; a retention request met <code>flag provided but not defined</code>; recall had tagged three releases that published nothing; and no kernel release since the extraction could actually be installed, because every one wrote checksums the install shim could not match.</p>
+
+<h2>Phases</h2>
+<div class="scroll">
+<table>
+  <thead><tr><th>Phase</th><th>Scope</th><th>Covers</th><th>State</th></tr></thead>
+  <tbody>
+    <tr><td class="id">P0</td><td>Measure all four repositories before committing to criteria</td><td class="id">—</td><td class="v pass">done</td></tr>
+    <tr><td class="id">P1</td><td>Licensing and identity: licence the kernel, settle gloop on evidence, make every claim true</td><td class="id">AC-1, AC-2, AC-3</td><td class="v pass">done</td></tr>
+    <tr><td class="id">P2</td><td>Known defects: <code>#249</code> and its stale issue body, the kernel's two release homes</td><td class="id">AC-8</td><td class="v pass">done</td></tr>
+    <tr><td class="id">P3</td><td>Caller identity: derive the actor fields, or refuse</td><td class="id">AC-4</td><td class="v pass">done</td></tr>
+    <tr><td class="id">P4</td><td>Refuse the absent capability where it is reached for</td><td class="id">AC-5</td><td class="v pass">done</td></tr>
+    <tr><td class="id">P5</td><td>Release all four, then prove a clean machine reaches a working state</td><td class="id">AC-6, AC-7</td><td class="v pass">done</td></tr>
+    <tr><td class="id">P6</td><td>Audit gloop's documentation claim by claim against the binary</td><td class="id">AC-3b</td><td class="v pass">done</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>Acceptance criteria</h2>
+<div class="scroll">
+<table>
+  <thead><tr><th>AC</th><th>Criterion</th><th>Task</th><th>Verdict</th></tr></thead>
+  <tbody>
+    <tr><td class="id">AC-1</td><td>No repository claims a licence it does not carry</td><td class="id">P1</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-2</td><td>Nothing installable resolves an unlicensed dependency</td><td class="id">P1</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-3</td><td>gloop's self-description is true about licensing, visibility and the removed commands</td><td class="id">P1</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-3b</td><td>Every other claim in gloop's documentation holds against the binary</td><td class="id">P6</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-4</td><td>Actor fields are derived, not asserted</td><td class="id">P3</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-5</td><td>An absent capability is refused where it is reached for</td><td class="id">P4</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-6</td><td>Everything on <code>main</code> is released</td><td class="id">P5</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-7</td><td>A clean machine reaches a working state</td><td class="id">P5</td><td class="v pass">PASS</td></tr>
+    <tr><td class="id">AC-8</td><td>The known defects are closed</td><td class="id">P2</td><td class="v pass">PASS</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>Evidence</h2>
+<div class="scroll">
+<table>
+  <thead><tr><th>AC</th><th>CP</th><th>Verdict</th><th>Observation</th><th>Artifact</th></tr></thead>
+  <tbody>
+    <tr><td class="id">AC-1</td><td class="cp">CP-5</td><td class="v pass">PASS</td>
+        <td class="obs">All four swept against what GitHub reports and against each repository's own markdown. cadre-kernel gained Apache-2.0, confirmed by re-fetching rather than from the push</td>
+        <td class="obs">evidence/P1/CP-5-acceptance.md · cadre-kernel 8da1b13</td></tr>
+    <tr><td class="id">AC-2</td><td class="cp">CP-5</td><td class="v pass">PASS</td>
+        <td class="obs">The installer's complete fetch set read out of plugin_generation.go, install.sh and install.ps1 rather than assumed: cadre and cadre-kernel, no third-party downloads</td>
+        <td class="obs">evidence/P1/CP-5-acceptance.md</td></tr>
+    <tr><td class="id">AC-3</td><td class="cp">CP-5</td><td class="v pass">PASS</td>
+        <td class="obs">Every badge URL fetched; pkg.go.dev returns 404 for a private module. Removed commands described as removed in every live document</td>
+        <td class="obs">evidence/P1/CP-5-acceptance.md · gloop 04c356a</td></tr>
+    <tr><td class="id">AC-8</td><td class="cp">CP-5</td><td class="v pass">PASS</td>
+        <td class="obs">#249 fixed with two tests falsified in both directions; the issue body corrected where it described deleted Python; the kernel's second release home removed</td>
+        <td class="obs">evidence/P2/CP-5-acceptance.md · cadre 0f4bd58c, run 33635041600</td></tr>
+    <tr><td class="id">AC-4</td><td class="cp">CP-5</td><td class="v pass">PASS</td>
+        <td class="obs">observed_actor written beside the asserted value at all four actor sites, derived from process credentials and git config, never from an environment variable the caller sets</td>
+        <td class="obs">evidence/P3/CP-5-acceptance.md · cadre 4da28060, run 33643385856</td></tr>
+    <tr><td class="id">AC-5</td><td class="cp">CP-5</td><td class="v pass">PASS</td>
+        <td class="obs">~15 reach-paths enumerated independently; each refuses by name, naming the commit that removed the capability and that the decision is open. Exit 2</td>
+        <td class="obs">evidence/P4/CP-5-acceptance.md · cadre 0e249942, run 33648430913</td></tr>
+    <tr><td class="id">AC-5</td><td class="cp">CP-4</td><td class="v pass">PASS</td>
+        <td class="obs">Round 1 caught the refusal reading a flag's <em>value</em> as a request, breaking a working deletion. Round 2 confirmed the fix across six variants and both dispatch routes</td>
+        <td class="obs">evidence/P4/CP-4-integration.md</td></tr>
+    <tr><td class="id">AC-6</td><td class="cp">CP-5</td><td class="v pass">PASS</td>
+        <td class="obs">Measured against published releases, not tags: recall carries three tags with nothing behind them. cadre cli-v0.7.5, kernel v0.14.4, recall v0.3.3 all at HEAD; gloop none, by a reason written into its own README</td>
+        <td class="obs">evidence/P5/CP-5-acceptance.md</td></tr>
+    <tr><td class="id">AC-7</td><td class="cp">CP-5</td><td class="v pass">PASS</td>
+        <td class="obs">docker run --rm, aarch64, no Go toolchain, nothing on ~/sdk: <code>cadre sdlc --version</code> → 0.14.4 exit 0; <code>cadre knowledge search</code> answers; doctor and sdlc agree on the kernel</td>
+        <td class="obs">evidence/P5/ac7-clean-machine.log</td></tr>
+    <tr><td class="id">AC-7</td><td class="cp">CP-3v</td><td class="v pass">PASS</td>
+        <td class="obs">Round 2 reproduced round 1's failing sequence at cli-v0.7.5 with no build cache created — proof the Go path was never used and the fallback answered</td>
+        <td class="obs">evidence/P5/CP-3v-round2.md</td></tr>
+    <tr><td class="id">AC-3b</td><td class="cp">CP-3v</td><td class="v pass">PASS</td>
+        <td class="obs">Round 9: no new false claim across all six live documents, after eight rounds that found 22</td>
+        <td class="obs">evidence/P6/CP-3v-round9.md</td></tr>
+    <tr><td class="id">AC-3b</td><td class="cp">CP-4</td><td class="v pass">PASS</td>
+        <td class="obs">Round 2: three round-1 fixes verified by mutation, three further guards independently falsified, guard count measured and agreeing across three sources</td>
+        <td class="obs">evidence/P6/CP-4-round2.md</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>Next action</h2>
+<p class="next">None: the goal is closed. Two things it deliberately did not do are recorded rather than left implicit — retention and erasure stay declared rather than built, because no third party's content enters the store; and gloop publishes no releases, because nothing outside the account consumes it and a tag that produces no release is indistinguishable from one that failed to.</p>
+
+<footer>
+  COG verification harness · evidence bundle 04-projects/production-readiness/evidence/P0…P6 · 42 checkpoints recorded, 16 of them FAIL
+</footer>
+
+</div>
+</body>
+</html>
