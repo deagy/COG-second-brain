@@ -64,7 +64,7 @@ with placeholder values, not a schema. The authoritative lifecycle contract is
 | 1 | Run-record as the shared object | Every harness run emits a run-record with auditable provenance | new schema + template, `closed-loop/SKILL.md`, `WORKFLOW.md`, new lint | low | implemented (`1d8966b`) |
 | 2 | Per-task amend semantics | COG's CP-3v verify loop gets deny/re-entry teeth | `closed-loop/SKILL.md`, `task-verifier.md`, `checkpoint.sh`, `WORKFLOW.md` | low | implemented (`8a07f03`) |
 | 3 | Gate the high-consequence mutations | External writes go through a named authority + explicit approval | `publish-to-confluence`, `team-brief`, `content-factory` skills | medium | implemented (`883b7fd`) |
-| 4 | Roster dispatch for specialized execution | Skills resolve domain specialists from the roster and dispatch them | worker-executor / new skill; roster vendored first | high | pending — roster not yet vendored in-vault |
+| 4 | Roster dispatch for specialized execution | Skills resolve domain specialists from the roster and dispatch them | worker-executor / new skill; roster vendored first | high | partially — roster vendored (AC-1); dispatch pending a sandboxed runner |
 
 ## Sequencing
 
