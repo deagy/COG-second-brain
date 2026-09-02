@@ -3,3 +3,4 @@
 2026-09-02T17:33:26Z	CP-3v	FAIL	round 1: 19 claims; handoff is not one bucket — the fifth wrong statement of --config, generalised from subcommand to command like the four before it
 2026-09-02T17:43:34Z	CP-3v	FAIL	round 2: 9 claims; the guard checked the name, not the row — a bucket flip passed. Now derives each classification by running and compares it to the row
 2026-09-02T17:50:24Z	CP-3v	FAIL	round 3: FAIL:escalate — third failure of AC-3b, same shape each time (silent omission). Escalating under AI-18 rather than spending a fourth attempt
+2026-09-02T18:06:38Z	CP-3v	FAIL	round 4: 14 claims; the three earlier findings now fail correctly. Two new: a dispatch branch can bypass registration entirely, and a third provider list sat outside the guard

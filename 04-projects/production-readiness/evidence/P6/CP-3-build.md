@@ -214,3 +214,42 @@ from the help listing while leaving it registered fails with the count. **That l
 mutation had to be placed twice** — the first attempt patched `help.go` and the test
 stayed green, because `gloop handoff --help` is rendered by `root.go`. Two renderers,
 which is the same duplication that produced `Usage: gloop gloop`.
+
+## CP-3v round 4 — the generated table holds, and two things above it did not
+
+Round 4 re-mutated all three earlier findings and each now fails correctly. It found
+two more, both by building and running rather than by reading.
+
+### A subcommand can be dispatchable without being registered
+
+`execute()` special-cases `args[0] == "help"` before it consults `rootCmd.cmds`. The
+verifier added a second such branch and produced a subcommand that **runs, silently
+ignores `--config`, appears in no help output, and trips neither guard.** Confirmed
+here by reproducing it: with the bypass in place, `TestTheConfigFlagTableMatchesTheBinary`
+and `TestTheHelpEnumerationIsComplete` both still pass.
+
+The generated table is complete for everything registered through `AddCommand`.
+**"Registered through `AddCommand`" and "dispatchable" are not the same set**, and
+nothing said so.
+
+`TestDispatchHasNoUnlistedSpecialCase` now asserts that the only literal `execute()`
+compares `args[0]` against is `help`, so a second branch means editing an allowlist.
+Falsified with the verifier's own bypass, and again by renaming `execute` — which
+fails with *is gone or renamed; this guard is checking nothing* rather than passing
+over a function it can no longer find.
+
+Its limit is stated in the test rather than left to be found: it reads source text,
+and source text can be written a way a pattern does not see. It narrows the gap to *a
+dispatch branch written unlike every existing one*, which is smaller than what it
+replaces and is not zero.
+
+### A third list of the providers, outside both checks
+
+`README.md`'s `config.toml` example carries `# anthropic | google | mistral | http`
+on its `name` line — four of the six `IsKnownProviderType` accepts, omitting `openai`
+and `cohere`. Three lines above it sits the Multi-Provider bullet that
+`TestTheProviderListNamesEveryProvider` already guarded, naming all six.
+
+The guard looked at the bullet. A second enumeration of the same fact sat outside it,
+in a fenced code block. **Two lists of one fact drift; three drift faster.** The
+check now reads `IsKnownProviderType`'s own case clause and holds both lists to it.
