@@ -16,7 +16,7 @@ The pattern is not that advice is worthless. It is that **advice and controls ar
 
 This goal forces the judgment per item. Some of these genuinely cannot be mechanised; saying so, with the reason, is a real disposition and not a failure.
 
-## Baseline, measured 2026-09-02
+## Baseline, measured 2026-09-01
 
 Fourteen open items, from five retros across two ultragoals.
 
@@ -28,7 +28,7 @@ Fourteen open items, from five retros across two ultragoals.
 
 First-pass read on which could become checks, to be tested rather than trusted: **AI-3** (a test that builds external tooling on demand rather than skipping) and **AI-13** (a guard that resolves an external tool without reporting which one) look mechanizable in cadre; **AI-9** (repository visibility) looks scriptable. The rest look behavioural. That read is the lead's own and is exactly what AC-4 exists to challenge.
 
-**Outcome, recorded 2026-09-02:** that read was wrong in both directions. Nine items became controls, not three. Neither of the two items predicted `superseded` survived as one — AI-1 and AI-11 merged into a control, and the only landed item was a half of AI-6 that nobody had predicted. AC-4's challenge is what moved seven of them; see `evidence/P1/CP-3v-challenge-round1.md`.
+**Outcome, recorded 2026-09-01:** that read was wrong in both directions. Nine items became controls, not three. Neither of the two items predicted `superseded` survived as one — AI-1 and AI-11 merged into a control, and the only landed item was a half of AI-6 that nobody had predicted. AC-4's challenge is what moved seven of them; see `evidence/P1/CP-3v-challenge-round1.md`.
 
 ## Acceptance criteria
 
@@ -82,4 +82,4 @@ P4 last, because the question it adds to `/retro` should be phrased from what tr
 | CP-4 | PASS | Ran on all four phases. Found 2 defects P3's component checks passed over, and 1 in P4 that CP-3v structurally could not see |
 | CP-5 | PASS | All 7 AC accepted against observed artifacts |
 | CP-6 | PASS | Vault, cadre `fd2c2295`, gloop `0088da3` |
-| CP-7 | PASS | `04-projects/harness/retro/2026-09-02-controls-not-advice.md` |
+| CP-7 | PASS | `04-projects/harness/retro/2026-09-01-controls-not-advice.md` |

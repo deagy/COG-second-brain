@@ -1,6 +1,6 @@
 # Retro: controls-not-advice (ultragoal, P1–P4 + north-star gate)
 
-> Date: 2026-09-02 · Goal: `04-projects/controls-not-advice/` · Lane: `full` · Outcome: shipped
+> Date: 2026-09-01 · Goal: `04-projects/controls-not-advice/` · Lane: `full` · Outcome: shipped
 
 ## What happened
 
@@ -46,6 +46,14 @@ No PASS rested on a worker's summary. Every gate was briefed to treat the eviden
 | AI-22 | `spec-lint.sh`'s verified-skip trusts the literal word `verified` with no cross-check against an evidence file. Not currently exploitable, and the same shape as the defect this goal closed | `.claude/lib/spec-lint.sh` | **control — unbuilt** |
 | AI-23 | AI-13's control guards a discarded path; the incident that named it turned on an unlogged version. Nothing covers the version case | cadre | **control — unbuilt** |
 | AI-24 | When a check and a document teaching people to satisfy it are both authored, test the pair — write the artifact the document instructs and run the check on it. CP-3v tested the script against rows it had formatted itself and passed a skill that taught three rejected formats | `.claude/skills/closed-loop/SKILL.md` § CP-3v | **advice** — no artifact exists at authoring time to compare against; the defect is that two artifacts were never brought together, which nothing can observe until someone does it |
+
+## Two things this retro got wrong about itself
+
+Found by auditing it against the skill rather than re-reading it, which is the same method that found everything else this goal turned up.
+
+**It was dated 2026-09-02.** Local time was 2026-09-01; that is the UTC date. `CLAUDE.md` says to get the date with `date +%F` and never guess, and I guessed — then propagated it into the spec, the registry, the report, and four backlog rows. Every other retro in the folder and the whole day's journal use local dates, so the file would have sorted after one that does not exist. Renamed and corrected.
+
+**Phase 5's first feed-forward step was skipped.** Steps 2 through 5 — backlog rows, STATUS, the spec's checkpoint log, the CP-7 record — were all done at closure. Harvest staging was not, and nothing noticed, because the retro's own completion is the one thing no gate in this harness checks. It is the last unverified artifact in a session about verification.
 
 ## The lesson worth keeping
 
