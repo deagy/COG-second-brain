@@ -389,3 +389,31 @@ once.
 Getting the span right took two attempts. A line-at-a-time scan read each row of the
 ASCII box as a pair; a fixed-width window read a fragment of the box as an incomplete
 list and reported the box against itself. A block is what a reader sees as one list.
+
+## CP-3v round 8 — one finding, and it was mine
+
+Round 8 swept the categories round 7 had not reached — `make` targets, environment
+variables, HTTP endpoints, config keys, cross-document links, counts, defaults,
+refusals, paths — and found **one** false claim.
+
+It was in `docs/ROSTER.md`, four lines below the removal banner:
+
+> Gloop can select roles from an external agent roster … instead of (or in place
+> of) its bundled preset catalog.
+
+**Round 7 quoted that paragraph.** I read its finding, fixed the *Matching
+semantics* section and the `matched_routes` sentence it named, and left the
+paragraph the finding had been about. The file went on contradicting its own banner,
+its own rewritten section, and `gloop roster --help`.
+
+That is AI-16 exactly: *enumerate by concept before editing*. I have now made that
+error twice in the same file, in consecutive rounds, having written the rule myself.
+
+So the guard checks the claim rather than the section: **any live document asserting
+that gloop selects, matches or routes fails**, unless the sentence sits in a removal
+note — where saying it *used to* is the point. Falsified with round 8's exact
+sentence.
+
+`TestNoLiveDocumentTableRepeatsARow` came from round 8's one note: README's package
+table had two `pkg/govplan/` rows with different wording. Not false, but two answers
+to one question, which is this phase's subject with the clock not yet started.

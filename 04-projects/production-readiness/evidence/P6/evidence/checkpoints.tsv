@@ -7,3 +7,4 @@
 2026-09-02T18:17:54Z	CP-3v	FAIL	round 5: 2 false claims in live docs — a fourth stale provider list and a metrics sample that never compiled. Compile guard added; it immediately found stale mocks and a mockery config naming interfaces that do not exist
 2026-09-02T18:28:32Z	CP-3v	FAIL	round 6: 4 false claims, all in categories no guard read — a deleted package, a self-contradicting roadmap, invalid go doc syntax twice, and a file fixed in round 5 left wrong twice more in itself
 2026-09-02T18:49:19Z	CP-3v	FAIL	round 7: 4 false claims in four unchecked categories — an ASCII diagram, a JSON example that does not parse, prose describing removed behaviour, and a tagged build that has not compiled for weeks
+2026-09-02T18:56:38Z	CP-3v	FAIL	round 8: 1 false claim, in the paragraph round 7 had quoted — I fixed the section it cited and not the claim it was about, which is AI-16 twice in one file
