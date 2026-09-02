@@ -158,6 +158,11 @@ This is opt-in per skill — not a hard rule for every output. Apply it where wr
 - Before opening a PR, check the repository for a PR template (e.g. `.github/PULL_REQUEST_TEMPLATE.md` or similar) and always follow it when composing the PR description.
 - PR review replies must be in-thread via `gh api repos/{owner}/{repo}/pulls/comments/{id}/replies`, never a new parent comment, then resolve the thread via the GraphQL `resolveReviewThread` mutation. No pleasantries ("great catch", etc.) — state what changed, which commit, and why.
 
+### Background commands
+- A background command that queries one repository must not resolve its arguments from the session's working directory. Pass `-R <owner/repo>` and an explicit sha; `git rev-parse HEAD` in a background shell resolves against the session's cwd, not the repository you are asking about.
+- Do not end a background command with an `echo` after the command whose exit code matters. The notification reports the *last* command's status, so a failed watch followed by `echo` is reported as success. Two CI watches in one session reported exit 0 while having 404'd on an empty run id.
+- Verify the outcome against the artifact, not the wrapper's exit code — for CI, `.claude/lib/ci-status.sh`, which resolves the run for HEAD's exact sha and treats a missing or in-flight run as not-green.
+
 ### Interaction
 - Read every file the user provides (images, screenshots, code, text) with the read tool before responding — never assume its contents.
 - Answer the user before acting. Explanatory questions should be answered verbally without first invoking tools or editing code. Wait for the user to explicitly request investigation, a fix, or changes.

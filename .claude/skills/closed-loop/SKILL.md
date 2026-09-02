@@ -59,6 +59,22 @@ Record: `checkpoint.sh record <run-dir> CP-2 PASS`
 
 Worker implements. Returns deliverable path only.
 
+**When a criterion says *every* file, build the enumeration before editing
+anything, and enumerate by capability concept rather than by identifier.**
+
+Doing it the other way round — fixing the locations a report named, then
+believing the set was covered — failed three verification rounds in a row.
+The third failure is the instructive one: the enumeration was real, but it
+matched removed *verb names*, and the remaining defects asserted the
+capabilities without naming any command ("TTL-based expiration", "the store
+does have deletion capability"). No name-based search could have reached
+them. Search for what the capability *is*, then confirm the count is zero by
+re-running the same enumeration — not by rereading the files you edited.
+
+Two mechanical habits, because careful reading demonstrably did not
+substitute for either: check every occurrence in a file rather than the
+first, and check for near-duplicate paragraphs, where one of a pair is stale.
+
 ## Phase 4 — CP-3v Component verify
 
 ```
@@ -71,6 +87,19 @@ loop:
   if FAIL:fixable && retry < 2 → fix-agent → retry++
   else → escalate
 ```
+
+**The budget is two attempts, and it is not yours to extend.** The tempting
+argument on a third failure is that the method has materially changed, so
+this attempt is different in kind rather than a repeat. That argument was
+made three times in one phase and was not baseless — each new method did
+find defects the last one could not have. It was still the wrong call,
+because it is the worker's own assessment of the worker's own work, which is
+the judgment this budget exists to distrust.
+
+On a third failure of the same criterion, stop and put it to the user:
+name the pattern across the failures, propose the new method, and let them
+decide whether to spend the attempt. That costs one message. Self-authorising
+the attempt costs a round, and the round after it if you are wrong again.
 
 Copy verifier EVIDENCE rows into `evidence/CP-3v-component.md`.
 
@@ -105,6 +134,16 @@ For each mutation, observe artifact (curl, screenshot, re-fetch). Emit:
 Write `evidence/CP-5-acceptance.md`. **Traceability closure**: every AC in matrix has ≥1 PASS row in ledger.
 
 Record: `checkpoint.sh record <run-dir> CP-5 PASS|FAIL`
+
+### After a revert
+
+`git checkout -- <file>` restores the file to HEAD, not to the state you
+had in mind. If you reverted a probe, an injected test defect, or a bad
+edit, and that file also held uncommitted work you meant to keep, the
+revert took both. Diff against HEAD and confirm what survived before
+continuing — a revert you believe happened is not a revert you observed.
+This has already silently discarded three real edits in one session, one
+commit after the rule was written down.
 
 ## Phase 7 — Record + handoff
 
