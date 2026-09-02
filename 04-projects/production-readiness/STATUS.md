@@ -27,28 +27,39 @@ AC-6 and AC-7 (P5), AC-3b (P6). AC-1, AC-2, AC-3 closed at P1; AC-8 at P2; AC-4 
 
 ## Next action (resume cold from here)
 
-**P5 is at CP-3 done.** Next: T-05's container run against `cli-v0.7.1`, then CP-3v, CP-4, CP-5.
+**P5 is at CP-5 PASS, awaiting CP-3v round 2 and CP-4.** Both verifiers are
+dispatched. When they return: merge their rows into `evidence/P5/ledger.md`, mark P5
+done, then P6.
 
-Releases cut: cadre-kernel `v0.14.3` then `v0.14.4`, recall `v0.3.3`, cadre
-`cli-v0.7.0`/`plugin-v0.24.0` then `cli-v0.7.1`/`plugin-v0.24.1`. gloop deliberately
-none, with the reason written into its own README rather than only here.
+Releases: cadre `cli-v0.7.5` / `plugin-v0.24.5`, cadre-kernel `v0.14.4`, recall
+`v0.3.3`, gloop none by decision. All at `HEAD`, all runs green.
 
-Two defects the container found that nothing else could, both now fixed and
-re-released:
+**AC-7 took six container runs and each one moved the failure.** The defects, in
+order found: `install.sh` refuses with no AI runner on PATH; every kernel release
+since the extraction wrote `SHA256SUMS` the install shim could not match, so
+`cadre sdlc` could never install a kernel; `install.sh`'s `cadre` needed a Go
+toolchain its own instructions never mention; no `linux/arm64` CLI was published,
+and the diagnostic named `linux/arm64` among the platforms it covers; `cadre sdlc`
+could not find the kernel the installer had just cached, through four separate
+resolvers; and `cadre doctor` reported no kernel while `cadre sdlc` ran one.
 
-- **The kernel shim could not install a kernel, on any release since the
-  extraction.** It resolves a checksum with `grep " $ARCHIVE$"`; every release
-  wrote `SHA256SUMS` with `sha256sum ./*`, so no line matched and it reported the
-  archive as unlisted.
-- **A `cadre` installed by `install.sh` needed a Go toolchain** that the install
-  instructions never mention. `bin/cadre` now falls back to the packaged launcher,
-  which downloads a released binary.
+**P6 is AC-3b** — a claim-by-claim audit of gloop's documentation against the binary.
+Two findings already gathered, from `gloop --help` at `3715bef`: its usage line reads
+`Usage: gloop gloop`, and its Examples block opens with `# Select agents for a task`
+followed by no command — `gloop select` was removed in P1 and the comment survived.
+Scope: `README.md` is 555 lines and `docs/` is 8,060 across 23 files, most of them
+dated phase reviews, so the phase's first job is deciding which are live documents
+and which are records — the exemption class P1 applied to cadre's
+`DESIGN-NOTES-deletion-and-retention.md`.
 
-And one caught after publishing: `cli-v0.7.0` and `plugin-v0.24.0` went out from a
-commit whose `validate` run was red, because `validate.yml`'s `CADRE_KERNEL_REF`
-was the fifth place downstream of one constant. `TestTheWorkflowKernelPinMatchesTheProviderPin`
-now fails locally instead. The release job and the validate job run on the same
-push and neither waits for the other — worth a control at the retro.
+Then the north-star gate over all nine criteria, `report.html`, and CP-7.
+
+**Housekeeping the workspace guard refuses to do for me:** four scratch worktrees
+from earlier phases are still registered — `/tmp/claude-1000/redcheck`,
+`/tmp/v4b-oldcommit`, `/tmp/v4c-clone`, `/tmp/v4d-falsify`. The last two carry a
+deliberate falsification mutation in `internal/knowledge/staged_db.go`, already
+recorded in P3's evidence. `git worktree remove` is blocked as a destructive
+git-metadata operation, so they need removing by hand.
 
 ## Watch for
 
