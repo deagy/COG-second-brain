@@ -51,7 +51,7 @@ The two findings that order the work: **the lifecycle kernel is public with no l
 | Phase | Scope | AC covered | State |
 |---|---|---|---|
 | P1 | Licensing and identity: settle gloop on evidence, licence the kernel, make every claim true | AC-1, AC-2, AC-3 | not started |
-| P2 | Known defects: `#249` and its stale issue body, the kernel's two release homes | AC-8 | not started |
+| P2 | Known defects: `#249` and its stale issue body, the kernel's two release homes | AC-8 | **done** |
 | P3 | Caller identity: derive the actor fields, or refuse | AC-4 | not started |
 | P4 | Refuse the absent capability where it is reached for | AC-5 | not started |
 | P5 | Release all four, then prove a clean machine reaches a working state | AC-6, AC-7 | not started |
@@ -76,4 +76,4 @@ Declaring it done from a developer machine. Every criterion except AC-7 is check
 | AC-5 | P4 | | pending |
 | AC-6 | P5 | | pending |
 | AC-7 | P5 | | pending |
-| AC-8 | P2 | | pending |
+| AC-8 | P2 | evidence/P2/CP-5-acceptance.md · cadre `0f4bd58c`, run 33635041600 | verified |

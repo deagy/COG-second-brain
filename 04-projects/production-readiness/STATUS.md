@@ -2,20 +2,21 @@
 
 North-star: cadre, the lifecycle kernel, recall and gloop each install from their own published artifacts, claim nothing they cannot keep, and record who actually did what.
 Spec: 04-projects/production-readiness/spec.md · Registry: 04-projects/harness/ultragoals.md
-Current phase: P1 · Overall: **in progress**
+Current phase: P3 · Overall: **in progress**
 
 ## Phases
 | Phase | AC covered | State | Evidence | Notes |
 |---|---|---|---|---|
 | P0 | — | **done** | evidence/P0/ | 8 criteria, 5 phases, from a measured four-repository assessment |
-| P1 | AC-1, AC-2, AC-3 | not started | evidence/P1/ | Licensing and identity. Legal before technical |
-| P2 | AC-8 | not started | evidence/P2/ | `#249` and its stale issue body; the kernel's two release homes |
+| P1 | AC-1, AC-2, AC-3 | **done** | evidence/P1/ | Kernel licensed; gloop settled internal and made true; AC-07b closed. 3 CP-3v rounds + 1 CP-4 |
+| P2 | AC-8 | **done** | evidence/P2/ | `#249` fixed with 2 falsified tests and its record corrected; kernel release husk removed |
 | P3 | AC-4 | not started | evidence/P3/ | Caller identity — derive the actor fields, or refuse |
 | P4 | AC-5 | not started | evidence/P4/ | Refuse the absent capability where it is reached for |
 | P5 | AC-6, AC-7 | not started | evidence/P5/ | Release all four, then prove a clean machine works |
+| P6 | AC-3b | not started | evidence/P6/ | Audit gloop's docs claim by claim against the binary |
 
 ## Open AC-n (no PASS row yet)
-All eight. Nothing built.
+AC-3b (P6), AC-4 (P3), AC-5 (P4), AC-6 and AC-7 (P5). AC-1, AC-2, AC-3 closed at P1; AC-8 at P2.
 
 ## Decisions taken at charter
 

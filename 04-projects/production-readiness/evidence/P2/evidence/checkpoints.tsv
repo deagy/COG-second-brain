@@ -1,1 +1,5 @@
 2026-09-02T13:02:22Z	CP-2	PASS	4 tasks; the issue's own security claim is stale and correcting it is part of closing the defect
+2026-09-02T13:20:19Z	CP-3	PASS	#249 fixed with 2 falsified tests and its record corrected; kernel release husk removed
+2026-09-02T13:35:12Z	CP-3v	PASS	round 1: AC-8, all six checks independently reproduced — defect gone, tests falsify, both stores covered, issue record accurate, one release home
+2026-09-02T13:35:12Z	CP-4	PASS	6 claims; the other three FindFileAtProjectRoot callers unaffected; release.yml job graph intact; #249's public claim independently verified
+2026-09-02T13:35:12Z	CP-5	PASS	AC-8 accepted against observed artifacts
