@@ -1,0 +1,6 @@
+2026-09-02T12:16:24Z	CP-2	PASS	5 tasks; kernel licence settled by extraction lineage, gloop visibility gated to the user
+2026-09-02T12:35:20Z	CP-3	PASS	kernel licensed, gloop settled internal and made true, selectors removed, fetch set bounded; AC-07b closes
+2026-09-02T12:40:22Z	CP-3v	FAIL	round 1: AC-1/2/3 pass, but three live docs still described the removed commands — the build record claimed all five were rewritten
+2026-09-02T12:56:59Z	CP-3v	FAIL	round 3: 2 of 3 findings in files just fixed; 2 are pre-existing falsehoods unrelated to the removal — AC-3 is larger than the phase assumed
+2026-09-02T13:10:12Z	CP-4	FAIL	round 1: traceability marked AC-3 verified against a CP-5 acceptance file that did not exist
+2026-09-02T13:10:12Z	CP-5	PASS	AC-1, AC-2, AC-3 accepted; kernel release-tarball licence gap carried to P5

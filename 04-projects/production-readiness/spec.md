@@ -34,7 +34,8 @@ The two findings that order the work: **the lifecycle kernel is public with no l
 |---|---|---|
 | AC-1 | No repository claims a licence it does not carry | For each of the four: the licence GitHub reports matches every licence assertion in that repository's own README and docs. A repository with no licence makes no licence claim |
 | AC-2 | Nothing installable resolves an unlicensed dependency | Every artifact cadre's generated installer fetches by name or version comes from a repository carrying a licence. Bounded to the dependency set that installer actually names |
-| AC-3 | gloop's self-description is true of gloop | Whichever way P1 decides, every claim in its README holds of the repository as it then stands: badges requiring public indexing resolve, or are absent. Checked by fetching each badge URL |
+| AC-3 | gloop's self-description is true of gloop **about licensing, visibility and the removed commands** | No badge requiring public indexing, no licence claim, and no live document describing `gloop select`, `gloop roster plan`, `selector.Select`, `roster.Select` or `pkg/selector` as current. Checked by fetching each badge URL and reading every live document end to end |
+| AC-3b | Every other claim in gloop's documentation holds against the binary | Deferred from P1 on evidence, not relaxed at its gate. Round 3 found two falsehoods predating this goal — the docs claim a cobra CLI where none exists, and the `--config` contract is documented wrongly in a way that resisted three attempts to state correctly. A claim-by-claim audit of README and `docs/` against a built binary, each command and flag run |
 | AC-4 | Actor fields are derived, not asserted | Every command accepting `--staged-by`, `--decided-by`, `--deleted-by` or `--authorized-by` derives the value from a verifiable local source, or refuses to run. The evidence row it writes carries the derived value, and a caller-supplied override is either rejected or recorded as unverified |
 | AC-5 | An absent capability is refused where it is reached for | A retention or erasure request is refused at the point of use, naming the gap — not only in `SECURITY.md`. Falsified by running the command and reading what it says |
 | AC-6 | Everything on `main` is released | At the goal's close each of the four has zero commits between its latest release tag and `HEAD`, or a stated reason for each that remains. Releases cut in P5 |
@@ -54,6 +55,7 @@ The two findings that order the work: **the lifecycle kernel is public with no l
 | P3 | Caller identity: derive the actor fields, or refuse | AC-4 | not started |
 | P4 | Refuse the absent capability where it is reached for | AC-5 | not started |
 | P5 | Release all four, then prove a clean machine reaches a working state | AC-6, AC-7 | not started |
+| P6 | Audit gloop's documentation claim by claim against the binary | AC-3b | not started |
 
 **P1 first because it is legal rather than technical**, and because releasing an unlicensed artifact is worse than not releasing. **P5 last because it releases the finished thing** — cutting releases before P3 and P4 would publish a version whose behaviour the goal then changes, and AC-7 would verify an artifact nobody should install.
 
@@ -68,7 +70,8 @@ Declaring it done from a developer machine. Every criterion except AC-7 is check
 |---|---|---|---|
 | AC-1 | P1 | | pending |
 | AC-2 | P1 | | pending |
-| AC-3 | P1 | | pending |
+| AC-3 | P1 | evidence/P1/CP-5-acceptance.md | verified |
+| AC-3b | P6 | | pending |
 | AC-4 | P3 | | pending |
 | AC-5 | P4 | | pending |
 | AC-6 | P5 | | pending |

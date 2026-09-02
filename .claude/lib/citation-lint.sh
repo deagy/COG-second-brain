@@ -113,8 +113,47 @@ for doc in $files; do
       *04-projects/*) ;;
       *) continue ;;
     esac
+    # Two anchorings, because harness records use both. A vault-relative path
+    # resolves from the vault root; a goal-relative one -- `evidence/P1/...`,
+    # which is how every traceability row cites its evidence -- resolves from
+    # the directory holding the document.
+    #
+    # Only the first was checked at first, so the single most common citation
+    # form in the harness was skipped: a spec citing a dozen evidence files
+    # reported "1 path checked". A traceability row was marked `verified`
+    # against a CP-5 acceptance file that did not exist, and this passed it.
+    resolved=""
     case "$cited" in
-      04-projects/*|.claude/*|01-daily/*|05-knowledge/*|00-inbox/*) ;;
+      04-projects/*|.claude/*|01-daily/*|05-knowledge/*|00-inbox/*)
+        resolved="$vault/$cited" ;;
+      CP-*.md)
+        # A bare filename in backticks is a name, not a path: a report saying
+        # "see `CP-3-triage.md`" is naming a document, not locating one
+        # relative to itself. Treating those as paths produced six findings
+        # for files that all existed one directory away. Only a citation
+        # carrying a separator is a path.
+        continue ;;
+      evidence/*|*/evidence/*|report.html|spec.md|STATUS.md|*-*/evidence/*)
+        # Try the document's own directory, then the goal root -- an evidence
+        # file citing `spec.md` means the goal's, two levels up, and a
+        # traceability row citing `evidence/P1/...` means the goal's too.
+        resolved="$(dirname "$doc")/$cited"
+        if [ ! -e "$resolved" ]; then
+          probe="$(dirname "$doc")"
+          while [ "$probe" != "/" ] && [ "$probe" != "." ]; do
+            if [ -f "$probe/spec.md" ]; then
+              [ -e "$probe/$cited" ] && resolved="$probe/$cited"
+              break
+            fi
+            probe="$(dirname "$probe")"
+          done
+        fi
+        # And the projects root: a report comparing two goals cites the other
+        # as `repo-consolidation/evidence/P3/...`.
+        if [ ! -e "$resolved" ] && [ -e "$vault/04-projects/$cited" ]; then
+          resolved="$vault/04-projects/$cited"
+        fi
+        ;;
       *) continue ;;
     esac
     # A template placeholder is not a citation.
@@ -128,13 +167,21 @@ for doc in $files; do
       continue
     fi
     checked_paths=$((checked_paths + 1))
-    if [ ! -e "$vault/$cited" ]; then
+    if [ ! -e "$resolved" ]; then
       printf '%s:%s  cites %s, which does not exist\n' "$doc" "$line" "$cited"
       printf '    A rule landed in a file nobody can open has not landed; a control built at\n'
       printf '    a missing test is unbuilt.\n'
       findings=$((findings + 1))
     fi
-  done < <(grep -noE '`[A-Za-z0-9_.][A-Za-z0-9_./-]+\.(md|sh|go|py|json|ya?ml|html|tsv)`' "$doc" 2>/dev/null)
+    # Backticked paths, and bare ones in a table cell. A traceability row is
+    # written `| AC-3 | P1 | evidence/P1/CP-5-acceptance.md | verified |` with
+    # no backticks anywhere -- so requiring them skipped every traceability
+    # citation in the harness, which is the one place a phase marks itself
+    # verified against a file. One such row cited a CP-5 acceptance that had
+    # never been written, and this check passed it twice.
+  done < <( { grep -noE '`[A-Za-z0-9_.][A-Za-z0-9_./-]+\.(md|sh|go|py|json|ya?ml|html|tsv)`' "$doc";
+              grep -noE '(^|\| )(evidence|docs)/[A-Za-z0-9_./-]+\.(md|sh|go|json|ya?ml|html|tsv)' "$doc" \
+                | sed -E 's/:(\| )?/:/'; } 2>/dev/null | sort -u -t: -k1,1n -k2 )
 done
 
 echo
