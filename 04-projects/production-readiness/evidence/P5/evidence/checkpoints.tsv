@@ -1,2 +1,3 @@
 2026-09-02T15:43:31Z	CP-2	PASS	5 tasks; two silent-nothing defects found by measuring first: recall's tags publish no release, the kernel's archive holds only the binary
 2026-09-02T16:05:04Z	CP-3	PASS	kernel v0.14.3+v0.14.4, recall v0.3.3, cadre cli-v0.7.1/plugin-v0.24.1, gloop install claim corrected; 2 install defects found only in a container
+2026-09-02T16:40:43Z	CP-3v	FAIL	round 1: 15 claims; found T-07's fix unreachable on the no-Go launcher path independently, and AC-6 open on cadre's unreleased HEAD

@@ -216,3 +216,63 @@ when the order is inverted.
 `TestDispatchSDLC_UsesInTreeFallback` built its fake at `<repoRoot>/bin/agentic-sdlc`
 — the test agreed with the code and neither agreed with a checkout. That is why no
 suite caught this and a container did.
+
+## T-08 · a fourth resolver, in the launcher that never reaches the Go code
+
+The third container run got further again — `cadre knowledge search` answered, and
+P4's refusal survived packaging verbatim — and `cadre sdlc --version` said the same
+thing it had said before.
+
+T-07's fix was correct and unreached. The packaged launcher handles `sdlc` in shell
+and execs the kernel directly:
+
+```sh
+if [ "$command_name" = "sdlc" ]; then
+  sdlc_bin="${AGENTIC_SDLC_BIN:-}"
+  ...config resolve agentic_sdlc.bin_path...
+  [ -n "$sdlc_bin" ] || { echo "cadre: install Agentic SDLC ..."; exit 1; }
+```
+
+So "where is the kernel" had **four** implementations, not three, and the fourth is
+generated shell that no Go test exercised. I enumerated three, fixed three, and the
+one the criterion actually runs was the one I missed.
+
+That is AI-16's failure mode with a different subject. The instruction is to
+enumerate by *concept* rather than by identifier, and I did enumerate — with
+`grep --include="*.go"`. The concept lived partly in a here-string inside a
+generator.
+
+`TestTheGeneratedLauncherFallsBackToTheLifecycleShim` reads the generated launcher
+and asserts both the fallback and its position after `AGENTIC_SDLC_BIN`, so an
+override the operator set still wins. Falsified by regenerating without it.
+`PackagedKernelShim` also learned the packaged layout: `CADRE_REPO_ROOT` is the
+checkout root under `bin/cadre` and `<package>/suite` under the packaged launcher,
+and checking only the first found nothing in exactly the install the fallback exists
+for.
+
+### CP-3v reached the same finding from the other side
+
+Round 1 returned FAIL:fixable, 15 claims, and its headline is T-08 — arrived at
+independently, by reproducing `install.sh`'s own sequence in a scratch clone with
+Go stripped from PATH rather than by reading the code. Its wording is worth keeping:
+
+> The new tests only exercise `PackagedKernelShim` as a Go function with a
+> hand-supplied repoRoot — none exercise what value the shell launcher actually
+> passes on the no-Go path, which is exactly why this gap wasn't caught.
+
+That is a better statement of the defect than the one in T-08 above. My tests
+proved a function correct and said nothing about whether anything calls it with a
+value that works.
+
+Its second fix hint — drive the launcher script itself, not the Go function —
+became `TestTheGeneratedLauncherFallsBackToTheLifecycleShim`'s companion,
+`TestTheLauncherActuallyExecsTheLifecycleShim`: it copies the generated launcher
+into a temporary package with a stub CLI and a stub shim, runs it with an empty
+`AGENTIC_SDLC_BIN` and a scrubbed PATH, and asserts the shim was the thing that
+ran. Falsified by regenerating the launcher without the fallback, which reproduces
+`cadre: install Agentic SDLC v0.14.4+ ...` verbatim — the message this exists to
+stop.
+
+It also failed AC-6 on cadre: HEAD was one commit ahead of `cli-v0.7.2` when it
+looked, which is true and is the phase still moving. AC-6 is measured at the
+phase's close, not mid-flight, and the release below is that close.
