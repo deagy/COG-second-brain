@@ -37,15 +37,18 @@ AC-6 and AC-7 at P5; AC-3b at P6.
 
 ## Next action (resume cold from here)
 
-**Waiting on cadre CI for `cd836b95`** (validate run 33675564709, pending at the time
-of writing). When it is green, re-run the north-star gate over all nine criteria with
-a fresh verifier, then CP-7 is already written
+**North-star gate re-run dispatched** over all nine criteria, with AC-8 singled out for
+independent re-checking and the previous gate's weak citation (a 200 on a bare tag page)
+named so it is not repeated. CI is green at HEAD for all four by run id: cadre
+`bffec5cc` run 33676558157, cadre-kernel `d4fb0894`, recall `3bef2354`, gloop
+`1f37de47`. All five harness lints clean. CP-7 is written
 (`04-projects/harness/retro/2026-09-02-production-readiness.md`).
 
 Releases: cadre `cli-v0.7.5` / `plugin-v0.24.5`, cadre-kernel `v0.14.4`, recall
-`v0.3.3`, gloop none by decision. `cd836b95` is a documentation commit on top of
-`cli-v0.7.5` and does not need a new release to satisfy AC-6, which admits "a stated
-reason" — but that reason has to be stated at the gate, not assumed.
+`v0.3.3`, gloop none by decision. The three commits after `cli-v0.7.5` — `cd836b95`,
+`4697eb68`, `bffec5cc` — are documentation and generated-content fixes. AC-6 admits
+"a stated reason" for commits past a release, and that is the reason; it has to be
+stated at the gate rather than assumed.
 
 **What P7 was, in one paragraph.** The north-star gate failed AC-8 six phases after P2
 closed it. P2 had verified that `release.yml` no longer publishes kernel releases; the
@@ -58,6 +61,21 @@ named. Deleting the releases went to the user at CP-6, because it is irreversibl
 breaks the kernel fetch of eight published CLI releases (`cli-v0.5.0`–`cli-v0.6.5`,
 confirmed by reading the shim out of the extracted `cli-v0.6.5` binary with `strings`).
 They chose deletion, tags kept.
+
+**Then CP-4 found nine live documents** still installing the kernel from the retired
+home by four routes, all of them broken as well as misdirected — `kernel/` was deleted
+at `11eefd47` and the kernel is a Go binary now. Fixed at `cd836b95`, which went red on
+the runner while the full Go suite passed locally: `plugin/` is generated, and a source
+and its generated copy differed by one phrase. Regenerated at `4697eb68`.
+
+**The instruction that caused that red run was itself wrong**, which is the finding
+worth carrying forward. `AGENTS.md` named `go test ./internal/generators/` as the
+regeneration guard; that test proves the generator is deterministic against a temp
+directory, and only `cadre generate-plugin --check --output plugin` — run by
+`validate.yml`, by no test — catches a hand-edit to the committed tree. The guard the
+contributor document names and the guard that gates the merge were different checks,
+and the named one passes on exactly the defect the real one catches. Fixed at
+`bffec5cc`, filed as **AI-30**.
 
 **Housekeeping the workspace guard refuses to do for me:** four scratch worktrees from
 earlier phases are still registered — `/tmp/claude-1000/redcheck`, `/tmp/v4b-oldcommit`,

@@ -118,6 +118,9 @@
     <tr><td class="id">AC-8</td><td class="cp">gate</td><td class="v fail">FAIL</td>
         <td class="obs">The north-star gate reopened AC-8 six phases after P2 closed it. P2 verified that release.yml no longer publishes kernel releases; the criterion is about the artifacts, and six were still live and downloadable in the cadre repo. P2 likewise read a closing comment on #249 as the issue body being corrected — the body was never edited</td>
         <td class="obs">/tmp/claude-1000/northstar-gate.md</td></tr>
+    <tr><td class="id">AC-8</td><td class="cp">CP-4</td><td class="v pass">PASS</td>
+        <td class="obs">The doc fix went red on the runner while the full Go suite passed locally: plugin/ is generated, and a source and its generated copy differed by one phrase. Regenerated at 4697eb68. The instruction followed was itself wrong — AGENTS.md named a Go test as the regeneration guard, but only cadre generate-plugin --check against the committed tree catches a hand-edit, and no test runs it. Fixed at bffec5cc, filed AI-30</td>
+        <td class="obs">evidence/P7/CP-4-integration.md · cadre 4697eb68, bffec5cc</td></tr>
     <tr><td class="id">AC-8</td><td class="cp">CP-5</td><td class="v pass">PASS</td>
         <td class="obs">#249's body re-fetched after editing: opens with a correction stating the Python it names was deleted by b418031e, with the original report kept verbatim below as the record of what was observed</td>
         <td class="obs">evidence/P7/CP-5-acceptance.md · issue body 2026-09-02T19:35:17Z</td></tr>
@@ -159,7 +162,7 @@
 <p class="next">None: the goal is closed. Two things it deliberately did not do are recorded rather than left implicit — retention and erasure stay declared rather than built, because no third party's content enters the store; and gloop publishes no releases, because nothing outside the account consumes it and a tag that produces no release is indistinguishable from one that failed to.</p>
 
 <footer>
-  COG verification harness · evidence bundle 04-projects/production-readiness/evidence/P0…P7 · 48 checkpoints recorded, 17 of them FAIL
+  COG verification harness · evidence bundle 04-projects/production-readiness/evidence/P0…P7 · 49 checkpoints recorded, 17 of them FAIL
 </footer>
 
 </div>
