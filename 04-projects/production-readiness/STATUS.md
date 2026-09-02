@@ -2,7 +2,7 @@
 
 North-star: cadre, the lifecycle kernel, recall and gloop each install from their own published artifacts, claim nothing they cannot keep, and record who actually did what.
 Spec: 04-projects/production-readiness/spec.md · Registry: 04-projects/harness/ultragoals.md
-Current phase: P3 · Overall: **in progress**
+Current phase: P4 · Overall: **in progress**
 
 ## Phases
 | Phase | AC covered | State | Evidence | Notes |
@@ -10,13 +10,13 @@ Current phase: P3 · Overall: **in progress**
 | P0 | — | **done** | evidence/P0/ | 8 criteria, 5 phases, from a measured four-repository assessment |
 | P1 | AC-1, AC-2, AC-3 | **done** | evidence/P1/ | Kernel licensed; gloop settled internal and made true; AC-07b closed. 3 CP-3v rounds + 1 CP-4 |
 | P2 | AC-8 | **done** | evidence/P2/ | `#249` fixed with 2 falsified tests and its record corrected; kernel release husk removed |
-| P3 | AC-4 | not started | evidence/P3/ | Caller identity — derive the actor fields, or refuse |
+| P3 | AC-4 | **done** | evidence/P3/ | Observed-beside-asserted on all four actor sites. **4 CP-3v rounds**, three failures from one root cause: a column addition's blast radius |
 | P4 | AC-5 | not started | evidence/P4/ | Refuse the absent capability where it is reached for |
 | P5 | AC-6, AC-7 | not started | evidence/P5/ | Release all four, then prove a clean machine works |
 | P6 | AC-3b | not started | evidence/P6/ | Audit gloop's docs claim by claim against the binary |
 
 ## Open AC-n (no PASS row yet)
-AC-3b (P6), AC-4 (P3), AC-5 (P4), AC-6 and AC-7 (P5). AC-1, AC-2, AC-3 closed at P1; AC-8 at P2.
+AC-5 (P4), AC-6 and AC-7 (P5), AC-3b (P6). AC-1, AC-2, AC-3 closed at P1; AC-8 at P2; AC-4 at P3.
 
 ## Decisions taken at charter
 
@@ -27,13 +27,13 @@ AC-3b (P6), AC-4 (P3), AC-5 (P4), AC-6 and AC-7 (P5). AC-1, AC-2, AC-3 closed at
 
 ## Next action (resume cold from here)
 
-**P1 — licensing and identity.** Three tasks, so CP-4 is owed.
+**P4 — refuse the absent capability where it is reached for (AC-5).**
 
-1. **Licence the lifecycle kernel.** It is public with no licence, which is all-rights-reserved by default, and cadre's generated installer downloads it by version (`internal/generators/plugin_generation.go:235`). An Apache-2.0 CLI currently ships an installer reaching for a dependency nobody may lawfully use. This is the single highest-leverage change in the goal and it is one file.
-2. **Settle gloop.** Decide public or internal on the evidence above, then make its README true either way. Today it asserts MIT with no `LICENSE` file, and carries Go Report Card and pkg.go.dev badges while `pkg.go.dev/github.com/deagy/gloop` returns 404.
-3. **Sweep the remaining licence claims** across all four, so AC-1 is checked against the whole set rather than the two known offenders.
+Retention and erasure of ingested content do not exist, and `capability-parity` closed that honestly by *declaring* it across every document that touches it. AC-5 asks for one thing more: **the refusal has to happen at the point of use, not only in `SECURITY.md`.**
 
-If gloop is settled as internal, `AC-07b` of the closed repo-consolidation goal — removing the deprecated `selector.Select` and `roster.Select` — closes with it: nothing imports gloop, the only caller is its own CLI at `cmd/gloop/cmd/select.go:91`, and the deprecation notice has never shipped, living only in `[Unreleased]`.
+That wording is load-bearing and was decided against this project once already — CP-3v round 1 of P3 used it to rule that prose about `staged_by` and `decided_by` could not satisfy AC-4. The same standard applies here to the phase that owns the sentence.
+
+What to build: a retention or erasure request reaching the CLI is refused by name, saying the capability was removed in `b418031e`, never rebuilt, and that content now lives in a recall store whose CLI exposes no delete. Falsified by running the command and reading what it says, not by grepping for the string.
 
 ## Watch for
 

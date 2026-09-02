@@ -160,6 +160,12 @@ for doc in $files; do
     case "$cited" in
       *YYYY*|*'<'*|*'>'*) continue ;;
     esac
+    # Nor is range shorthand. A report writing `CP-3v-round1..4.md` means four
+    # files, not one named with dots in it -- and `..` inside a *filename* is
+    # never a real path, unlike `../` as a directory step.
+    case "$(basename "$cited")" in
+      *..*) continue ;;
+    esac
     # Nor is a path the document itself declares absent. Evidence describing
     # a falsification quotes the fake path it injected, and a check that
     # flags those is flagging the very demonstration that it works.
