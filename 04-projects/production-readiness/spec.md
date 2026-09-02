@@ -54,8 +54,8 @@ The two findings that order the work: **the lifecycle kernel is public with no l
 | P2 | Known defects: `#249` and its stale issue body, the kernel's two release homes | AC-8 | **done** |
 | P3 | Caller identity: derive the actor fields, or refuse | AC-4 | **done** |
 | P4 | Refuse the absent capability where it is reached for | AC-5 | **done** |
-| P5 | Release all four, then prove a clean machine reaches a working state | AC-6, AC-7 | in progress |
-| P6 | Audit gloop's documentation claim by claim against the binary | AC-3b | not started |
+| P5 | Release all four, then prove a clean machine reaches a working state | AC-6, AC-7 | **done** |
+| P6 | Audit gloop's documentation claim by claim against the binary | AC-3b | in progress |
 
 **P1 first because it is legal rather than technical**, and because releasing an unlicensed artifact is worse than not releasing. **P5 last because it releases the finished thing** — cutting releases before P3 and P4 would publish a version whose behaviour the goal then changes, and AC-7 would verify an artifact nobody should install.
 
@@ -74,6 +74,6 @@ Declaring it done from a developer machine. Every criterion except AC-7 is check
 | AC-3b | P6 | | pending |
 | AC-4 | P3 | evidence/P3/CP-5-acceptance.md · cadre `4da28060`, run 33643385856 | verified |
 | AC-5 | P4 | evidence/P4/CP-5-acceptance.md · cadre `0e249942`, run 33648430913 | verified |
-| AC-6 | P5 | | pending |
-| AC-7 | P5 | | pending |
+| AC-6 | P5 | evidence/P5/CP-5-acceptance.md · cadre `cli-v0.7.5`, kernel `v0.14.4`, recall `v0.3.3` | verified |
+| AC-7 | P5 | evidence/P5/ac7-clean-machine.log · `docker run --rm` aarch64, no Go, nothing on `~/sdk` | verified |
 | AC-8 | P2 | evidence/P2/CP-5-acceptance.md · cadre `0f4bd58c`, run 33635041600 | verified |

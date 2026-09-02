@@ -2,7 +2,7 @@
 
 North-star: cadre, the lifecycle kernel, recall and gloop each install from their own published artifacts, claim nothing they cannot keep, and record who actually did what.
 Spec: 04-projects/production-readiness/spec.md · Registry: 04-projects/harness/ultragoals.md
-Current phase: P5 · Overall: **in progress**
+Current phase: P6 · Overall: **in progress**
 
 ## Phases
 | Phase | AC covered | State | Evidence | Notes |
@@ -12,11 +12,11 @@ Current phase: P5 · Overall: **in progress**
 | P2 | AC-8 | **done** | evidence/P2/ | `#249` fixed with 2 falsified tests and its record corrected; kernel release husk removed |
 | P3 | AC-4 | **done** | evidence/P3/ | Observed-beside-asserted on all four actor sites. **4 CP-3v rounds**, three failures from one root cause: a column addition's blast radius |
 | P4 | AC-5 | **done** | evidence/P4/ | ~15 reach-paths refuse by name. CP-4 caught the refusal reading a flag's value as a request |
-| P5 | AC-6, AC-7 | not started | evidence/P5/ | Release all four, then prove a clean machine works |
-| P6 | AC-3b | not started | evidence/P6/ | Audit gloop's docs claim by claim against the binary |
+| P5 | AC-6, AC-7 | **done** | evidence/P5/ | Nine tasks for five planned. Six container runs, each moving the failure. CP-3v round 2 and CP-4 both PASS |
+| P6 | AC-3b | in progress | evidence/P6/ | Audit gloop's docs claim by claim against the binary |
 
 ## Open AC-n (no PASS row yet)
-AC-6 and AC-7 (P5), AC-3b (P6). AC-1, AC-2, AC-3 closed at P1; AC-8 at P2; AC-4 at P3; AC-5 at P4.
+AC-3b (P6) is the only one left. AC-1, AC-2, AC-3 closed at P1; AC-8 at P2; AC-4 at P3; AC-5 at P4; AC-6 and AC-7 at P5.
 
 ## Decisions taken at charter
 
@@ -52,7 +52,7 @@ dated phase reviews, so the phase's first job is deciding which are live documen
 and which are records — the exemption class P1 applied to cadre's
 `DESIGN-NOTES-deletion-and-retention.md`.
 
-Then the north-star gate over all nine criteria, `report.html`, and CP-7.
+Then the north-star gate over all nine criteria, the HTML report the ultragoal skill calls for, and CP-7.
 
 **Housekeeping the workspace guard refuses to do for me:** four scratch worktrees
 from earlier phases are still registered — `/tmp/claude-1000/redcheck`,

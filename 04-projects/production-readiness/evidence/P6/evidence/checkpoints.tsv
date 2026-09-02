@@ -1,0 +1,2 @@
+2026-09-02T17:10:31Z	CP-2	PASS	3 tasks; live set scoped to ~1,283 lines on the docs index's own classification, records exempt only where they say so
+2026-09-02T17:21:50Z	CP-3	PASS	3 tasks; --config stated correctly on the fourth attempt, 3 defects in help text, 1 self-contradicting payload, 22 records banner-declared; 8 guards, all falsified
