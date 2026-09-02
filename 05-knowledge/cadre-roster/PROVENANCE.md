@@ -14,7 +14,7 @@ re-vendored.
 | Path in repo | `roster/` |
 | Source revision | `5c40d6eceb44cf52789eacf364e7ba47d33d4bb5` |
 | Vendored on | 2026-09-02 |
-| Combined digest | `2eeb3ad94b2d7d873f95893087056317599ea9a5ad379e4c90362442dee619ee` |
+| Combined digest | `d2e69624b3846ffd2ab2291692c726c6b5a3dd34b5bf44939c467947796af8f5` |
 
 ## What it is
 
@@ -49,8 +49,10 @@ from the source revision above. The digest is stored **outside** this directory
 rm -rf 05-knowledge/cadre-roster
 mkdir -p 05-knowledge/cadre-roster
 cp -a /home/deagy/sdk/cadre/roster/. 05-knowledge/cadre-roster/
-( cd 05-knowledge/cadre-roster && find . -type f -print0 | sort -z \
-    | xargs -0 sha256sum | sha256sum | awk '{print $1}' \
+# PROVENANCE.md is excluded from the hash (it records the digest itself);
+# regenerate it after re-vendoring, then hash only the roster package.
+( cd 05-knowledge/cadre-roster && find . -type f ! -name PROVENANCE.md -print0 \
+    | sort -z | xargs -0 sha256sum | sha256sum | awk '{print $1}' \
   > ../../.claude/lib/cadre-roster.manifest.sha256 )
 bash .claude/lib/cadre-roster-drift.sh   # must PASS
 ```

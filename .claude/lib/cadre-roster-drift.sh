@@ -8,6 +8,11 @@
 # copy) if the vendored package diverges. Same shape as run-record-lint.sh's
 # drift check, adapted from one file to a directory tree.
 #
+# PROVENANCE.md is excluded from the hash: it records the digest itself, so
+# including it would make the hash self-referential (editing the digest value
+# would change the digest). The manifest lives outside the tree for the same
+# reason. The hash therefore covers only the vendored roster package.
+#
 # Usage:
 #   bash .claude/lib/cadre-roster-drift.sh
 #
@@ -26,7 +31,7 @@ MANIFEST="${ROOT_DIR}/.claude/lib/cadre-roster.manifest.sha256"
 [ -f "$MANIFEST" ] || { echo "FAIL: roster manifest not found at $MANIFEST" >&2; exit 2; }
 
 EXPECTED="$(head -n1 "$MANIFEST")"
-ACTUAL="$(cd "$ROSTER_DIR" && find . -type f -print0 | sort -z | xargs -0 sha256sum | sha256sum | awk '{print $1}')"
+ACTUAL="$(cd "$ROSTER_DIR" && find . -type f ! -name PROVENANCE.md -print0 | sort -z | xargs -0 sha256sum | sha256sum | awk '{print $1}')"
 
 if [ "$EXPECTED" != "$ACTUAL" ]; then
   echo "FAIL: vendored kadre roster has drifted" >&2
