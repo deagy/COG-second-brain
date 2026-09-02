@@ -1,0 +1,512 @@
+<title>Not Yet Shippable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+  :root {
+    --ground: #f4f6f8;
+    --surface: #ffffff;
+    --sunk: #eceff3;
+    --ink: #161a20;
+    --muted: #5c6672;
+    --faint: #8a939e;
+    --line: #dde2e8;
+    --line-strong: #c3ccd6;
+    --accent: #41618b;
+    --accent-soft: #e6ecf4;
+    --blocker: #b4232a;
+    --blocker-soft: #fbeaea;
+    --warn: #8a6a1f;
+    --warn-soft: #f8f0dd;
+    --ok: #1a7f4b;
+    --ok-soft: #e4f2ea;
+
+    --serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #12151a;
+      --surface: #1a1e25;
+      --sunk: #15181e;
+      --ink: #e8ebef;
+      --muted: #99a3b0;
+      --faint: #6d7885;
+      --line: #2a3038;
+      --line-strong: #3a424d;
+      --accent: #8ca9d4;
+      --accent-soft: #1e2833;
+      --blocker: #f2777c;
+      --blocker-soft: #2b1a1c;
+      --warn: #d9ad55;
+      --warn-soft: #2a2318;
+      --ok: #4ec281;
+      --ok-soft: #16261e;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #12151a;
+    --surface: #1a1e25;
+    --sunk: #15181e;
+    --ink: #e8ebef;
+    --muted: #99a3b0;
+    --faint: #6d7885;
+    --line: #2a3038;
+    --line-strong: #3a424d;
+    --accent: #8ca9d4;
+    --accent-soft: #1e2833;
+    --blocker: #f2777c;
+    --blocker-soft: #2b1a1c;
+    --warn: #d9ad55;
+    --warn-soft: #2a2318;
+    --ok: #4ec281;
+    --ok-soft: #16261e;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font: 400 16px/1.6 var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 60rem;
+    margin: 0 auto;
+    padding: 4rem 1.5rem 7rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3.5rem;
+  }
+
+  /* ---- masthead ---- */
+
+  header { display: flex; flex-direction: column; gap: 1.25rem; }
+
+  .eyebrow {
+    font: 500 11.5px/1 var(--mono);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  h1 {
+    font: 600 clamp(2.1rem, 5vw, 3rem)/1.08 var(--serif);
+    letter-spacing: -0.02em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .verdict {
+    font: 400 1.2rem/1.5 var(--serif);
+    color: var(--ink);
+    max-width: 40ch;
+    margin: 0;
+  }
+
+  .verdict em { font-style: italic; color: var(--accent); }
+
+  .stamp {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+    font: 400 12.5px/1.5 var(--mono);
+    color: var(--faint);
+  }
+
+  /* ---- sections ---- */
+
+  section { display: flex; flex-direction: column; gap: 1.1rem; }
+
+  h2 {
+    font: 600 0.82rem/1 var(--mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  p { margin: 0; max-width: 68ch; }
+  p + p { margin-top: 0.85rem; }
+
+  .lede { color: var(--muted); max-width: 68ch; }
+
+  code {
+    font: 400 0.875em/1.4 var(--mono);
+    background: var(--sunk);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 0.08em 0.36em;
+  }
+
+  blockquote {
+    margin: 0.4rem 0 0;
+    padding: 0.15rem 0 0.15rem 1.1rem;
+    border-left: 2px solid var(--accent);
+    font: italic 400 1rem/1.6 var(--serif);
+    color: var(--muted);
+    max-width: 62ch;
+  }
+
+  /* ---- repo matrix ---- */
+
+  .scroll {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+
+  th, td {
+    text-align: left;
+    padding: 0.72rem 0.9rem;
+    border-bottom: 1px solid var(--line);
+    vertical-align: baseline;
+    white-space: nowrap;
+  }
+
+  thead th {
+    font: 600 11px/1.3 var(--mono);
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--faint);
+    background: var(--sunk);
+  }
+
+  tbody tr:last-child td { border-bottom: 0; }
+
+  td.dim {
+    font: 500 13px/1.4 var(--sans);
+    color: var(--muted);
+    white-space: normal;
+    min-width: 9rem;
+  }
+
+  td.val { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 13px; }
+
+  .repo-name { font: 600 13px/1.3 var(--mono); }
+
+  /* ---- state chips ---- */
+
+  .chip {
+    display: inline-block;
+    font: 500 11.5px/1.5 var(--mono);
+    padding: 0.05rem 0.45rem;
+    border-radius: 3px;
+    border: 1px solid transparent;
+  }
+  .chip.bad  { color: var(--blocker); background: var(--blocker-soft); border-color: var(--blocker); }
+  .chip.warn { color: var(--warn); background: var(--warn-soft); border-color: var(--warn); }
+  .chip.good { color: var(--ok); background: var(--ok-soft); border-color: var(--ok); }
+
+  /* ---- findings ---- */
+
+  .findings { display: flex; flex-direction: column; gap: 1.1rem; }
+
+  .finding {
+    display: grid;
+    grid-template-columns: 2.6rem 1fr;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--line-strong);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .finding.sev-blocker { border-left-color: var(--blocker); }
+  .finding.sev-warn    { border-left-color: var(--warn); }
+
+  .rank {
+    font: 600 15px/1 var(--mono);
+    color: var(--faint);
+    padding: 1.15rem 0 0 0.9rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .body { padding: 1.05rem 1.15rem 1.15rem 0; display: flex; flex-direction: column; gap: 0.7rem; }
+
+  .finding h3 {
+    font: 600 1.06rem/1.35 var(--sans);
+    margin: 0;
+    letter-spacing: -0.005em;
+    text-wrap: balance;
+  }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .finding p { font-size: 15px; max-width: 64ch; }
+
+  /* ---- strengths ---- */
+
+  .strengths {
+    background: var(--accent-soft);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 1.3rem 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .strengths p { max-width: 66ch; }
+
+  /* ---- ordered path ---- */
+
+  ol.path { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0; counter-reset: step; }
+
+  ol.path li {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: 2.4rem 1fr;
+    gap: 0 0.6rem;
+    padding: 0.95rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  ol.path li:last-child { border-bottom: 0; }
+
+  ol.path li::before {
+    content: counter(step);
+    font: 600 12.5px/1.7 var(--mono);
+    color: var(--surface);
+    background: var(--accent);
+    border-radius: 3px;
+    width: 1.55rem;
+    height: 1.55rem;
+    display: grid;
+    place-items: center;
+  }
+
+  ol.path .what { font-weight: 600; }
+  ol.path .why { color: var(--muted); font-size: 14.5px; display: block; margin-top: 0.2rem; max-width: 60ch; }
+
+  footer {
+    border-top: 1px solid var(--line);
+    padding-top: 1.25rem;
+    font: 400 12.5px/1.65 var(--mono);
+    color: var(--faint);
+    max-width: 70ch;
+  }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 2.5rem 1.1rem 4rem; gap: 2.75rem; }
+    .finding { grid-template-columns: 2.1rem 1fr; }
+    .rank { padding-left: 0.65rem; }
+  }
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Readiness assessment · 2026-09-01</div>
+  <h1>Not yet shippable</h1>
+  <p class="verdict">All four repositories are green on their own runners. What stands between them and production is <em>licensing, identity, and release discipline</em> — not code quality.</p>
+  <div class="stamp">
+    <span>cadre <b>fd2c2295</b></span>
+    <span>cadre-kernel <b>e53c9bb5</b></span>
+    <span>recall <b>3ee2795f</b></span>
+    <span>gloop <b>0088da34</b></span>
+    <span>579 test files</span>
+  </div>
+</header>
+
+<section>
+  <h2>The four, side by side</h2>
+  <div class="scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>&nbsp;</th>
+          <th class="repo-name">cadre</th>
+          <th class="repo-name">cadre-kernel</th>
+          <th class="repo-name">recall</th>
+          <th class="repo-name">gloop</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="dim">Visibility</td>
+          <td class="val">public</td>
+          <td class="val">public</td>
+          <td class="val">public</td>
+          <td class="val"><span class="chip warn">private</span></td>
+        </tr>
+        <tr>
+          <td class="dim">Licence</td>
+          <td class="val"><span class="chip good">Apache-2.0</span></td>
+          <td class="val"><span class="chip bad">none</span></td>
+          <td class="val"><span class="chip good">MIT</span></td>
+          <td class="val"><span class="chip bad">none</span></td>
+        </tr>
+        <tr>
+          <td class="dim">Latest release</td>
+          <td class="val">cli-v0.6.5 · Aug&nbsp;19</td>
+          <td class="val">v0.14.2</td>
+          <td class="val">v0.3.1</td>
+          <td class="val">v0.2.0 · Aug&nbsp;20</td>
+        </tr>
+        <tr>
+          <td class="dim">Commits unreleased</td>
+          <td class="val"><span class="chip warn">46</span></td>
+          <td class="val">1</td>
+          <td class="val">1</td>
+          <td class="val"><span class="chip warn">39</span></td>
+        </tr>
+        <tr>
+          <td class="dim">CI at HEAD</td>
+          <td class="val"><span class="chip good">green</span></td>
+          <td class="val"><span class="chip good">green</span></td>
+          <td class="val"><span class="chip good">green</span></td>
+          <td class="val"><span class="chip good">green</span></td>
+        </tr>
+        <tr>
+          <td class="dim">Open issues</td>
+          <td class="val">1</td>
+          <td class="val">0</td>
+          <td class="val">0</td>
+          <td class="val">0</td>
+        </tr>
+        <tr>
+          <td class="dim">Test files</td>
+          <td class="val">235</td>
+          <td class="val">33</td>
+          <td class="val">163</td>
+          <td class="val">148</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="lede">Ranked below by what gates the most. The first two are legal rather than technical, which is why they outrank everything with a stack trace.</p>
+</section>
+
+<section>
+  <h2>What blocks production</h2>
+  <div class="findings">
+
+    <article class="finding sev-blocker">
+      <div class="rank">01</div>
+      <div class="body">
+        <h3>cadre-kernel is public with no licence — and cadre’s installer downloads it</h3>
+        <div class="tags"><span class="chip bad">legal</span><span class="chip bad">gates distribution</span></div>
+        <p>A public repository with no licence is all-rights-reserved by default. Nobody has been granted the right to use, copy, or redistribute it.</p>
+        <p>That would be a footnote if the kernel stood alone. It does not: the plugin shim cadre generates fetches the kernel by version at install time — <code>AGENTIC_SDLC_VERSION</code>, in <code>internal/generators/plugin_generation.go:235</code>. So an Apache-2.0, publicly installable CLI ships an installer that reaches for a dependency nobody may lawfully use.</p>
+        <p>One file fixes it. Until it exists, every other item on this page is downstream of a distribution that cannot legally ship.</p>
+      </div>
+    </article>
+
+    <article class="finding sev-blocker">
+      <div class="rank">02</div>
+      <div class="body">
+        <h3>gloop presents itself as a public MIT SDK and is a private repo with no licence</h3>
+        <div class="tags"><span class="chip bad">legal</span><span class="chip warn">decision needed</span></div>
+        <p>Its README opens as <em>“Gloop SDK — a powerful Go SDK for building AI agent orchestration systems”</em> and carries three badges: Go Report Card, Go Reference, and <b>License: MIT</b>. The repository is private, has no <code>LICENSE</code> file tracked or untracked, and <code>pkg.go.dev/github.com/deagy/gloop</code> returns <b>404</b>.</p>
+        <p>Two badges point at services that can only index public modules. The third asserts a grant of rights that does not exist, which is the one that matters.</p>
+        <p>This also settles a criterion that has been waiting on the wrong thing. <code>AC-07b</code> defers removing the deprecated <code>selector.Select</code> and <code>roster.Select</code> until gloop’s next major — to protect consumers. There are none: nothing imports gloop, not cadre, not recall, not cadre-kernel. The only caller of the deprecated selectors is gloop’s own CLI, at <code>cmd/gloop/cmd/select.go:91</code>. And the deprecation notice exists only in <code>[Unreleased]</code>, so the promise has never shipped to anyone.</p>
+      </div>
+    </article>
+
+    <article class="finding sev-blocker">
+      <div class="rank">03</div>
+      <div class="body">
+        <h3>The knowledge store has no caller identity, and its own security document says so</h3>
+        <div class="tags"><span class="chip bad">stated bar unmet</span><span class="chip warn">real engineering</span></div>
+        <p>Every actor field — <code>--decided-by</code>, <code>--deleted-by</code>, <code>--authorized-by</code> — is a free-text string. <code>roster/knowledge-store/SECURITY.md</code> is unusually direct about what that costs:</p>
+        <blockquote>“…caller-asserted strings, authenticated by nobody… an actor that stages as one name and decides as another satisfies both. So these enforce separation <i>as declared</i>, not separation <i>in fact</i>.”</blockquote>
+        <p>Two of the four separation-of-duties checks compare two such strings. The document’s own conclusion is that production integration must derive <code>staged_by</code> and <code>decided_by</code> from authenticated claims rather than trusting the record. The retrieval audit log reaches the same verdict independently: no authenticated identity, no tenant or environment scope, no authorization decision, no returned citation ids — <i>“production requirements this does not meet.”</i></p>
+        <p>This is the item that separates <i>works</i> from <i>production</i>, and the only one on this page that is a project rather than a task.</p>
+      </div>
+    </article>
+
+    <article class="finding sev-warn">
+      <div class="rank">04</div>
+      <div class="body">
+        <h3>Retention and erasure of ingested content have no implementation</h3>
+        <div class="tags"><span class="chip warn">declared absent</span></div>
+        <p>No retention window is recorded for any content, nothing ages out, nothing reports what has expired, and no command deletes ingested content. The <code>capability-parity</code> goal closed these by <i>declaring</i> them absent across every document that touches them — the honest branch, and it does not make them present.</p>
+        <p>A steward asked to honour an erasure obligation has no tool here and leaves no evidence trail if they act by other means.</p>
+      </div>
+    </article>
+
+    <article class="finding sev-warn">
+      <div class="rank">05</div>
+      <div class="body">
+        <h3>46 and 39 commits unreleased</h3>
+        <div class="tags"><span class="chip warn">reachability</span></div>
+        <p>cadre’s last release is <code>cli-v0.6.5</code>, 2026-08-19 — before two ultragoals’ worth of work. gloop’s is <code>v0.2.0</code>, 2026-08-20. Everything shipped since, including the CLI wires and the guards added today, exists only on <code>main</code>.</p>
+        <p>Work nobody can install is work nobody has.</p>
+      </div>
+    </article>
+
+    <article class="finding sev-warn">
+      <div class="rank">06</div>
+      <div class="body">
+        <h3>Two residues: a live config bug, and a kernel with two release homes</h3>
+        <div class="tags"><span class="chip warn">issue #249</span><span class="chip warn">split residue</span></div>
+        <p>Issue <b>#249</b> reproduces against the current binary: from a directory under <code>$HOME</code> with no <code>.git</code> between, the config tier resolves as <b>project-local</b> when it should be global-fallback, and <code>KNOWLEDGE_STORE_HOME</code> is silently ignored. The cause is at <code>internal/platform/paths.go:113</code> — the walk stats the candidate before testing the <code>.git</code> boundary, so with no project root it climbs to <code>$HOME</code>, where the global store’s own config is a valid project-local match.</p>
+        <p>The issue’s <i>security</i> claim no longer applies: it was written against Python, where the scope gates keyed on tier. The Go gate is unconditional and says why at <code>internal/cli/knowledge.go:389</code>. What survives is a correctness bug — and an issue that has cited deleted Python for three weeks.</p>
+        <p>Separately, cadre still tags <code>kernel-v*</code> and carries kernel release workflow while cadre-kernel publishes independently. One concern, two release homes — residue from the split that <code>repo-consolidation</code> existed to end.</p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<section>
+  <h2>What is genuinely strong</h2>
+  <div class="strengths">
+    <p><b>579 test files</b>, and every guard added recently was falsified in both directions rather than assumed — the defect reintroduced and the check watched failing, then removed and watched passing.</p>
+    <p><b>All four green on their own runners.</b> That was not true this morning: cadre had been red for ten consecutive pushes and gloop for four, each because a cross-repository guard built to refuse to skip under CI had been given no way to run.</p>
+    <p><b>The honesty layer is the real asset.</b> <code>SECURITY.md</code> states its own limits precisely instead of hiding them — which is rarer than working code, and is the only reason this assessment took an hour. The gaps were already written down truthfully; the work was reading them.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Suggested order</h2>
+  <ol class="path">
+    <li>
+      <div>
+        <span class="what">Licence cadre-kernel</span>
+        <span class="why">An afternoon. Unblocks the entire distribution, and nothing else can ship past it.</span>
+      </div>
+    </li>
+    <li>
+      <div>
+        <span class="what">Decide gloop: public or internal</span>
+        <span class="why">Public means the licence and badges become true first. Internal means the badges come out, the deprecated selectors can be deleted now, and <code>AC-07b</code> closes today instead of waiting for a v1.0 with no external reason to exist.</span>
+      </div>
+    </li>
+    <li>
+      <div>
+        <span class="what">Cut releases</span>
+        <span class="why">85 commits across two repositories are currently unreachable by anyone who installs rather than clones.</span>
+      </div>
+    </li>
+    <li>
+      <div>
+        <span class="what">Fix #249, and correct the issue itself</span>
+        <span class="why">Test the <code>.git</code> boundary before the candidate in <code>platform.FindFileAtProjectRoot</code>, which both stores share; add the test the issue notes is missing; and strike the bypass claim that the Go rewrite already closed.</span>
+      </div>
+    </li>
+    <li>
+      <div>
+        <span class="what">Caller identity</span>
+        <span class="why">The one project rather than task. Until <code>staged_by</code> and <code>decided_by</code> come from authenticated claims, the separation-of-duties guarantees are declarations, and the documents already say so.</span>
+      </div>
+    </li>
+  </ol>
+</section>
+
+<footer>
+  Assessed 2026-09-01 against HEAD of each repository, with CI resolved for the exact commit rather than a local test run. Licence and visibility read from the GitHub API; the gloop 404 and the #249 reproduction were run rather than inferred. Quotations are verbatim from <code>roster/knowledge-store/SECURITY.md</code>.
+</footer>
+
+</div>
