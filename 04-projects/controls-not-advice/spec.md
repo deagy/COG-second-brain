@@ -53,7 +53,7 @@ First-pass read on which could become checks, to be tested rather than trusted: 
 | P1 | Triage all fourteen: disposition each with its reason, and evidence any closure | AC-1, AC-4, AC-5 | **done** |
 | P2 | Build every `control`, falsified in both directions | AC-2 | **done** |
 | P3 | Land every `advice` item where it loads, with its reason | AC-3, AC-6 | **done** |
-| P4 | Make the disposition question part of writing an action item | AC-7 | not started |
+| P4 | Make the disposition question part of writing an action item | AC-7 | **done** |
 
 P1 before P2 deliberately, and P1 carries AC-4 rather than P2: the classification has to survive an independent challenge *before* anything is built, or the challenge arrives after the effort is sunk and will lose to it.
 
@@ -68,4 +68,18 @@ P4 last, because the question it adds to `/retro` should be phrased from what tr
 | AC-4 | P1 | evidence/P1/CP-3v-challenge-round1.md — 7 of 8 challenged, all acted on or answered | verified |
 | AC-5 | P1 | evidence/P1/CP-3v-round3.md — the one unevidenced closure (AI-14) was withdrawn | verified |
 | AC-6 | P3 | evidence/P3/CP-5-acceptance.md — 20/20 rows, one vocabulary, header defines it | verified |
-| AC-7 | P4 | | pending |
+| AC-7 | P4 | evidence/P4/CP-5-acceptance.md — asked at write time, enforced by backlog-lint.sh, falsified on 3 historical states | verified |
+
+
+## Checkpoint log
+
+| CP | Verdict | Note |
+|---|---|---|
+| CP-1 | PASS | 7 criteria, 4 phases, from a 14-item baseline |
+| CP-2 | PASS | Planned for every phase |
+| CP-3 | PASS | All four phases built |
+| CP-3v | PASS | P1 took 3 rounds, P2 took 2, P3 and P4 one each |
+| CP-4 | PASS | Ran on all four phases. Found 2 defects P3's component checks passed over, and 1 in P4 that CP-3v structurally could not see |
+| CP-5 | PASS | All 7 AC accepted against observed artifacts |
+| CP-6 | PASS | Vault, cadre `fd2c2295`, gloop `0088da3` |
+| CP-7 | pending | Retro |

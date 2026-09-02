@@ -2,3 +2,5 @@
 2026-09-02T03:59:37Z	CP-3	PASS	retro skill + template ask the disposition question; backlog-lint.sh enforces it, falsified against 3 real historical states
 2026-09-02T04:03:32Z	CP-3v	PASS	round 1: AC-7 passes; advice-location check strengthened from substring to file resolution
 2026-09-02T04:10:25Z	CP-4	FAIL	round 1: the skill taught three disposition formats, none of which the lint accepted
+2026-09-02T04:14:11Z	CP-4	PASS	round 2: 12 claims; every documented spelling passes, bad rows still fail, backlog untouched by the fix
+2026-09-02T04:14:11Z	CP-5	PASS	AC-7 accepted: question asked at write time, enforced by a lint falsified on 3 real historical states
