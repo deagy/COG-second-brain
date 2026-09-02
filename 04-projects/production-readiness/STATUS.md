@@ -2,7 +2,7 @@
 
 North-star: cadre, the lifecycle kernel, recall and gloop each install from their own published artifacts, claim nothing they cannot keep, and record who actually did what.
 Spec: 04-projects/production-readiness/spec.md · Registry: 04-projects/harness/ultragoals.md
-Current phase: P4 · Overall: **in progress**
+Current phase: P5 · Overall: **in progress**
 
 ## Phases
 | Phase | AC covered | State | Evidence | Notes |
@@ -11,12 +11,12 @@ Current phase: P4 · Overall: **in progress**
 | P1 | AC-1, AC-2, AC-3 | **done** | evidence/P1/ | Kernel licensed; gloop settled internal and made true; AC-07b closed. 3 CP-3v rounds + 1 CP-4 |
 | P2 | AC-8 | **done** | evidence/P2/ | `#249` fixed with 2 falsified tests and its record corrected; kernel release husk removed |
 | P3 | AC-4 | **done** | evidence/P3/ | Observed-beside-asserted on all four actor sites. **4 CP-3v rounds**, three failures from one root cause: a column addition's blast radius |
-| P4 | AC-5 | not started | evidence/P4/ | Refuse the absent capability where it is reached for |
+| P4 | AC-5 | **done** | evidence/P4/ | ~15 reach-paths refuse by name. CP-4 caught the refusal reading a flag's value as a request |
 | P5 | AC-6, AC-7 | not started | evidence/P5/ | Release all four, then prove a clean machine works |
 | P6 | AC-3b | not started | evidence/P6/ | Audit gloop's docs claim by claim against the binary |
 
 ## Open AC-n (no PASS row yet)
-AC-5 (P4), AC-6 and AC-7 (P5), AC-3b (P6). AC-1, AC-2, AC-3 closed at P1; AC-8 at P2; AC-4 at P3.
+AC-6 and AC-7 (P5), AC-3b (P6). AC-1, AC-2, AC-3 closed at P1; AC-8 at P2; AC-4 at P3; AC-5 at P4.
 
 ## Decisions taken at charter
 
@@ -27,13 +27,19 @@ AC-5 (P4), AC-6 and AC-7 (P5), AC-3b (P6). AC-1, AC-2, AC-3 closed at P1; AC-8 a
 
 ## Next action (resume cold from here)
 
-**P4 — refuse the absent capability where it is reached for (AC-5).**
+**P5 — release all four, then prove a clean machine reaches a working state (AC-6, AC-7).**
 
-Retention and erasure of ingested content do not exist, and `capability-parity` closed that honestly by *declaring* it across every document that touches it. AC-5 asks for one thing more: **the refusal has to happen at the point of use, not only in `SECURITY.md`.**
+AC-6: at the goal's close each repository has zero commits between its latest release tag and `HEAD`, or a stated reason for each that remains.
+AC-7: on a machine with none of the four checked out, installing from the artifacts P5 publishes produces a `cadre` that answers `cadre sdlc --version` and `cadre knowledge search`.
 
-That wording is load-bearing and was decided against this project once already — CP-3v round 1 of P3 used it to rule that prose about `staged_by` and `decided_by` could not satisfy AC-4. The same standard applies here to the phase that owns the sentence.
+Two things carried here that are P5's to settle:
 
-What to build: a retention or erasure request reaching the CLI is refused by name, saying the capability was removed in `b418031e`, never rebuilt, and that content now lives in a recall store whose CLI exposes no delete. Falsified by running the command and reading what it says, not by grepping for the string.
+- **The kernel's published `v0.14.2` predates its licence commit.** The tarball an installer downloads today carries no licence text even though the repository does. AC-2 passed as scoped — about source repositories — and is not true of what people actually install until this phase re-cuts.
+- **Nothing in any of the four gates on licences in CI.** Only recall runs `go-licenses`, and that checks *dependency* licences; it would not catch a repository with no `LICENSE` of its own. A control candidate, deliberately not built mid-phase.
+
+Release order follows the dependency: the kernel first, because cadre's installer downloads it by version and a cadre release pinning an unreleased kernel version is a broken install.
+
+**AC-7 is the only criterion an outside party could run**, and the spec names its own falsification here: declaring this goal done from a developer machine. Seven of nine criteria are satisfiable without leaving a checkout that has all four repositories present and built — which is exactly the position that cannot see an installation defect. Run it in a container, not a shell with `~/sdk` on it.
 
 ## Watch for
 

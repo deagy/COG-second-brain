@@ -1,0 +1,6 @@
+2026-09-02T15:00:53Z	CP-2	PASS	4 tasks; the verbs already refuse, the flags do not — a parser error is silence at the moment someone tries to honour an obligation
+2026-09-02T15:05:52Z	CP-3	PASS	the verbs already refused; the flags did not. Refusal namespaced to knowledge because --scope/--as-of are live on the context store
+2026-09-02T15:16:05Z	CP-3v	PASS	round 1: ~15 reach-paths enumerated independently, all name the gap; context store's live flags intact; falsified in a scratch clone
+2026-09-02T15:25:17Z	CP-4	FAIL	round 1: the pre-parse scan read a flag's value as a request — --reason '--retention-days' refused a working deletion
+2026-09-02T15:38:47Z	CP-4	PASS	round 2: 15 claims; boolean list enumerated independently and its one-directional failure confirmed live in a scratch clone
+2026-09-02T15:38:47Z	CP-5	PASS	AC-5 accepted: ~15 reach-paths refuse by name; no live command broken
