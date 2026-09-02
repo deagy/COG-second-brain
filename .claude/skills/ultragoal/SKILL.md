@@ -157,6 +157,21 @@ installable, and a stale interpreter shadowing the kernel on PATH. Every one
 was a cross-phase defect that the per-phase component checks had already
 passed over.
 
+**When is CP-4 owed?** Whenever the phase's plan names more than one task.
+
+CP-4 verifies that separately-built things work together. A phase with a
+single task has nothing to integrate with itself, and demanding one there
+produces a ritual `SKIP` that means nothing. A phase with two or more tasks
+owes it whatever its number — including a first phase, because two tasks can
+disagree with each other before any later phase exists. That is the answer to
+a question that sat open in the backlog for four days while the next
+ultragoal skipped CP-4 in all five of its phases.
+
+`phase-gates.sh` reads the count from the phase's own `CP-2-plan.md`,
+counting distinct `T-nn` identifiers. A phase with no plan, or a plan naming
+no tasks, is treated as owing CP-4: an absent decomposition is not evidence
+there was only one thing to do.
+
 The script distinguishes two failures, because they need different fixes: a
 checkpoint with neither a row nor an evidence file was **never asked**; one
 with an artifact but no row **ran unrecorded**, which means the work was done

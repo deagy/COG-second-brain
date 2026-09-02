@@ -68,9 +68,37 @@ for dir in "$goal"/evidence/P*/; do
   # checkpoint with an artifact but no row ran and went unrecorded, which is a
   # bookkeeping gap: the gate did its work, but nothing greppable says so, and
   # an evidence trail nobody can query is not an evidence trail.
+  # AI-5's question, answered and encoded rather than left as prose: is CP-4
+  # meaningful for a phase?
+  #
+  # CP-4 verifies that separately-built things work together. A phase with
+  # one task has nothing to integrate with itself, and a first phase has no
+  # predecessor -- so a single-task phase does not owe one, and demanding it
+  # produces a ritual SKIP that means nothing. A phase with two or more tasks
+  # owes it whatever its number, because the tasks can disagree with each
+  # other before any later phase exists.
+  #
+  # Task count comes from the phase's own CP-2 plan, counting distinct T-nn
+  # identifiers. A phase with no plan, or a plan naming no tasks, is treated
+  # as owing CP-4: the absence of a stated decomposition is not evidence
+  # there was only one task.
+  phase_required="$required"
+  plan="$dir/CP-2-plan.md"
+  if [ -f "$plan" ]; then
+    # `|| true`: grep exits 1 when a plan names no tasks, and under
+    # `set -e` with `pipefail` that killed the script mid-goal -- it printed
+    # P1 and stopped, with no summary line and a non-zero exit that looked
+    # exactly like a real finding.
+    tasks=$( { grep -oE '\bT-[0-9]+\b' "$plan" || true; } | sort -u | wc -l | tr -d ' ')
+    if [ "$tasks" = "1" ]; then
+      phase_required="CP-3 CP-3v CP-5"
+      printf '%-6s CP-4 not owed: the plan names one task, so there is nothing to integrate\n' "$phase"
+    fi
+  fi
+
   unrun=""
   unrecorded=""
-  for cp in $required; do
+  for cp in $phase_required; do
     if awk -F'\t' -v c="$cp" '$2 == c { found = 1 } END { exit !found }' "$tsv"; then
       continue
     fi
