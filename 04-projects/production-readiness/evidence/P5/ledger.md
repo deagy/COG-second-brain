@@ -28,3 +28,22 @@ Published releases, from `gh release list` rather than `git tag`:
 tags `v0.3.0`, `v0.3.1` and `v0.3.2` with no release behind any of them. Measuring
 AC-6 with `git describe` would have reported recall released at `v0.3.1` and hidden
 the defect the criterion exists to catch.
+
+## CP-3v
+
+**Round 1 — FAIL:fixable, 15 claims.** `CP-3v-round1.md`. Found T-08 independently by
+reproducing `install.sh`'s own sequence with Go stripped from PATH, and stated the
+defect better than the build record had: *the new tests only exercise
+`PackagedKernelShim` as a Go function with a hand-supplied repoRoot — none exercise
+what value the shell launcher actually passes on the no-Go path.*
+
+**Round 2 — PASS, 17 claims.** `CP-3v-round2.md`. Reproduced round 1's failing
+sequence at `cli-v0.7.5`: `cadre sdlc --version` prints `0.14.4` at exit 0, with no
+`.cadre-build-cache` created — proof the Go path was never used and the fallback is
+what answered. Every new guard falsified by mutation, none by failing to compile.
+
+It also caught a measurement trap the phase would otherwise have carried: **`git
+rev-parse cli-v0.7.5` returns the annotated tag's own object SHA, not the commit.**
+Without `^{commit}` the comparison reads as a gap between the release and `HEAD` when
+there is none — which is exactly what round 1's AC-6 FAIL was measuring at the moment
+the phase was still moving.
