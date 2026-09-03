@@ -1,1 +1,3 @@
 2026-09-03T01:57:03Z	CP-2	PASS	6 tasks (T-01..T-06), AC-8; retention windows out of scope by charter
+2026-09-03T03:00:25Z	CP-3	PASS	delete-ingested and deletion-evidence, cadre cli-v0.7.9
+2026-09-03T03:00:25Z	CP-3v	PASS	AC-8 verified end to end against released binaries; absence confirmed independently via recall store info
