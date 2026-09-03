@@ -7,9 +7,15 @@
 
 **This document governs harness runs, and nothing else.** A session that never invoked the harness owes it no checkpoints, no lane classification, and no evidence ledger. Notes, briefs, research, drafts, and ordinary edits are not harness runs.
 
+A build run with no lint-clean run-record is not a finished run: the run-record is the shared provenance object that makes this run auditable and interoperable with the agentic-lifecycle run-record shape. The procedure that produces and lints it is Phase 7 of `.claude/skills/closed-loop/SKILL.md`, against the vendored `05-knowledge/run-record.schema.json` and `06-templates/run-record.template.json` (all three ship via `cog-update.sh`).
+
+The requirement binds `/closed-loop`, which takes a task through the V and emits the run-record at Phase 7. `/ultragoal` does not: its phases run CP-1→CP-6 and stop before that phase, so an ultragoal's evidence lives in `04-projects/<goal>/evidence/P<n>/` and its phase gates are checkpoints, not run-records. Wiring the two together is open work, not a claim this document should make.
+
+The other four harness entry points emit none, and for `/retro`, `/harvest` and `/review-cockpit` that is correct rather than a gap — none of them is a build. `/retro` closes a run that already has one and records CP-7 through `checkpoint.sh`. `/harvest` stages learnings for human promotion. `/review-cockpit` maintains a review surface. Read literally against all five entry points the rule above would make those three permanently unfinishable; it is a completion condition for a build run, not for every session that touched the harness.
+
 You are in a harness run when you invoked `/closed-loop`, `/ultragoal`, `/retro`, `/harvest`, or `/review-cockpit`; asked for the closed loop, proper verification, or an evidence trail in those words; or set `verification_harness: on` in `00-inbox/MY-PROFILE.md`. Otherwise you are not, and the two rules in `CLAUDE.md` § Verification Harness are the whole of what applies.
 
-Nothing here needs installing. The two helper scripts (`.claude/lib/checkpoint.sh`, `.claude/lib/lane-classify.sh`) ship executable, and the run directories are created on first use.
+The two helper scripts (`.claude/lib/checkpoint.sh`, `.claude/lib/lane-classify.sh`) ship executable and need nothing installed, and the run directories are created on first use. The run-record lint is the one exception: `.claude/lib/run-record-lint.sh` needs Python with `jsonschema` and `rfc3339-validator` (`pip install jsonschema rfc3339-validator`), and refuses to run rather than pass without validating dates.
 
 ## The V-model (primary mental model)
 
@@ -53,7 +59,7 @@ No criterion ships without a matching evidence row. No evidence row without a cr
 | **CP-1** | Spec | blocking (`normal`+) | `## Acceptance criteria` with IDs (`AC-01`…) | spec itself + matrix |
 | **CP-2** | Plan | blocking (`normal`+) | Tasks reference `AC-n`; criteria falsifiable | `evidence/CP-2-plan.md` |
 | **CP-3** | Build | — | Worker deliverable exists | deliverable path |
-| **CP-3v** | Component verify | blocking | `task-verifier` PASS per task | `evidence/CP-3v-component.md` |
+| **CP-3v** | Component verify | blocking | `task-verifier` PASS per task; a `FAIL:fixable` is a denial naming what it invalidates and where to re-enter; terminal `FAIL:escalate` after 3 amend cycles | `evidence/CP-3v-component.md` |
 | **CP-4** | Integration verify | blocking (`full`+, multi-task) | `integration-verifier` PASS | `evidence/CP-4-integration.md` |
 | **CP-5** | Acceptance | blocking (mutations) | Post-condition observed (not tool return) | `evidence/CP-5-acceptance.md` |
 | **CP-6** | Ship | blocking (external) | Review Gate / your approval / deploy proof | `evidence/CP-6-ship.md` |
@@ -127,8 +133,8 @@ orchestrator (/closed-loop or a skill that invokes it)
         ▼
    CP-3v: task-verifier (read-only) ──► evidence rows per AC-n
         │
-        ├── FAIL:fixable ─► fix-agent (max 2) ─► re-verify
-        └── FAIL:escalate ─► stop
+        ├── FAIL:fixable ─▶ fix-agent (amend: names invalidates + reentry) ─▶ re-review by a different context
+        └── after 3 amend cycles ─▶ terminal FAIL:escalate (telemetry) ─▶ stop
         │
         ▼
    CP-4: integration-verifier (multi-task / full lane only)
@@ -174,6 +180,7 @@ Run output lives under `04-projects/harness/`, which is created on the first har
 |---|---|
 | Spec + traceability matrix | `04-projects/<project>/specs/SPEC-NNN-<slug>.md` |
 | Run evidence bundle | `04-projects/harness/runs/<id>/evidence/` |
+| Run-record (shared provenance) | `04-projects/harness/runs/<id>/run-record.json` |
 | HTML report (ultragoal / big run) | `04-projects/<goal>/report.html` · `04-projects/harness/runs/<id>/report.html` |
 | Retro outputs | `04-projects/harness/retro/YYYY-MM-DD-<slug>.md` |
 | Harness backlog | `04-projects/harness/BACKLOG.md` |

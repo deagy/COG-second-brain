@@ -1,6 +1,6 @@
 ---
 name: fix-agent
-description: Targeted fixes after task-verifier returns FAIL:fixable. Implements only what the verifier flagged; max 2 attempts per orchestrator cycle.
+description: Targeted fixes after task-verifier returns FAIL:fixable. Implements only what the verifier flagged; the loop's amend bound is 3 (AMEND_BOUND).
 model: sonnet
 ---
 
@@ -24,7 +24,7 @@ You are a **fix-agent**. You receive a verifier failure report and patch only th
 2. **No new features.** If the fix requires expanding scope → stop, return `ESCALATE: scope expansion needed — <reason>`.
 3. **Re-run post-conditions** for any mutation you make (curl, re-read, etc.) before returning OK.
 4. You do NOT self-verify as PASS. The orchestrator re-dispatches `task-verifier`.
-5. Max one fix attempt per dispatch; the orchestrator tracks retry count (max 2 total per task).
+5. Max one fix attempt per dispatch; the orchestrator tracks the amend count (AMEND_BOUND = 3 per task, then a terminal `FAIL:escalate`).
 6. Respect lane: `tiny` fixes should be < 10 lines; `full` lane fixes still cannot add unaudited claims.
 
 ## Response Style — ALWAYS APPLY

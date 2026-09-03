@@ -45,6 +45,32 @@ Code, if any, lives outside the vault (e.g. `~/code/<goal>/`) — the spec/statu
    - Traceability matrix (`AC-n` ↔ phase ↔ status)
 3. Create `STATUS.md` (see template below) and add a row to the registry.
 
+Before recording CP-1, run the criteria past the two shapes that cannot be
+satisfied inside the phase that owns them:
+
+```bash
+bash .claude/lib/spec-lint.sh 04-projects/<goal>
+```
+
+- **A criterion verified against a published artifact** depends on whichever
+  phase publishes it. `AC-11` of the repo-consolidation goal read "accepted
+  by an installed released kernel", and the release it needed came from a
+  phase that had not run. The criterion was not wrong; it was unsatisfiable
+  where it sat.
+- **A universal negative** — "no third definition survives", "no X exists
+  outside Y" — is a claim about everywhere, and can only be checked against a
+  named, bounded set. `AC-05` asserted one, was closed on a filename search,
+  and an executable implementation turned out to have survived in an
+  archived-but-still-installable repository.
+
+This is a charter-time check, and it skips any criterion the traceability
+matrix records as `verified`: one that was satisfied has answered the
+question by demonstration. Without that skip it fires forever on closed
+goals — repo-consolidation's AC-05 and AC-11 read exactly as they did before
+their amendment, because the amendment moved the criterion to a later phase
+rather than rewording the row. A lint that cries wolf on shipped work gets
+turned off, and then it is advice again.
+
 Record: `bash .claude/lib/checkpoint.sh record 04-projects/<goal>/evidence/P0 CP-1 PASS "N criteria, M phases"`
 
 ## The phase loop (every phase, no lane downgrade)
@@ -86,6 +112,162 @@ Merge every verifier's `EVIDENCE` rows into `evidence/P<n>/ledger.md`.
 
 1. **Per-phase (CP-5):** every `AC-n` this phase claims has a PASS row before the phase is marked done.
 2. **North-star (final):** before the ultragoal is declared complete, spawn a fresh-context verifier whose only job is to check the spec matrix — **every** `AC-n` across all phases has ≥1 PASS evidence row. Any `AC-n` without one is a gap, not a ship. This is the ultragoal-level analogue of CP-5.
+
+### Before either gate: the repositories must be green on their own runners
+
+```bash
+bash .claude/lib/ci-status.sh <each repo the trail makes claims about>
+```
+
+Non-zero means a phase cannot be marked done. A commit with no run, or a run
+still in progress, is not green either — absence of a check is not a pass.
+
+**This is a gate rather than advice because it has already failed silently.**
+The repo-consolidation ultragoal recorded "full suite green" for AC-02 at a
+commit whose runner was red, and stayed wrong for nine more pushes; two of its
+three repositories were red for months, each because a cross-repository guard
+built to refuse to skip under CI had been given no way to run. Every one
+passed locally off a sibling checkout that exists on a developer machine and
+never on a runner.
+
+Pointed at that commit today, this check reports
+`FAILED validate run 33235161357` and exits 1.
+
+**A local test exit code is evidence about a laptop.** Write the run id into
+the ledger, not the word "green".
+
+**Cutting a release is the same check, one step earlier.** In most of these
+repositories the release job and the validate job trigger on the same push and
+neither waits for the other, so a release can publish from a commit whose suite
+is failing — `cli-v0.7.0` and `plugin-v0.24.0` both did. Run `ci-status.sh`
+against the commit *before* tagging it, not only before the gate.
+
+The release job could require the validate run's conclusion, and that is a cost
+decision rather than an impossibility: it serialises every release behind a full
+matrix. Until someone decides that trade is worth it, this is a step you run.
+
+**Read how a repository releases before tagging it.** cadre's release workflow
+tags and publishes *itself* when a version bump lands on `main`, and skips any
+version already tagged. A tag made by hand therefore does two things at once: it
+fails to trigger a release, and it prevents the release that would have
+happened. `cli-v0.7.10` was created that way and is a tag with no release behind
+it — which `release-hygiene.sh` correctly refuses, and which cannot be cleaned
+up from inside a session, because deleting a remote tag needs human approval.
+
+The check that would have prevented it is reading one workflow file. Nothing
+observes the intent at the moment of tagging; the result is caught afterwards,
+by which point the repair needs someone else.
+
+### And every phase must have been asked its gates
+
+```bash
+bash .claude/lib/phase-gates.sh 04-projects/<goal>
+```
+
+Non-zero means a phase never ran a required checkpoint, or ran one without
+recording it. Neither is a pass.
+
+**This is a gate rather than advice because it, too, has already failed
+silently.** The capability-parity ultragoal shipped all five phases and
+passed two north-star gates without ever running CP-4. Nothing noticed: the
+gates check acceptance criteria and CI, and a checkpoint that was never run
+leaves no failing artifact behind — only an absent row, which is
+indistinguishable from a row nobody thought to look for.
+
+CP-4 is not a formality. In the preceding ultragoal it ran five times and
+found recall's CI red on the tag its own criterion pinned, silent corpus
+corruption on store upgrade, cadre and gloop red since the commits their
+criteria cited, a criterion closed against an implementation that was still
+installable, and a stale interpreter shadowing the kernel on PATH. Every one
+was a cross-phase defect that the per-phase component checks had already
+passed over.
+
+**When is CP-4 owed?** Whenever the phase's plan names more than one task.
+
+CP-4 verifies that separately-built things work together. A phase with a
+single task has nothing to integrate with itself, and demanding one there
+produces a ritual `SKIP` that means nothing. A phase with two or more tasks
+owes it whatever its number — including a first phase, because two tasks can
+disagree with each other before any later phase exists. That is the answer to
+a question that sat open in the backlog for four days while the next
+ultragoal skipped CP-4 in all five of its phases.
+
+`phase-gates.sh` reads the count from the phase's own `CP-2-plan.md`,
+counting distinct `T-nn` identifiers. A phase with no plan, or a plan naming
+no tasks, is treated as owing CP-4: an absent decomposition is not evidence
+there was only one thing to do.
+
+The script distinguishes two failures, because they need different fixes: a
+checkpoint with neither a row nor an evidence file was **never asked**; one
+with an artifact but no row **ran unrecorded**, which means the work was done
+and the trail cannot be queried for it. A deliberate skip is recorded as
+`SKIP` with its reason — an auditable decision, unlike an absence.
+
+### And the evidence has to survive reading
+
+```bash
+bash .claude/lib/evidence-lint.sh 04-projects/<goal>
+```
+
+Three properties of an evidence bundle, each from a defect that already got
+through:
+
+- **An enumeration piped through `head` with no total beside it.** A P3
+  inventory reported eleven matches from `grep ... | head -10` when the real
+  count was thirty-one, and two production callers sat below the cut. A list
+  truncated at ten looks exactly like a list of ten; nothing in the output
+  says which it is.
+- **A retire or archive verdict with no working-tree state recorded.** A
+  repository was assessed for salvage from committed state alone while 209
+  uncommitted lines sat in the tree, including the one artifact worth
+  keeping. The verdict is judgment; looking before judging is not.
+- **A port or extraction plan missing one of its five inventory axes.** The
+  originating defect was an absent axis rather than a badly filled one: four
+  were run against the source and none asked what the destination already
+  does. The check triggers on a plan naming its own axes, because that is
+  what such plans do and a self-declaration can be forgotten — which is the
+  same omission it exists to catch.
+
+### And the repositories have to be honest about what they publish
+
+```bash
+bash .claude/lib/release-hygiene.sh <each repo the trail makes claims about>
+```
+
+Two properties, both found by a person looking rather than by a check:
+
+- **A tag with no release behind it.** recall carried `v0.3.0`, `v0.3.1` and
+  `v0.3.2` — three tags whose pipeline published nothing, for two reasons at
+  once: a tag pushed with the workflow's own `GITHUB_TOKEN` triggers no
+  further workflow, and the release job lacked a checkout its fail-closed
+  contract guard needed. A tag with no release looks exactly like a tag whose
+  release you have not looked for yet.
+- **A repository carrying no licence of its own.** Nothing in any of the four
+  gates on it, and recall's `go-licenses` checks *dependency* licences and
+  would not notice. The lifecycle kernel was public and unlicensed while
+  cadre's installer fetched it by version.
+
+Exceptions are legitimate and each one carries its reason in the script.
+A stale exception — a tag that no longer exists, a licence exception for a
+repository that has since acquired one — is a failure, not a no-op. An
+exception list nobody prunes grows until it covers the next real defect,
+and every entry still reads as deliberate.
+
+### And the citations have to resolve
+
+```bash
+bash .claude/lib/citation-lint.sh 04-projects/<goal>
+```
+
+Every `cadre \`sha\``-style commit citation is resolved in the repository it
+names, and every vault-relative path is opened. An evidence trail whose
+commits do not resolve is a trail to nowhere, and it fails quietly: a
+plausible sha invites no scrutiny.
+
+It checks the reference, not the claim around it. A row saying a control
+guards X, citing a test that exists and guards Y, passes — and that is where
+most of this harness's found defects have actually lived, so treat a clean
+run as evidence about references and nothing more.
 
 ```
 North-star acceptance:

@@ -2,19 +2,19 @@
 name: harvest
 description: >
   Capture durable session learnings, stage for human promotion to
-  05-knowledge/lizard, and propose skill/CLAUDE.md patches. Triggered by
+  05-knowledge (product/ or technical/), and propose skill/CLAUDE.md patches. Triggered by
   /harvest, SessionEnd hook staging, or nightly enhance. Never writes
   durable knowledge without your approval.
 ---
 
 # /harvest — session learning capture
 
-Adapted from dwarves-kit `harvest` hook + vault lizard pipeline. Prevents tacit knowledge dying in the transcript.
+Adapted from dwarves-kit `harvest` hook + distributed 05-knowledge pipeline. Prevents tacit knowledge dying in the transcript.
 
 ## Triggers
 
 - `/harvest` — manual end-of-session
-- `/harvest promote` — curate staging → lizard drafts (uses harvest-curator)
+- `/harvest promote` — curate staging → promotion-ready drafts (uses harvest-curator)
 - Staging file written by `stop` hook (`.cursor/hooks/harvest-stager.sh`)
 
 ## Phase 1 — Collect (automatic or manual)
@@ -33,7 +33,7 @@ Append to `04-projects/harness/harvest/staging-<YYYY-MM-DD>.md`:
 - type: correction|fact|process|skill-gap
 - source: <file or "session">
 - text: <one paragraph max>
-- proposed_home: <path or "new lizard note">
+- proposed_home: <path or "new note">
 ```
 
 Dedup: skip if same fact already in staging today or in 05-knowledge.
@@ -44,11 +44,11 @@ Spawn `harvest-curator` (Sonnet). It writes `/tmp/harvest-curate-<date>.md`.
 
 Lead (Opus) presents to the user:
 
-- **Promote** list → approve which become `05-knowledge/lizard/YYYY-MM-DD-<slug>.md`
+- **Promote** list → approve which become `05-knowledge/product/ or 05-knowledge/technical/YYYY-MM-DD-<slug>.md`
 - **Fold** list → approve inline edits to existing notes
 - **Skill patches** → approve CLAUDE.md / SKILL.md diffs
 
-Only after approval: write durable files. Update `05-knowledge/lizard/index.md`.
+Only after approval: write durable files. Update the 05-knowledge index (product/ + technical/).
 
 ## Phase 3 — Retro line
 

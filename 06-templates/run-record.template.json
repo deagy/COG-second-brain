@@ -1,0 +1,760 @@
+{
+  "version": 2,
+  "task_id": "TODO-TASK-1",
+  "dispatch_fingerprint": "sha256:5a19219be85529d2a15ddef517a13bda1208dc4bd7be087a1ef401b7ebbbea8f",
+  "kernel_version": "0.14.4",
+  "contract_digest": "sha256:211507e876cccef3942decde5ad2ddb4ec91bb4c3b2f07607efda42648044dfa",
+  "provider_bindings": [
+    {
+      "id": "cadre",
+      "version": "0.3.0",
+      "manifest_sha256": "sha256:d6e795b01c1ef543e646202a8a3a89daf4a77bac72dfb2f18ba8b7d7e8c4b1c6",
+      "catalog_sha256": "sha256:883082ed6f9062114408f85b0ee6e3355a9bde5f71b1b79171f7ee20271f1f0c",
+      "dependencies": []
+    }
+  ],
+  "profile": "generic",
+  "profile_digest": "sha256:8ba60965fa077457932507eb2c0cada541e57a6a3c8f39309ca37e95e199f810",
+  "dispatch_binding_digest": "sha256:313612be5d634474cb5f3aa1d06c3f6fa33725b3fbf2c8ec1c39e2c365bd3c5d",
+  "recorded_at": "2026-09-02T00:00:00Z",
+  "classification": "internal",
+  "mode": "plan",
+  "baseline_revision": "unresolved",
+  "scope": "TODO: the objective this run was given",
+  "disposition": "pending",
+  "intent_record_id": "repo-file:04-projects/<project>/intents/<task>-intent.md",
+  "requirements_baseline_id": null,
+  "current_lifecycle_phase": "intent",
+  "knowledge_retrieval": {
+    "status": "unavailable",
+    "reason": "No portable knowledge source configured",
+    "query_ids": [],
+    "evidence_refs": [],
+    "influence": "none"
+  },
+  "impact_profile": {
+    "profile_id": "TODO-impact",
+    "status": "blocked",
+    "impact_categories": [],
+    "specialized_boms": [],
+    "blocking_unknowns": []
+  },
+  "lifecycle_gates": [
+    {
+      "tier": "lifecycle",
+      "gate_id": "G1",
+      "name": "Intent",
+      "applicability": "applicable",
+      "applicability_rationale": "TODO: why this gate applies (or 'not-applicable' with reason)",
+      "status": "pending",
+      "artifact_bindings": [
+        {
+          "artifact_id": "TODO-G1-artifact",
+          "revision": "v1",
+          "digest": "sha256:0483aa9222caa201847aa740c1864f13b8fdec257be682a95edeb1a8120ed741"
+        }
+      ],
+      "preparers": [
+        {
+          "id": "TODO-agent",
+          "role": "TODO",
+          "kind": "agent"
+        }
+      ],
+      "independent_verifier": {
+        "id": "TODO-verifier",
+        "role": "independent-verifier",
+        "kind": "agent"
+      },
+      "independence_declaration": {
+        "verifier_confirmed_not_preparer": true,
+        "verifier_made_material_correction": false
+      },
+      "authority_requirements": [
+        {
+          "authority_id": "TODO-product_owner",
+          "authority_type": "human-approver",
+          "role": "Product Owner",
+          "applicability": "applicable",
+          "rationale": "TODO: assign in project authority map"
+        }
+      ],
+      "human_approvals": [
+        {
+          "status": "pending",
+          "approver": {
+            "id": "TODO-product_owner",
+            "role": "Product Owner",
+            "kind": "human"
+          },
+          "decided_at": null,
+          "evidence_refs": [],
+          "note": null
+        }
+      ],
+      "decided_at": null,
+      "evidence_refs": [],
+      "knowledge_status": "unavailable",
+      "findings": [],
+      "exceptions": [],
+      "invalidation_history": [],
+      "required_reentry_gate": null
+    },
+    {
+      "tier": "lifecycle",
+      "gate_id": "G2",
+      "name": "Requirements Baseline",
+      "applicability": "applicable",
+      "applicability_rationale": "TODO: why this gate applies (or 'not-applicable' with reason)",
+      "status": "pending",
+      "artifact_bindings": [
+        {
+          "artifact_id": "TODO-G2-artifact",
+          "revision": "v1",
+          "digest": "sha256:e6bc70fba9c90b6ea0e16957b73f2c4a9049cc66b6a5f886583f9a7522ac3460"
+        }
+      ],
+      "preparers": [
+        {
+          "id": "TODO-agent",
+          "role": "TODO",
+          "kind": "agent"
+        }
+      ],
+      "independent_verifier": {
+        "id": "TODO-verifier",
+        "role": "independent-verifier",
+        "kind": "agent"
+      },
+      "independence_declaration": {
+        "verifier_confirmed_not_preparer": true,
+        "verifier_made_material_correction": false
+      },
+      "authority_requirements": [
+        {
+          "authority_id": "TODO-product_owner",
+          "authority_type": "human-approver",
+          "role": "Product Owner",
+          "applicability": "applicable",
+          "rationale": "TODO: assign in project authority map"
+        }
+      ],
+      "human_approvals": [
+        {
+          "status": "pending",
+          "approver": {
+            "id": "TODO-human",
+            "role": "Product Owner",
+            "kind": "human"
+          },
+          "decided_at": null,
+          "evidence_refs": [],
+          "note": null
+        }
+      ],
+      "decided_at": null,
+      "evidence_refs": [],
+      "knowledge_status": "unavailable",
+      "findings": [],
+      "exceptions": [],
+      "invalidation_history": [],
+      "required_reentry_gate": null
+    },
+    {
+      "tier": "lifecycle",
+      "gate_id": "G3",
+      "name": "Architecture",
+      "applicability": "applicable",
+      "applicability_rationale": "TODO: why this gate applies (or 'not-applicable' with reason)",
+      "status": "pending",
+      "artifact_bindings": [
+        {
+          "artifact_id": "TODO-G3-artifact",
+          "revision": "v1",
+          "digest": "sha256:2d6b4c06528dfb7e97de53d14f0b5a6aaf52f9f4e8652164df1edcfb95019195"
+        }
+      ],
+      "preparers": [
+        {
+          "id": "TODO-agent",
+          "role": "TODO",
+          "kind": "agent"
+        }
+      ],
+      "independent_verifier": {
+        "id": "TODO-verifier",
+        "role": "independent-verifier",
+        "kind": "agent"
+      },
+      "independence_declaration": {
+        "verifier_confirmed_not_preparer": true,
+        "verifier_made_material_correction": false
+      },
+      "authority_requirements": [
+        {
+          "authority_id": "TODO-product_owner",
+          "authority_type": "human-approver",
+          "role": "System Architect",
+          "applicability": "applicable",
+          "rationale": "TODO: assign in project authority map"
+        }
+      ],
+      "human_approvals": [
+        {
+          "status": "pending",
+          "approver": {
+            "id": "TODO-human",
+            "role": "System Architect",
+            "kind": "human"
+          },
+          "decided_at": null,
+          "evidence_refs": [],
+          "note": null
+        }
+      ],
+      "decided_at": null,
+      "evidence_refs": [],
+      "knowledge_status": "unavailable",
+      "findings": [],
+      "exceptions": [],
+      "invalidation_history": [],
+      "required_reentry_gate": null
+    },
+    {
+      "tier": "lifecycle",
+      "gate_id": "G4",
+      "name": "Governance and Data",
+      "applicability": "applicable",
+      "applicability_rationale": "TODO: why this gate applies (or 'not-applicable' with reason)",
+      "status": "pending",
+      "artifact_bindings": [
+        {
+          "artifact_id": "TODO-G4-artifact",
+          "revision": "v1",
+          "digest": "sha256:e9ff90d89d8e13c0ae5ef8bd4df28b3b4a8b241f54f9ff98f04fa2c06c8f55e2"
+        }
+      ],
+      "preparers": [
+        {
+          "id": "TODO-agent",
+          "role": "TODO",
+          "kind": "agent"
+        }
+      ],
+      "independent_verifier": {
+        "id": "TODO-verifier",
+        "role": "independent-verifier",
+        "kind": "agent"
+      },
+      "independence_declaration": {
+        "verifier_confirmed_not_preparer": true,
+        "verifier_made_material_correction": false
+      },
+      "authority_requirements": [
+        {
+          "authority_id": "TODO-product_owner",
+          "authority_type": "human-approver",
+          "role": "Governance Lead",
+          "applicability": "applicable",
+          "rationale": "TODO: assign in project authority map"
+        }
+      ],
+      "human_approvals": [
+        {
+          "status": "pending",
+          "approver": {
+            "id": "TODO-human",
+            "role": "Governance Lead",
+            "kind": "human"
+          },
+          "decided_at": null,
+          "evidence_refs": [],
+          "note": null
+        }
+      ],
+      "decided_at": null,
+      "evidence_refs": [],
+      "knowledge_status": "unavailable",
+      "findings": [],
+      "exceptions": [],
+      "invalidation_history": [],
+      "required_reentry_gate": null
+    },
+    {
+      "tier": "lifecycle",
+      "gate_id": "G5",
+      "name": "Security and Crypto",
+      "applicability": "applicable",
+      "applicability_rationale": "TODO: why this gate applies (or 'not-applicable' with reason)",
+      "status": "pending",
+      "artifact_bindings": [
+        {
+          "artifact_id": "TODO-G5-artifact",
+          "revision": "v1",
+          "digest": "sha256:60f09bc3071a57d5d008fd8eceaa925288b2f919c8bc371ac4452a334a9e6792"
+        }
+      ],
+      "preparers": [
+        {
+          "id": "TODO-agent",
+          "role": "TODO",
+          "kind": "agent"
+        }
+      ],
+      "independent_verifier": {
+        "id": "TODO-verifier",
+        "role": "independent-verifier",
+        "kind": "agent"
+      },
+      "independence_declaration": {
+        "verifier_confirmed_not_preparer": true,
+        "verifier_made_material_correction": false
+      },
+      "authority_requirements": [
+        {
+          "authority_id": "TODO-product_owner",
+          "authority_type": "human-approver",
+          "role": "Security Lead",
+          "applicability": "applicable",
+          "rationale": "TODO: assign in project authority map"
+        }
+      ],
+      "human_approvals": [
+        {
+          "status": "pending",
+          "approver": {
+            "id": "TODO-human",
+            "role": "Security Lead",
+            "kind": "human"
+          },
+          "decided_at": null,
+          "evidence_refs": [],
+          "note": null
+        }
+      ],
+      "decided_at": null,
+      "evidence_refs": [],
+      "knowledge_status": "unavailable",
+      "findings": [],
+      "exceptions": [],
+      "invalidation_history": [],
+      "required_reentry_gate": null
+    },
+    {
+      "tier": "lifecycle",
+      "gate_id": "G6",
+      "name": "Verification and Test",
+      "applicability": "applicable",
+      "applicability_rationale": "TODO: why this gate applies (or 'not-applicable' with reason)",
+      "status": "pending",
+      "artifact_bindings": [
+        {
+          "artifact_id": "TODO-G6-artifact",
+          "revision": "v1",
+          "digest": "sha256:3978edd155d58fe0865fa6369fab2d639ec74da2f2b7e5c5c49912af28b130e8"
+        }
+      ],
+      "preparers": [
+        {
+          "id": "TODO-agent",
+          "role": "TODO",
+          "kind": "agent"
+        }
+      ],
+      "independent_verifier": {
+        "id": "TODO-verifier",
+        "role": "independent-verifier",
+        "kind": "agent"
+      },
+      "independence_declaration": {
+        "verifier_confirmed_not_preparer": true,
+        "verifier_made_material_correction": false
+      },
+      "authority_requirements": [
+        {
+          "authority_id": "TODO-product_owner",
+          "authority_type": "human-approver",
+          "role": "Engineering Lead",
+          "applicability": "applicable",
+          "rationale": "TODO: assign in project authority map"
+        }
+      ],
+      "human_approvals": [
+        {
+          "status": "pending",
+          "approver": {
+            "id": "TODO-human",
+            "role": "Engineering Lead",
+            "kind": "human"
+          },
+          "decided_at": null,
+          "evidence_refs": [],
+          "note": null
+        }
+      ],
+      "decided_at": null,
+      "evidence_refs": [],
+      "knowledge_status": "unavailable",
+      "findings": [],
+      "exceptions": [],
+      "invalidation_history": [],
+      "required_reentry_gate": null
+    },
+    {
+      "tier": "lifecycle",
+      "gate_id": "G7",
+      "name": "Evidence",
+      "applicability": "applicable",
+      "applicability_rationale": "TODO: why this gate applies (or 'not-applicable' with reason)",
+      "status": "pending",
+      "artifact_bindings": [
+        {
+          "artifact_id": "TODO-G7-artifact",
+          "revision": "v1",
+          "digest": "sha256:aaa1a978382b1d66cda92a1bf281274bc993ac14103a0b1d1e602c8ca0d7d3dd"
+        }
+      ],
+      "preparers": [
+        {
+          "id": "TODO-agent",
+          "role": "TODO",
+          "kind": "agent"
+        }
+      ],
+      "independent_verifier": {
+        "id": "TODO-verifier",
+        "role": "independent-verifier",
+        "kind": "agent"
+      },
+      "independence_declaration": {
+        "verifier_confirmed_not_preparer": true,
+        "verifier_made_material_correction": false
+      },
+      "authority_requirements": [
+        {
+          "authority_id": "TODO-product_owner",
+          "authority_type": "human-approver",
+          "role": "Release Owner",
+          "applicability": "applicable",
+          "rationale": "TODO: assign in project authority map"
+        }
+      ],
+      "human_approvals": [
+        {
+          "status": "pending",
+          "approver": {
+            "id": "TODO-human",
+            "role": "Release Owner",
+            "kind": "human"
+          },
+          "decided_at": null,
+          "evidence_refs": [],
+          "note": null
+        }
+      ],
+      "decided_at": null,
+      "evidence_refs": [],
+      "knowledge_status": "unavailable",
+      "findings": [],
+      "exceptions": [],
+      "invalidation_history": [],
+      "required_reentry_gate": null
+    },
+    {
+      "tier": "lifecycle",
+      "gate_id": "G8",
+      "name": "Release Readiness",
+      "applicability": "applicable",
+      "applicability_rationale": "TODO: why this gate applies (or 'not-applicable' with reason)",
+      "status": "pending",
+      "artifact_bindings": [
+        {
+          "artifact_id": "TODO-G8-artifact",
+          "revision": "v1",
+          "digest": "sha256:257441aa78d96c1b360cc77fd68448060fa39f2cdc5344fdf650538227efec39"
+        }
+      ],
+      "preparers": [
+        {
+          "id": "TODO-agent",
+          "role": "TODO",
+          "kind": "agent"
+        }
+      ],
+      "independent_verifier": {
+        "id": "TODO-verifier",
+        "role": "independent-verifier",
+        "kind": "agent"
+      },
+      "independence_declaration": {
+        "verifier_confirmed_not_preparer": true,
+        "verifier_made_material_correction": false
+      },
+      "authority_requirements": [
+        {
+          "authority_id": "TODO-product_owner",
+          "authority_type": "human-approver",
+          "role": "Release Owner",
+          "applicability": "applicable",
+          "rationale": "TODO: assign in project authority map"
+        }
+      ],
+      "human_approvals": [
+        {
+          "status": "pending",
+          "approver": {
+            "id": "TODO-human",
+            "role": "Release Owner",
+            "kind": "human"
+          },
+          "decided_at": null,
+          "evidence_refs": [],
+          "note": null
+        }
+      ],
+      "decided_at": null,
+      "evidence_refs": [],
+      "knowledge_status": "unavailable",
+      "findings": [],
+      "exceptions": [],
+      "invalidation_history": [],
+      "required_reentry_gate": null
+    },
+    {
+      "tier": "lifecycle",
+      "gate_id": "G9",
+      "name": "Deployment Authorization",
+      "applicability": "applicable",
+      "applicability_rationale": "TODO: why this gate applies (or 'not-applicable' with reason)",
+      "status": "pending",
+      "artifact_bindings": [
+        {
+          "artifact_id": "TODO-G9-artifact",
+          "revision": "v1",
+          "digest": "sha256:c9b92dbb95dac966936409158889abb70e45e0c03450b4bf9f8958a3b5305da3"
+        }
+      ],
+      "preparers": [
+        {
+          "id": "TODO-agent",
+          "role": "TODO",
+          "kind": "agent"
+        }
+      ],
+      "independent_verifier": {
+        "id": "TODO-verifier",
+        "role": "independent-verifier",
+        "kind": "agent"
+      },
+      "independence_declaration": {
+        "verifier_confirmed_not_preparer": true,
+        "verifier_made_material_correction": false
+      },
+      "authority_requirements": [
+        {
+          "authority_id": "TODO-product_owner",
+          "authority_type": "human-approver",
+          "role": "Release Authority",
+          "applicability": "applicable",
+          "rationale": "TODO: assign in project authority map"
+        }
+      ],
+      "human_approvals": [
+        {
+          "status": "pending",
+          "approver": {
+            "id": "TODO-human",
+            "role": "Release Authority",
+            "kind": "human"
+          },
+          "decided_at": null,
+          "evidence_refs": [],
+          "note": null
+        }
+      ],
+      "decided_at": null,
+      "evidence_refs": [],
+      "knowledge_status": "unavailable",
+      "findings": [],
+      "exceptions": [],
+      "invalidation_history": [],
+      "required_reentry_gate": null
+    },
+    {
+      "tier": "lifecycle",
+      "gate_id": "G10",
+      "name": "Runtime Conformance",
+      "applicability": "applicable",
+      "applicability_rationale": "TODO: why this gate applies (or 'not-applicable' with reason)",
+      "status": "pending",
+      "artifact_bindings": [
+        {
+          "artifact_id": "TODO-G10-artifact",
+          "revision": "v1",
+          "digest": "sha256:8f4d689f510079317fbc84fdf1ee36e4f9e0d54304a9caab60599793560aedb5"
+        }
+      ],
+      "preparers": [
+        {
+          "id": "TODO-agent",
+          "role": "TODO",
+          "kind": "agent"
+        }
+      ],
+      "independent_verifier": {
+        "id": "TODO-verifier",
+        "role": "independent-verifier",
+        "kind": "agent"
+      },
+      "independence_declaration": {
+        "verifier_confirmed_not_preparer": true,
+        "verifier_made_material_correction": false
+      },
+      "authority_requirements": [
+        {
+          "authority_id": "TODO-product_owner",
+          "authority_type": "human-approver",
+          "role": "Service Owner",
+          "applicability": "applicable",
+          "rationale": "TODO: assign in project authority map"
+        }
+      ],
+      "human_approvals": [
+        {
+          "status": "pending",
+          "approver": {
+            "id": "TODO-human",
+            "role": "Service Owner",
+            "kind": "human"
+          },
+          "decided_at": null,
+          "evidence_refs": [],
+          "note": null
+        }
+      ],
+      "decided_at": null,
+      "evidence_refs": [],
+      "knowledge_status": "unavailable",
+      "findings": [],
+      "exceptions": [],
+      "invalidation_history": [],
+      "required_reentry_gate": null
+    }
+  ],
+  "specialist_attestations": [],
+  "re_entry_history": [],
+  "execution_summary": {
+    "gates": {
+      "G1": {
+        "configured": true,
+        "ignored": false,
+        "ignore_reason": null,
+        "required_agents": [],
+        "dispatched_agents": [],
+        "required_tasks": [],
+        "completed_tasks": [],
+        "required_agent_artifacts": [],
+        "produced_agent_artifacts": []
+      },
+      "G2": {
+        "configured": false,
+        "ignored": false,
+        "ignore_reason": null,
+        "required_agents": [],
+        "dispatched_agents": [],
+        "required_tasks": [],
+        "completed_tasks": [],
+        "required_agent_artifacts": [],
+        "produced_agent_artifacts": []
+      },
+      "G3": {
+        "configured": false,
+        "ignored": false,
+        "ignore_reason": null,
+        "required_agents": [],
+        "dispatched_agents": [],
+        "required_tasks": [],
+        "completed_tasks": [],
+        "required_agent_artifacts": [],
+        "produced_agent_artifacts": []
+      },
+      "G4": {
+        "configured": false,
+        "ignored": false,
+        "ignore_reason": null,
+        "required_agents": [],
+        "dispatched_agents": [],
+        "required_tasks": [],
+        "completed_tasks": [],
+        "required_agent_artifacts": [],
+        "produced_agent_artifacts": []
+      },
+      "G5": {
+        "configured": false,
+        "ignored": false,
+        "ignore_reason": null,
+        "required_agents": [],
+        "dispatched_agents": [],
+        "required_tasks": [],
+        "completed_tasks": [],
+        "required_agent_artifacts": [],
+        "produced_agent_artifacts": []
+      },
+      "G6": {
+        "configured": false,
+        "ignored": false,
+        "ignore_reason": null,
+        "required_agents": [],
+        "dispatched_agents": [],
+        "required_tasks": [],
+        "completed_tasks": [],
+        "required_agent_artifacts": [],
+        "produced_agent_artifacts": []
+      },
+      "G7": {
+        "configured": false,
+        "ignored": false,
+        "ignore_reason": null,
+        "required_agents": [],
+        "dispatched_agents": [],
+        "required_tasks": [],
+        "completed_tasks": [],
+        "required_agent_artifacts": [],
+        "produced_agent_artifacts": []
+      },
+      "G8": {
+        "configured": false,
+        "ignored": false,
+        "ignore_reason": null,
+        "required_agents": [],
+        "dispatched_agents": [],
+        "required_tasks": [],
+        "completed_tasks": [],
+        "required_agent_artifacts": [],
+        "produced_agent_artifacts": []
+      },
+      "G9": {
+        "configured": false,
+        "ignored": false,
+        "ignore_reason": null,
+        "required_agents": [],
+        "dispatched_agents": [],
+        "required_tasks": [],
+        "completed_tasks": [],
+        "required_agent_artifacts": [],
+        "produced_agent_artifacts": []
+      },
+      "G10": {
+        "configured": false,
+        "ignored": false,
+        "ignore_reason": null,
+        "required_agents": [],
+        "dispatched_agents": [],
+        "required_tasks": [],
+        "completed_tasks": [],
+        "required_agent_artifacts": [],
+        "produced_agent_artifacts": []
+      }
+    }
+  }
+}

@@ -470,7 +470,7 @@ Not triggered by an ordinary request. A task that mutates external state still o
 1. Classifies the task into a risk lane (`bash .claude/lib/lane-classify.sh classify "<task>"`)
 2. Runs the worker at CP-3, traced to `AC-n`
 3. Dispatches a fresh-context, read-only `task-verifier` at CP-3v that observes the *artifact* (curl the URL, re-read the file, screenshot the page), never the worker's summary
-4. On `FAIL:fixable`, dispatches `fix-agent` (max 2 retries), then re-verifies; on `FAIL:escalate`, stops
+4. On `FAIL:fixable`, dispatches `fix-agent` (amend bound of 3, `AMEND_BOUND`), then re-verifies by a different context; past the bound, records a terminal `FAIL:escalate` and stops
 5. Runs `integration-verifier` at CP-4 for multi-task / `full`-lane work
 6. Records checkpoints and evidence rows to the run's `evidence/ledger.md`
 
@@ -897,7 +897,7 @@ COG includes 10 specialized agents (`.claude/agents/`) that handle data-heavy an
 |---|---|---|
 | **task-verifier** | Checks a worker's output against acceptance criteria by observing the artifact, not the worker's summary | CP-3v |
 | **integration-verifier** | Cross-task wiring and global acceptance for multi-task specs | CP-4 |
-| **fix-agent** | Targeted fixes after `task-verifier` returns `FAIL:fixable`; max 2 attempts | CP-3v retry |
+| **fix-agent** | Targeted fixes after `task-verifier` returns `FAIL:fixable`; amend bound of 3 | CP-3v amend |
 | **harvest-curator** | Shapes session learnings into adoption notes; propose-only, never writes durable knowledge | CP-7 |
 
 **Key rules:**

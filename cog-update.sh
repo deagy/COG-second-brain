@@ -36,6 +36,27 @@ FRAMEWORK_FILES=(
   "WORKFLOW.md"
   ".claude/lib/checkpoint.sh"
   ".claude/lib/lane-classify.sh"
+
+  # Run-record contract (Change 1)
+  ".claude/lib/run-record-lint.sh"
+
+  # Harness gate scripts. The closed-loop, ultragoal and retro skills invoke these
+  # as blocking checks ("non-zero means the phase cannot be marked done"), so a vault
+  # that has the skills but not the scripts gets "No such file or directory" where a
+  # gate should run.
+  #
+  # Registering them is necessary but not yet sufficient: file_has_changes returns 1
+  # for a path with no upstream version, so until these land in the configured
+  # upstream every entry below is skipped and the gap stays open for anyone updating
+  # from it. The registration is what makes them ship once they are published.
+  ".claude/lib/backlog-lint.sh"
+  ".claude/lib/ci-status.sh"
+  ".claude/lib/citation-lint.sh"
+  ".claude/lib/crossref-lint.sh"
+  ".claude/lib/evidence-lint.sh"
+  ".claude/lib/phase-gates.sh"
+  ".claude/lib/release-hygiene.sh"
+  ".claude/lib/spec-lint.sh"
   ".github/MARKETPLACE.md"
   "scripts/validate-agent-surface.sh"
 
@@ -131,6 +152,13 @@ FRAMEWORK_FILES=(
   # People CRM
   "05-knowledge/people/README.md"
   "06-templates/people-profile-template.md"
+
+  # Run-record contract (Change 1)
+  "05-knowledge/run-record.schema.json"
+  "05-knowledge/run-record.provenance.json"
+  "06-templates/run-record.template.json"
+
+  # Authority gate registry (Change 3)
 
   # Framework config
   "CLAUDE.md"
