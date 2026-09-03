@@ -206,7 +206,7 @@ The daily journal is an **ambient** behavior, not a command. The trigger lives h
 
 ## Integration Preferences
 
-Before using any external integration in a skill, check `00-inbox/MY-INTEGRATIONS.md`:
+Before using — or designing anything that names — an external integration in a skill, check `00-inbox/MY-INTEGRATIONS.md`. This includes plans, gate/authority registries, and specs that map work to an external system, not only a runtime call:
 
 - **Active integrations**: Use normally.
 - **Disabled integrations**: Skip silently. Do not attempt to call their tools, do not suggest setting them up, do not mention them in output.
