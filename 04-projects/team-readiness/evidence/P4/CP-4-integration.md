@@ -68,6 +68,48 @@ past two attempts, because the loop checks its deadline only after a blocking
 Two wrong theories before the right one, and falsification is the only reason
 any of them were distinguishable.
 
-## Round 2
+## Round 2, run as two independent tracks
 
-Pending: re-verification against the release cut from `68095d81`.
+Round 1's single verifier stalled twice on the same work and was killed both
+times **having written nothing** — it batched its notes to the end, so a stall
+cost all of its work rather than the last few minutes. Round 2 split the work
+so that only one track needs a running server, and required both tracks to
+append each finding to their notes the moment they had it.
+
+### Track B — identity, isolation, disclosure: PASS
+
+EVIDENCE AC-7 | CP-4 | PASS | Namespace isolation holds against attack: each credential proved it finds its *own* seeded document first, then a deliberately broad `k=50&min_score=0` query under the scoped key returned 1 result where the same query under an admin key returned 2 — so the isolation is not an empty store. Cross-namespace upload 403; `namespace=` query parameter, hybrid-search body field and a direct `GET /graph/doc-b1` all refused or scoped | recall `v0.3.6`, curl transcripts
+EVIDENCE AC-7 | CP-4 | PASS | The local limit is still real, and so no document overstates it: a credential scoped to `team-a` deleted a `team-b`-tagged document through `delete-ingested` and read back its deletion evidence | cadre `cli-v0.7.11`
+EVIDENCE AC-7 | CP-4 | PASS | The disclosure is accurate clause by clause, not merely present — each claim in it was independently confirmed in the same run — and the `scope` key is *absent* rather than empty when no server is configured | both commands' JSON
+EVIDENCE AC-6 | CP-4 | PASS | A JWT subject reaches the stored value: `observed_actor` = `subject:alice@corp.example`, neither the `--deleted-by` string nor the token, with `actor_verification` reading verified | cadre `cli-v0.7.11`
+EVIDENCE AC-6 | CP-4 | PASS | A scoped API key is still refused as an identity: the raw key was never written, the actor fell back to local observation, and the description honestly reads unverified | cadre `cli-v0.7.11`
+
+### Track A — lock contention: FAIL, then fixed
+
+EVIDENCE AC-8 | CP-4 | PASS | The uncontended path writes content removal and evidence together, reads back with a matching count, refuses a zero-chunk delete, and refuses to record evidence for a partial removal | cadre `cli-v0.7.11`
+EVIDENCE AC-9 | CP-4 | PASS | On a store that had recorded a deletion before, a real competing process holding the write lock for 1, 5, 10, 20, 40 and 55 seconds was waited out; at 65 seconds the command failed at ~61s saying the chunks were removed, how many, and that the deletion must be recorded by hand | four independent stores
+EVIDENCE AC-9 | CP-4 | FAIL→FIXED | On a store that had never recorded one, the same command died at ~5 seconds with a bare `SQLITE_BUSY` and no guidance. Reproduced 4/4 on fresh stores. Twelve times shorter, on the more common case | cadre `ce57aa6a`
+EVIDENCE AC-9 | CP-4 | PASS | No data was lost on that path: the chunk was read back present afterwards and an uncontended retry succeeded — a failure before mutation, not a repeat of round 1's silent loss | direct SQLite read
+
+## The half I measured, and the half I did not
+
+Round 1's fix put the long budget on a lazy `CREATE TABLE` inside
+`RecordIngestedDeletion`. The path that actually failed was a different one —
+`initStagedSchema`, at store open — still on the ordinary budget. **I verified
+the path I had changed and not the path a cold store takes**, and the two are
+indistinguishable from the outside until a store with no deletion history meets
+a competing writer.
+
+The repair is not a wider second budget. That equalises the numbers and keeps
+the shape: a schema change running at the worst possible moment. Creating the
+table at open removes the case, so the long budget now covers the only
+statement that runs after deletion becomes irreversible, and five seconds is
+defensible at open precisely because a failure there mutates nothing.
+
+The regression test asserts the table exists on a freshly opened store — the
+same claim as the timing test, with no lock, clock or competing process in it.
+Reverting to lazy creation fails it.
+
+**Told where the blind spot probably was, the verifier found it somewhere I had
+not looked.** The brief named the cold-versus-warm axis; it was right about the
+axis and I was wrong about which code sat on it.
