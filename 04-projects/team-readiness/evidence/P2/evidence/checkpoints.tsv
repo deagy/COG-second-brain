@@ -3,3 +3,4 @@
 2026-09-03T03:33:03Z	CP-5	PASS	AC-4/5 observed; 13 README blocks compile, 291 docs scanned
 2026-09-03T03:39:39Z	CP-4	PASS	round 2; verifier built its own syntax probe, 6 residual blind spots recorded
 2026-09-03T03:41:07Z	CP-3	PASS	recorded after the fact; 8 commits, reconstructed from artifacts
+2026-09-03T18:50:15Z	CP-6	PASS	released artifacts observed as an outsider; cli-v0.7.12, v0.3.6, v0.14.4

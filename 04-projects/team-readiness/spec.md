@@ -93,15 +93,15 @@ That a colleague, handed the three repositories and their documentation, fails t
 
 | AC | Phase | Evidence | Status |
 |---|---|---|---|
-| AC-1 | P1 | — | pending |
-| AC-2 | P1 | — | pending |
-| AC-3 | P1 | — | pending |
-| AC-4 | P2 | — | pending |
-| AC-5 | P2 | — | pending |
-| AC-6 | P3 | — | pending |
-| AC-7 | P4 | — | pending |
-| AC-8 | P5 | — | pending |
-| AC-9 | P4 | — | pending |
+| AC-1 | P1 | evidence/P1/ CP-3v, CP-5, CP-6 | verified |
+| AC-2 | P1 | evidence/P1/ CP-3v, CP-5 | verified |
+| AC-3 | P1 | evidence/P1/ CP-3v, CP-5, CP-6 | verified |
+| AC-4 | P2 | evidence/P2/ CP-3v, CP-4, CP-5 | verified |
+| AC-5 | P2 | evidence/P2/ CP-3v, CP-4, CP-5 | verified |
+| AC-6 | P3 | evidence/P3/ CP-3v, CP-4, CP-5 | verified |
+| AC-7 | P4 | evidence/P4/ CP-3v, CP-4, CP-5 | verified |
+| AC-8 | P5 | evidence/P5/ CP-3v, CP-4, CP-5 | verified |
+| AC-9 | P4 | evidence/P4/ CP-3v, CP-4, CP-5 | verified |
 
 ## Checkpoint log
 

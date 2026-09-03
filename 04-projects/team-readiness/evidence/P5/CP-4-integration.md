@@ -113,3 +113,29 @@ Reverting to lazy creation fails it.
 **Told where the blind spot probably was, the verifier found it somewhere I had
 not looked.** The brief named the cold-versus-warm axis; it was right about the
 axis and I was wrong about which code sat on it.
+
+### Round 2, cold-path re-check against `cli-v0.7.12`: PASS
+
+EVIDENCE AC-9 | CP-4 | PASS | Binary provenance: `cadre-v0.7.12-linux-arm64.tar.gz` downloaded from the release, `sha256sum -c` against its `SHA256SUMS` returned OK, `cadre --version` printed `cadre 0.7.12`. Nothing built from source | cadre `cli-v0.7.12`
+EVIDENCE AC-9 | CP-4 | PASS | Cold path swept at 3s, 8s, 20s, 55s and 70s holds. The old ~5s bare-`SQLITE_BUSY` failure is gone: 8s, 20s and 55s all exceed the old cutoff and now succeed. The 70s hold failed at 61.75s naming the chunk count and telling the operator to record the deletion by hand | four fresh stores
+EVIDENCE AC-9 | CP-4 | PASS | **Equalised at the long budget, not the short one.** Cold fails at 61.75s and warm at 60.45s, and the intermediate cold durations succeed — which could not happen if the fix had shortened the warm path to meet the cold one instead of the reverse. This was the discriminating check: "the same in both states" is satisfied by either outcome | notes summary table
+EVIDENCE AC-9 | CP-4 | PASS | The verifier confirmed the mechanism by reading `staged_db.go` at the release tag rather than trusting the commit message, and then empirically: a store that had only ever run `propose`, `disposition-staged` and `ingest-accepted` already carries `ingested_deletions` with zero rows. The table exists long before any deletion is attempted | `cli-v0.7.12`
+EVIDENCE AC-8 | CP-4 | PASS | Uncontended delete on a fresh store: exit 0, `chunks_removed: 1`, and `deletion-evidence -id` read the same record back end to end | fresh store
+
+### What is still true after the fix, and is not a defect
+
+A lock held past the evidence budget still ends with the content gone and the
+record unwritten. The 70s trial did exactly that, and the verifier confirmed it
+by reading the `chunks` table directly rather than believing the command: zero
+rows, so the corpus mutation completed and the evidence write is what failed.
+
+That is the design rather than a residue of the bug. Deletion has to happen
+before the record of it can state a chunk count, the two live in different
+database files so no transaction spans them, and a budget has to end somewhere.
+What changed is that the ending is now the same in both states, takes a minute
+rather than five seconds, and says what happened instead of printing a SQLite
+error. An operator who sees it knows the content is gone and that the record is
+theirs to write.
+
+Recorded here rather than carried to the backlog, because it is a property
+someone should know about rather than a thing to fix.
