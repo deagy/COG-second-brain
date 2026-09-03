@@ -67,11 +67,11 @@ each skill already runs; the gate simply makes the approval a first-class, audit
 Each of the four skills records the approval in the run-record before the mutation and
 references this registry:
 
-- `skills/publish-to-confluence/SKILL.md` — G9, Publisher; the run-record approval is
+- `.claude/skills/publish-to-confluence/SKILL.md` — G9, Publisher; the run-record approval is
   written before the page is created; the post-condition re-fetches the page.
-- `skills/team-brief/SKILL.md` — G8, Publisher; the Linear sync-back is gated with explicit
+- `.claude/skills/team-brief/SKILL.md` — G8, Publisher; the Linear sync-back is gated with explicit
   approval recorded; the sync is the post-condition.
-- `skills/content-factory/SKILL.md` — G9 + G10, Publisher; the publish is gated with the
+- `.claude/skills/content-factory/SKILL.md` — G9 + G10, Publisher; the publish is gated with the
   approval recorded; the screenshot/curl is the post-condition.
-- `skills/update-knowledge-base/SKILL.md` — G9, Publisher; the sync to an external wiki is
+- `.claude/skills/update-knowledge-base/SKILL.md` — G9, Publisher; the sync to an external wiki is
   gated with the approval recorded; the post-condition re-fetches the wiki.

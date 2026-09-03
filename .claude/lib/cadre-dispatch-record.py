@@ -70,7 +70,7 @@ def gate(tier, gate_id, name, applicability, status, preparer, verifier,
         bindings = [{
             "artifact_id": artifact_id,
             "revision": "0.1.0",
-            "digest": sha256_hex(f"{artifact_id}|{binding}"),
+            "digest": sha256_hex(artifact_id),
         }]
     return {
         "tier": tier,
@@ -86,7 +86,7 @@ def gate(tier, gate_id, name, applicability, status, preparer, verifier,
         "preparers": [identity(preparer)],
         "independent_verifier": identity(verifier) if verifier else None,
         "independence_declaration": {
-            "verifier_confirmed_not_preparer": False,
+            "verifier_confirmed_not_preparer": verifier is not None,
             "verifier_made_material_correction": False,
         },
         "authority_requirements": [],

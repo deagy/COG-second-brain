@@ -94,7 +94,18 @@ except json.JSONDecodeError as e:
     sys.stderr.write(f"FAIL: {sys.argv[2]} is not valid JSON: {e}\n")
     sys.exit(1)
 
-validator = Draft202012Validator(schema, format_checker=FormatChecker())
+# Guard the FormatChecker to the RFC 3339 (date-time) validator only. A bare
+# FormatChecker() pulls in every built-in format validator (email, uuid, uri,
+# ...); run-record only carries date-time, and those extra checks can reject
+# otherwise-valid records. Pin it to the rfc3339 date-time check (jsonschema's
+# default date-time check delegates to the rfc3339_validator package).
+_default_checkers = FormatChecker().checkers
+_format_checker = FormatChecker()
+_format_checker.checkers = {
+    k: v for k, v in _default_checkers.items() if k == "date-time"
+}
+
+validator = Draft202012Validator(schema, format_checker=_format_checker)
 errors = sorted(validator.iter_errors(instance),
                 key=lambda e: list(e.absolute_path))
 if errors:
