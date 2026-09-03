@@ -66,3 +66,49 @@ changing — which is how a `gofmt -s` difference in a cadre file failed recall'
 build earlier in this phase. That is a coupling decision about recall's CI
 rather than a false claim, so it goes to the retro's dispositions rather than
 being changed mid-phase.
+
+---
+
+## CP-3v: PASS, and it tested more than the implementation did
+
+Verified against the released `v0.3.6` binaries, not a checkout.
+
+**AC-9 was proved with real processes.** My own test opens two `*SQLiteStore`
+handles in one process — goroutines, not processes — which is not quite the
+claim the criterion makes. The verifier spawned 10 then 20 concurrent `recall
+upload` invocations against one shared database, three rounds, and found no
+locked-database error in 30+ process logs and exactly the expected chunk
+counts each round: no lost write, no double count.
+
+That gap was mine and worth recording: a test that demonstrates something
+adjacent to the claim reads as proof of the claim.
+
+**AC-7 was attacked rather than confirmed.** Two scoped keys against a running
+server, distinct subjects from `/whoami`, distinct content seeded in each
+namespace so "found nothing" could not be satisfied by an empty store — and
+then deliberate escape attempts:
+
+| Attempt | Result |
+|---|---|
+| `POST /upload` with `"namespace":"team-alice"` under bob's key | 403 |
+| `GET /search?namespace=team-bob` under alice's key | scoped to alice |
+| `?ns=team-bob` | scoped to alice |
+| crafted `namespace`/`namespaces`/`filters` in a hybrid-search body | ignored; the server injects its own filter from the authenticated request |
+| `/graph/{entity}` for the other tenant's document | 404 |
+
+No path reached cross-tenant content.
+
+## Carried, not fixed: an ops endpoint enumerates tenants
+
+`GET /diagnostics` is unauthenticated by design — its comment says so — and
+returns `namespaces: ["team-alice", "team-bob"]` to any caller, credential or
+not. Tenant *names*, never content, and the verifier was right to place it
+outside AC-7, which is about read and write under a credential's scope.
+
+It is still a real thing to decide, and it only became one when P4 made
+multi-tenant use possible: under this goal's bar — colleagues inside one
+company — knowing which teams exist is close to harmless, and on a
+`recall-server` exposed more widely it is an enumeration surface. Recorded for
+the retro rather than fixed here, because changing an endpoint's auth posture
+to close a leak nobody has asked about is a product decision and not this
+phase's.
