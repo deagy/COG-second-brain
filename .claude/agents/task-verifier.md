@@ -80,7 +80,9 @@ verdict is a terminal `FAIL:escalate` with a telemetry row, and the loop does no
 cadre records `amend_attempt` as telemetry without a fixed cap; the bound here is a COG
 decision, set to give genuinely fixable work one more round than the old `retry < 2` cap
 while guaranteeing the loop terminates. Record each denial with
-`checkpoint.sh record_reentry <run-dir> <amend_attempt> "<reentry>" "<invalidates>" "<reason>"`.
+`checkpoint.sh record_reentry <run-dir> <amend_attempt> "<reentry>" "<invalidates>" "<reason>" [denier]`.
+The optional `denier` becomes the run-record's `invalidation.actor` and defaults to
+`task-verifier`; pass it when a differently-named verifier issued the denial.
 A denial that is recorded but changes no next pipeline step is not a pass.
 
 ## Response Style — ALWAYS APPLY
