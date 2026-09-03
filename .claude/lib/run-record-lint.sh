@@ -37,6 +37,10 @@ ROOT_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
 SCHEMA_FILE="${ROOT_DIR}/05-knowledge/run-record.schema.json"
 PROVENANCE_FILE="${ROOT_DIR}/05-knowledge/run-record.provenance.json"
+# Optional: point this at a local cadre-kernel checkout to get a warning when the
+# origin schema has moved past the vendored revision. Unset, the forward-drift
+# check is skipped -- it is a convenience for whoever re-vendors, not a gate.
+#   export ORIGIN_CADRE_KERNEL_PATH=~/sdk/cadre-kernel
 ORIGIN_REPO_PATH="${ORIGIN_CADRE_KERNEL_PATH:-}"
 if [ -n "$ORIGIN_REPO_PATH" ]; then
   ORIGIN_SCHEMA_PATH="${ORIGIN_REPO_PATH}/kernel/contracts/run-record.schema.json"
@@ -54,19 +58,6 @@ fail() { echo "FAIL: $*" >&2; exit 1; }
 
 [ -f "$SCHEMA_FILE" ] || die "vendored schema not found at $SCHEMA_FILE"
 [ -f "$PROVENANCE_FILE" ] || die "provenance sidecar not found at $PROVENANCE_FILE"
-
-# Locate the run-record to validate.
-TARGET="${1:-}"
-[ -n "$TARGET" ] || { echo "usage: bash .claude/lib/run-record-lint.sh <run-dir|run-record.json>" >&2; exit 2; }
-if [ -f "$TARGET" ]; then
-  RUN_RECORD_PATH="$(cd "$(dirname "$TARGET")" && pwd)/$(basename "$TARGET")"
-elif [ -d "$TARGET" ]; then
-  RUN_RECORD_PATH="$(cd "$TARGET" && pwd)/${RUN_RECORD_NAME}"
-else
-  echo "usage: bash .claude/lib/run-record-lint.sh <run-dir|run-record.json>" >&2
-  exit 2
-fi
-[ -f "$RUN_RECORD_PATH" ] || fail "no ${RUN_RECORD_NAME} at $RUN_RECORD_PATH"
 
 # Drift check (AC-3): the vendored copy must equal its stated origin sha256.
 EXPECTED_SHA="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["schema"]["origin_sha256"])' "$PROVENANCE_FILE")"
@@ -87,9 +78,33 @@ if [ -n "$ORIGIN_SCHEMA_PATH" ] && [ -f "$ORIGIN_SCHEMA_PATH" ]; then
   fi
 fi
 
+# Locate the run-record to validate.
+TARGET="${1:-}"
+[ -n "$TARGET" ] || { echo "usage: bash .claude/lib/run-record-lint.sh <run-dir|run-record.json>" >&2; exit 2; }
+if [ -f "$TARGET" ]; then
+  RUN_RECORD_PATH="$(cd "$(dirname "$TARGET")" && pwd)/$(basename "$TARGET")"
+elif [ -d "$TARGET" ]; then
+  RUN_RECORD_PATH="$(cd "$TARGET" && pwd)/${RUN_RECORD_NAME}"
+else
+  echo "usage: bash .claude/lib/run-record-lint.sh <run-dir|run-record.json>" >&2
+  exit 2
+fi
+[ -f "$RUN_RECORD_PATH" ] || fail "no ${RUN_RECORD_NAME} at $RUN_RECORD_PATH"
+
 # Schema validation (AC-2): does the run-record satisfy the vendored schema?
 python3 - "$SCHEMA_FILE" "$RUN_RECORD_PATH" <<'PY'
-import json, sys
+import json, os, sys
+
+
+def _walk(node, path=()):
+    if isinstance(node, dict):
+        for k, v in node.items():
+            yield from _walk(v, path + (k,))
+    elif isinstance(node, list):
+        for i, v in enumerate(node):
+            yield from _walk(v, path + (i,))
+    else:
+        yield path, node
 try:
     from jsonschema import Draft202012Validator, FormatChecker
 except ImportError:
@@ -132,6 +147,24 @@ if errors:
     for e in errors:
         loc = "/".join(str(p) for p in e.absolute_path) or "<root>"
         sys.stderr.write(f"  {loc}: {e.message}\n")
+    sys.exit(1)
+placeholders = [
+    "/".join(str(p) for p in path)
+    for path, value in _walk(instance)
+    if isinstance(value, str) and value.startswith("TODO")
+]
+if placeholders and not os.environ.get("ALLOW_TEMPLATE_PLACEHOLDERS"):
+    sys.stderr.write(
+        f"FAIL: {sys.argv[2]} still carries {len(placeholders)} TODO placeholder(s) "
+        "-- a copied template is not a run-record:\n"
+    )
+    for loc in placeholders[:8]:
+        sys.stderr.write(f"  {loc}\n")
+    if len(placeholders) > 8:
+        sys.stderr.write(f"  ... and {len(placeholders) - 8} more\n")
+    sys.stderr.write(
+        "  Set ALLOW_TEMPLATE_PLACEHOLDERS=1 to lint the template itself.\n"
+    )
     sys.exit(1)
 print(f"PASS: {sys.argv[2]} validates against the vendored schema")
 PY

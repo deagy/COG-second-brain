@@ -144,11 +144,11 @@ Proceed with publishing? (yes/no)
 
 ### Phase 5: Publish
 
-Publishing a page is a **G9** external mutation with the **Publisher** as deciding
-authority (`plan/authority-gates.md`). Record the approval (authority, gate, timestamp,
-approver) in the `human_approvals` array of the run-record's **G9** gate before the page
-is created — it is a property of the gate, not of the run-record root; an
-unapproved publish does not run. The re-fetched page is the post-condition.
+Publishing a page is a **G8 release-readiness** external mutation with the **Publisher**
+as deciding authority (`plan/authority-gates.md`). Record the approval with
+`bash .claude/lib/checkpoint.sh record_approval G8 Publisher <approver> "<page-url>" [run-dir]`
+before the page is created; an unapproved publish does not run. The ledger exists in every
+session, so this works outside a harness run. The re-fetched page is the post-condition.
 
 #### Create New Page
 ```

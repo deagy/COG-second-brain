@@ -77,7 +77,7 @@ criteria:
 The amend bound is **3** (`AMEND_BOUND`). The loop allows three amend-and-re-review
 cycles (`amend_attempt` 1, 2, 3); if the third re-review is still `FAIL:fixable`, the
 verdict is a terminal `FAIL:escalate` with a telemetry row, and the loop does not retry.
-Kadre records `amend_attempt` as telemetry without a fixed cap; the bound here is a COG
+cadre records `amend_attempt` as telemetry without a fixed cap; the bound here is a COG
 decision, set to give genuinely fixable work one more round than the old `retry < 2` cap
 while guaranteeing the loop terminates. Record each denial with
 `checkpoint.sh record_reentry <run-dir> <amend_attempt> "<reentry>" "<invalidates>" "<reason>"`.

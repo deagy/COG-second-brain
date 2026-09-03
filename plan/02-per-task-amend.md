@@ -110,7 +110,7 @@ mirroring the run-record invalidation def); validated with `bash -n` and a live
 escalate in the checkpoint table and the per-task loop.
 
 Two decisions the plan left open are resolved here: the amend bound is **3** (a COG
-decision — kadre records `amend_attempt` as telemetry without a fixed cap), and solo-mode
+decision — cadre records `amend_attempt` as telemetry without a fixed cap), and solo-mode
 re-review is a fresh verifier context that reads the deliverable against the criterion
 with no memory of the amend. AC-1/AC-2/AC-3/AC-4 are met; AC-5 (a recorded-but-effectless
 denial is not a pass) is enforced by requiring the re-entry record on every FAIL:fixable.

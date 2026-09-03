@@ -21,76 +21,80 @@ project and work that reaches it. The whole external set, today, is five mutatio
 ## The registry
 
 This document is the one claim on the authority mapping; it is owned here and referenced,
-never re-declared in a skill (AC-5). Gate numbers are kept for traceability to cadre's
-G1-G10; the authority is renamed from cadre's software-release role to the COG role that
-actually decides — the **Publisher**, the human who owns the brain and approves the
-external write. Each mutation names exactly one authority (AC-1).
+never re-declared in a skill (AC-5). Gate numbers are cadre's, so a COG run-record and a
+cadre one join on the same `gate_id`; the authority is renamed from cadre's software-release
+role to the COG role that actually decides — the **Publisher**, the human who owns the brain
+and approves the external write. Each mutation names exactly one authority (AC-1).
+
+The numbers come from `cadre-kernel/kernel/contracts/lifecycle-gates.json` at the vendored
+revision, which is also the ladder `05-knowledge/product/agentic-sdlc.md` already records:
+G7 Evidence, G8 Release Readiness, G9 Deployment Authorization, G10 Runtime Conformance.
+Do not renumber them here — a gate id that disagrees with the kernel makes the run-record
+uncomparable, which is the whole reason the schema was vendored.
 
 | COG mutation | External system | Gate | Deciding authority |
 |---|---|---|---|
-| Publish a page to Confluence / Notion | Shared wiki | G9 release-readiness | Publisher |
-| Post to Slack / socials / webhook | Public channel | G10 deployment-authorization | Publisher |
-| Sync a team brief back to Linear | Issue tracker | G8 evidence | Publisher |
-| content-factory publish | Public post | G9 + G10 | Publisher |
-| update-knowledge-base sync to external wiki | Shared KB | G9 release-readiness | Publisher |
+| Publish a page to Confluence / Notion | Shared wiki | G8 release-readiness | Publisher |
+| Post to Slack / socials / webhook | Public channel | G9 deployment-authorization | Publisher |
+| Sync a team brief back to Linear | Issue tracker | G7 evidence | Publisher |
+| content-factory publish | Public post | G8 + G9 | Publisher |
+| update-knowledge-base sync to external wiki | Shared KB | G8 release-readiness | Publisher |
 
-content-factory spans G9 and G10 but has one approval — one authority signs off the whole
+content-factory spans G8 and G9 but has one approval — one authority signs off the whole
 publish, not one per gate. That is the one-shape rule (AC-1): the approval record carries a
 single authority even when two gates apply.
 
-## Approval-record shape
+## Where the approval is recorded
 
-The approval is recorded **before** the mutation runs (AC-3), in the `human_approvals`
-array **of the gate it approves**. `human_approvals` is a property of a gate object, not of
-the run-record root: the root is `additionalProperties: false`, so a top-level
-`human_approvals` is rejected by `run-record-lint.sh` with
-`<root>: Additional properties are not allowed`, and by `WORKFLOW.md` the run is then not a
-finished run. Find the entry in `lifecycle_gates` whose `gate_id` is the gate from the
-table above, and fill its array:
+An approval is a moment-fact; a run-record is a document written at the end of a harness
+run. The first cannot be written into the second, and the earlier draft of this section
+asked for exactly that. Two things made it unsatisfiable: none of the gated skills is a
+harness entry point, so in an ordinary `/publish-to-confluence` session no run-record
+exists at any path; and even inside `/closed-loop` the mutation is Phase 6 while the
+run-record is written at Phase 7, so the file does not exist at the moment the approval
+must precede the mutation.
 
-```
-"lifecycle_gates": [
-  {
-    "gate_id": "G9",
-    "status": "approved",
-    "human_approvals": [
-      {
-        "status": "approved",
-        "approver": {"id": "<user>", "role": "Publisher", "kind": "human"},
-        "decided_at": "<date-time>",
-        "evidence_refs": [{"evidence_id": "<gate>-<slug>", "uri": "<artifact>",
-                           "hash_algorithm": "sha256", "hash": "<digest>",
-                           "classification": "internal"}],
-        "note": "authority: Publisher"
-      }
-    ]
-  }
-]
+So the approval goes where COG already puts moment-facts — an append-only ledger, the same
+mechanism `checkpoint.sh record` uses for checkpoints:
+
+```bash
+bash .claude/lib/checkpoint.sh record_approval <gate> Publisher <approver> "<artifact>" [run-dir]
 ```
 
-Only the three keys that change are shown; the gate object keeps its other sixteen
-properties as the template defines them. A mutation spanning two gates (content-factory,
-G9 + G10) still has one approval — record it on the gate the table names first and note the
-span, per the one-shape rule above.
+This appends to `.claude/logs/approval-ledger.tsv`, which exists in every session, so
+"recorded before the mutation" (AC-3) is satisfiable everywhere. Inside a harness run, pass
+the run directory as well and the row is also written to `<run-dir>/evidence/approvals.tsv`,
+where `checkpoint.sh status` surfaces it.
+
+When a run-record *is* being written, Phase 7 of `closed-loop` folds the run's approval rows
+into the matching gate's `human_approvals` array — a property of the gate object, never of
+the run-record root, which is `additionalProperties: false` and rejects a top-level
+`human_approvals` outright. That fold is the only place the run-record and the approval meet,
+and it happens after the fact, which is the correct direction: the ledger is the record, the
+run-record is a report assembled from it.
+
+A mutation spanning two gates (content-factory, G8 + G9) still has one approval — record it
+against the gate the table names first and note the span, per the one-shape rule above.
 
 A mutation without a recorded approval is not executed: the skill stops at the gate and
 asks (AC-2). After the mutation, the external artifact is re-fetched or re-read and
 confirmed to match intent, not just the tool return (AC-4) — this is the same post-condition
-each skill already runs; the gate simply makes the approval a first-class, audited record.
+each skill already runs; the gate makes the approval a first-class, durable record rather
+than a fact that lives only in the conversation.
 
 ## Enforcement
 
 Each of the four skills records the approval in the run-record before the mutation and
 references this registry:
 
-- `.claude/skills/publish-to-confluence/SKILL.md` — G9, Publisher; the run-record approval is
+- `.claude/skills/publish-to-confluence/SKILL.md` — G8, Publisher; the run-record approval is
   written before the page is created; the post-condition re-fetches the page.
-- `.claude/agents/worker-publisher.md` — G10 for Slack / socials / webhooks and G9 for
+- `.claude/agents/worker-publisher.md` — G9 for Slack / socials / webhooks and G8 for
   Confluence / Notion pages, Publisher; the agent that actually posts confirms the
   recorded approval before publishing and observes the artifact afterwards.
-- `.claude/skills/team-brief/SKILL.md` — G8, Publisher; the Linear sync-back is gated with explicit
+- `.claude/skills/team-brief/SKILL.md` — G7, Publisher; the Linear sync-back is gated with explicit
   approval recorded; the sync is the post-condition.
-- `.claude/skills/content-factory/SKILL.md` — G9 + G10, Publisher; the publish is gated with the
+- `.claude/skills/content-factory/SKILL.md` — G8 + G9, Publisher; the publish is gated with the
   approval recorded; the screenshot/curl is the post-condition.
-- `.claude/skills/update-knowledge-base/SKILL.md` — G9, Publisher; the sync to an external wiki is
+- `.claude/skills/update-knowledge-base/SKILL.md` — G8, Publisher; the sync to an external wiki is
   gated with the approval recorded; the post-condition re-fetches the wiki.

@@ -2,7 +2,7 @@
   "version": 2,
   "task_id": "TODO-TASK-1",
   "dispatch_fingerprint": "sha256:5a19219be85529d2a15ddef517a13bda1208dc4bd7be087a1ef401b7ebbbea8f",
-  "kernel_version": "0.3.0",
+  "kernel_version": "0.14.4",
   "contract_digest": "sha256:211507e876cccef3942decde5ad2ddb4ec91bb4c3b2f07607efda42648044dfa",
   "provider_bindings": [
     {
@@ -103,7 +103,7 @@
     {
       "tier": "lifecycle",
       "gate_id": "G2",
-      "name": "Requirements",
+      "name": "Requirements Baseline",
       "applicability": "applicable",
       "applicability_rationale": "TODO: why this gate applies (or 'not-applicable' with reason)",
       "status": "pending",
@@ -194,7 +194,7 @@
         {
           "authority_id": "TODO-product_owner",
           "authority_type": "human-approver",
-          "role": "Product Owner",
+          "role": "System Architect",
           "applicability": "applicable",
           "rationale": "TODO: assign in project authority map"
         }
@@ -204,7 +204,7 @@
           "status": "pending",
           "approver": {
             "id": "TODO-human",
-            "role": "Product Owner",
+            "role": "System Architect",
             "kind": "human"
           },
           "decided_at": null,
@@ -223,7 +223,7 @@
     {
       "tier": "lifecycle",
       "gate_id": "G4",
-      "name": "Implementation",
+      "name": "Governance and Data",
       "applicability": "applicable",
       "applicability_rationale": "TODO: why this gate applies (or 'not-applicable' with reason)",
       "status": "pending",
@@ -254,7 +254,7 @@
         {
           "authority_id": "TODO-product_owner",
           "authority_type": "human-approver",
-          "role": "Product Owner",
+          "role": "Governance Lead",
           "applicability": "applicable",
           "rationale": "TODO: assign in project authority map"
         }
@@ -264,7 +264,7 @@
           "status": "pending",
           "approver": {
             "id": "TODO-human",
-            "role": "Product Owner",
+            "role": "Governance Lead",
             "kind": "human"
           },
           "decided_at": null,
@@ -283,7 +283,7 @@
     {
       "tier": "lifecycle",
       "gate_id": "G5",
-      "name": "Verification",
+      "name": "Security and Crypto",
       "applicability": "applicable",
       "applicability_rationale": "TODO: why this gate applies (or 'not-applicable' with reason)",
       "status": "pending",
@@ -314,7 +314,7 @@
         {
           "authority_id": "TODO-product_owner",
           "authority_type": "human-approver",
-          "role": "Product Owner",
+          "role": "Security Lead",
           "applicability": "applicable",
           "rationale": "TODO: assign in project authority map"
         }
@@ -324,7 +324,7 @@
           "status": "pending",
           "approver": {
             "id": "TODO-human",
-            "role": "Product Owner",
+            "role": "Security Lead",
             "kind": "human"
           },
           "decided_at": null,
@@ -343,7 +343,7 @@
     {
       "tier": "lifecycle",
       "gate_id": "G6",
-      "name": "Review",
+      "name": "Verification and Test",
       "applicability": "applicable",
       "applicability_rationale": "TODO: why this gate applies (or 'not-applicable' with reason)",
       "status": "pending",
@@ -374,7 +374,7 @@
         {
           "authority_id": "TODO-product_owner",
           "authority_type": "human-approver",
-          "role": "Product Owner",
+          "role": "Engineering Lead",
           "applicability": "applicable",
           "rationale": "TODO: assign in project authority map"
         }
@@ -384,7 +384,7 @@
           "status": "pending",
           "approver": {
             "id": "TODO-human",
-            "role": "Product Owner",
+            "role": "Engineering Lead",
             "kind": "human"
           },
           "decided_at": null,
@@ -403,7 +403,7 @@
     {
       "tier": "lifecycle",
       "gate_id": "G7",
-      "name": "Pre-deployment",
+      "name": "Evidence",
       "applicability": "applicable",
       "applicability_rationale": "TODO: why this gate applies (or 'not-applicable' with reason)",
       "status": "pending",
@@ -434,7 +434,7 @@
         {
           "authority_id": "TODO-product_owner",
           "authority_type": "human-approver",
-          "role": "Product Owner",
+          "role": "Release Owner",
           "applicability": "applicable",
           "rationale": "TODO: assign in project authority map"
         }
@@ -444,7 +444,7 @@
           "status": "pending",
           "approver": {
             "id": "TODO-human",
-            "role": "Product Owner",
+            "role": "Release Owner",
             "kind": "human"
           },
           "decided_at": null,
@@ -463,7 +463,7 @@
     {
       "tier": "lifecycle",
       "gate_id": "G8",
-      "name": "Deployment",
+      "name": "Release Readiness",
       "applicability": "applicable",
       "applicability_rationale": "TODO: why this gate applies (or 'not-applicable' with reason)",
       "status": "pending",
@@ -494,7 +494,7 @@
         {
           "authority_id": "TODO-product_owner",
           "authority_type": "human-approver",
-          "role": "Product Owner",
+          "role": "Release Owner",
           "applicability": "applicable",
           "rationale": "TODO: assign in project authority map"
         }
@@ -504,7 +504,7 @@
           "status": "pending",
           "approver": {
             "id": "TODO-human",
-            "role": "Product Owner",
+            "role": "Release Owner",
             "kind": "human"
           },
           "decided_at": null,
@@ -523,7 +523,7 @@
     {
       "tier": "lifecycle",
       "gate_id": "G9",
-      "name": "Post-deployment",
+      "name": "Deployment Authorization",
       "applicability": "applicable",
       "applicability_rationale": "TODO: why this gate applies (or 'not-applicable' with reason)",
       "status": "pending",
@@ -554,7 +554,7 @@
         {
           "authority_id": "TODO-product_owner",
           "authority_type": "human-approver",
-          "role": "Product Owner",
+          "role": "Release Authority",
           "applicability": "applicable",
           "rationale": "TODO: assign in project authority map"
         }
@@ -564,7 +564,7 @@
           "status": "pending",
           "approver": {
             "id": "TODO-human",
-            "role": "Product Owner",
+            "role": "Release Authority",
             "kind": "human"
           },
           "decided_at": null,
@@ -583,7 +583,7 @@
     {
       "tier": "lifecycle",
       "gate_id": "G10",
-      "name": "Change control",
+      "name": "Runtime Conformance",
       "applicability": "applicable",
       "applicability_rationale": "TODO: why this gate applies (or 'not-applicable' with reason)",
       "status": "pending",
@@ -614,7 +614,7 @@
         {
           "authority_id": "TODO-product_owner",
           "authority_type": "human-approver",
-          "role": "Product Owner",
+          "role": "Service Owner",
           "applicability": "applicable",
           "rationale": "TODO: assign in project authority map"
         }
@@ -624,7 +624,7 @@
           "status": "pending",
           "approver": {
             "id": "TODO-human",
-            "role": "Product Owner",
+            "role": "Service Owner",
             "kind": "human"
           },
           "decided_at": null,

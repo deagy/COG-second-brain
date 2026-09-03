@@ -66,11 +66,12 @@ Dedup check before producing: topic slug + source URL against the ledger AND aga
 
 ## Phase 4 — PUBLISH (safety gates)
 
-Publishing is a **G9 + G10** external mutation with the **Publisher** as deciding authority
-(`plan/authority-gates.md`). Record the one approval (authority, gate, timestamp, approver)
-in the `human_approvals` array of the run-record's **G9** gate before the post goes out — it
-is a property of the gate, not of the run-record root, and G9+G10 share a single approval
-per the registry's one-shape rule; an unapproved publish does not run.
+Publishing is a **G8 + G9** external mutation with the **Publisher** as deciding authority
+(`plan/authority-gates.md`). Record the one approval with
+`bash .claude/lib/checkpoint.sh record_approval G8 Publisher <approver> "<post-url>" [run-dir]`
+before the post goes out — G8 and G9 share a single approval per the registry's one-shape
+rule; an unapproved publish does not run. The ledger exists in every session, so this works
+outside a harness run.
 
 1. **Environment gate**: if the publishing surface is unavailable, or the user appears to be actively using the browser/machine — DO NOT publish. Write finished bundles to `04-projects/content-factory/out/<date>/` and let a later run (or the user) publish.
 2. **Post-condition check (mandatory)**: after every publish, observe the artifact — screenshot the live post, curl the live URL — before recording it as published. Never report success from the publish call alone.
