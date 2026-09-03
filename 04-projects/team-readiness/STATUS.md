@@ -2,17 +2,17 @@
 
 North-star: a colleague who has never seen these repositories can install cadre, the lifecycle kernel and recall unaided, learn from the documentation how the three fit together, and read a record of who did what that names a person the system actually verified.
 Spec: 04-projects/team-readiness/spec.md · Registry: 04-projects/harness/ultragoals.md
-Current phase: P1–P5 built; verification and gates in progress · Overall: **in progress**
+Current phase: all five complete · Overall: **done** — north-star gate PASS 2026-09-03
 
 ## Phases
 | Phase | AC covered | State | Evidence | Notes |
 |---|---|---|---|---|
 | P0 | — | **done** | assessment.html | 9 criteria, 5 phases, from a clean-container install as a non-author |
-| P1 | AC-1, AC-2, AC-3 | **built, CP-3v PASS** | evidence/P1/ | CP-3v round 1 failed on this phase's own new file — `--root` not carried in the kernel README's example. CP-4 has run four rounds on one defect class |
-| P2 | AC-4, AC-5 | **built, CP-3v PASS** | evidence/P2/ | The overview page, the glossary, and a dead-path guard that scans every live document. Each CP-3v round found defects in the README blocks the round before had not compiled |
-| P3 | AC-6 | **built, CP-3v PASS** | evidence/P3/ | Three rounds, three distinct reasons the branch was unreachable: a config block nothing parsed, a credential that could not be persisted, a header the authenticator never read |
-| P4 | AC-7, AC-9 | **built, CP-3v PASS** | evidence/P4/ | Verified with 30+ real processes and deliberate namespace-escape attempts, both beyond what the implementation's own tests reach |
-| P5 | AC-8 | **built, CP-3v PASS** | evidence/P5/ | Absence confirmed independently through `recall store info`, not only through cadre's own search |
+| P1 | AC-1, AC-2, AC-3 | **done** | evidence/P1/ | CP-3v round 1 failed on this phase's own new file — `--root` not carried in the kernel README's example. CP-4 has run four rounds on one defect class |
+| P2 | AC-4, AC-5 | **done** | evidence/P2/ | The overview page, the glossary, and a dead-path guard that scans every live document. Each CP-3v round found defects in the README blocks the round before had not compiled |
+| P3 | AC-6 | **done** | evidence/P3/ | Three rounds, three distinct reasons the branch was unreachable: a config block nothing parsed, a credential that could not be persisted, a header the authenticator never read |
+| P4 | AC-7, AC-9 | **done** | evidence/P4/ | Verified with 30+ real processes and deliberate namespace-escape attempts, both beyond what the implementation's own tests reach |
+| P5 | AC-8 | **done** | evidence/P5/ | Absence confirmed independently through `recall store info`, not only through cadre's own search |
 
 ## Open AC-n (no PASS row yet)
 
@@ -29,25 +29,43 @@ Releases the criteria are verified against: cadre `cli-v0.7.11`, recall
 - **Documentation before code.** P1 and P2 ship before any integration work. It is days rather than weeks, it unblocks a colleague immediately, and it makes every later phase testable by someone who is not the author.
 - **gloop is out of scope.** Nothing imports it and its coupling to cadre is a file, not a dependency. Whether to share it internally is a separate decision with three options recorded in `assessment.html`.
 
-## Next action (resume cold from here)
+## Outcome
 
-**Round 2 of CP-4 for P3, P4 and P5**, against `cli-v0.7.11`, released from
-cadre `eb1ef9f5`. Round 1 returned FAIL:fixable on two cross-phase
-findings; both are fixed and the fixes are falsified, but a fix verified by its
-author is not verified.
+**North-star gate PASS, 2026-09-03**, all nine criteria verified by a fresh
+verifier that read the spec and the evidence and re-observed three of them
+against the live world — re-fetching cadre-kernel's README through the GitHub
+API, listing recall `v0.3.6`'s assets, and downloading `cli-v0.7.12`,
+checksumming it against the release's own `SHA256SUMS`, and running it.
 
-Then: CP-6 per phase, CP-7 retro, and the north-star gate over all nine
-criteria. CP-4 for P1 and P2 passed at round 2; CP-5 is recorded for all five
-phases.
+Verified against cadre `cli-v0.7.12`, recall `v0.3.6`, cadre-kernel `v0.14.4`.
+All three repositories green on their own runners at the commits the criteria
+name. `phase-gates.sh`, `spec-lint.sh`, `evidence-lint.sh` and
+`citation-lint.sh` all exit 0.
 
-**This checkpoint was recorded as running when it had never been dispatched.**
-`phase-gates.sh` caught it — three phases with no CP-4 row and no artifact. It
-is the capability-parity failure repeated, and the reason the gate counts rows
-rather than reading this file.
+### The one criterion that is verified and not yet proven
 
-**Releases the criteria are verified against:** cadre `cli-v0.7.11`, recall
-`v0.3.6`, cadre-kernel `v0.14.4`. Every phase from P3 cut one before its
-criteria were checked, per the charter.
+AC-1's own wording makes the container run its automated substitute for a
+person, and the spec says so: *the confirmation no automated check replaces.*
+The row is correctly graded against the falsification test AC-1 states — a
+container, the published artifacts, nothing supplied from outside the docs —
+so this is not a misgraded row. But the north-star's plain sentence says *a
+colleague installs unaided*, and no colleague has done it yet.
+
+The gate said this without being asked to, which is the right instinct: a
+criterion can be honestly satisfied and its north-star still be one step short.
+**Handing the three repositories to an actual person and watching where they
+stop is the operator's to schedule**, and it is the only remaining way to learn
+what the container cannot tell us.
+
+### Open for the operator
+
+- `cli-v0.7.10` — a tag with no release behind it, created by hand before
+  checking that cadre's workflow tags and publishes itself. `release-hygiene.sh`
+  is red until it goes, and it is not being excepted, because an exception would
+  file the mistake as a stated reason. `git -C ~/sdk/cadre push origin
+  :refs/tags/cli-v0.7.10`. The gate judged it not a blocker: it gates none of
+  the releases that actually shipped and were verified.
+- Four scratch worktrees remain registered from earlier phases.
 
 ## Findings carried to the retro, not fixed in-phase
 
