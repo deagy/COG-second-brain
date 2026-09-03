@@ -1,0 +1,188 @@
+package types
+
+import (
+	"context"
+	"fmt"
+	"strings"
+	"time"
+)
+
+// Provider is the interface that all LLM provider implementations must satisfy.
+// It is a stateless, single-call interface: Complete() takes a conversation
+// and returns a response. Session management (message history, iteration tracking)
+// is handled by the runtime layer, not the provider.
+type Provider interface {
+	// Name returns the provider's name (e.g., "anthropic", "openai").
+	Name() string
+
+	// Complete sends the given messages to the provider and returns the response.
+	// The provider is stateless — it does not track sessions or iterations.
+	Complete(ctx context.Context, messages []Message, tools []Tool) (*ProviderResponse, error)
+
+	// SupportsTools returns true if the provider supports tool/function calling.
+	SupportsTools() bool
+}
+
+// ProviderResponse represents the response from an LLM provider call.
+type ProviderResponse struct {
+	// Content is the response text.
+	Content string `json:"content"`
+
+	// ToolCalls is the list of tool calls requested by the model.
+	// Empty if the model did not request any tool calls.
+	ToolCalls []ToolCall `json:"tool_calls,omitempty"`
+
+	// FinishReason indicates why the model stopped generating.
+	// Common values: "stop", "tool_calls", "length", "content_filter".
+	FinishReason string `json:"finish_reason,omitempty"`
+
+	// Usage is the token usage reported by the provider, when available.
+	// Zero values mean the provider did not report usage.
+	Usage Usage `json:"usage,omitempty"`
+}
+
+// Usage reports token usage as reported by a provider.
+type Usage struct {
+	// InputTokens is the number of tokens consumed by the request input.
+	InputTokens int `json:"input_tokens,omitempty"`
+
+	// OutputTokens is the number of tokens generated in the response.
+	OutputTokens int `json:"output_tokens,omitempty"`
+}
+
+// StreamHandler receives one partial content chunk from a streaming
+// provider call. Returning an error aborts the stream: the provider stops
+// reading the response and returns that error (wrapped).
+type StreamHandler func(chunk string) error
+
+// Streamer is implemented by providers that support streaming responses.
+// It is an optional, non-breaking extension of Provider: the base
+// interface is unchanged, a provider without streaming support simply
+// does not implement this interface, and callers opt in via a type
+// assertion.
+type Streamer interface {
+	Provider
+
+	// Stream sends the given messages to the provider and calls handler
+	// with each partial content chunk as it arrives. On completion it
+	// returns the full accumulated response — same shape and semantics
+	// as Complete — so callers can treat streamed and non-streamed
+	// calls interchangeably.
+	Stream(ctx context.Context, messages []Message, tools []Tool, handler StreamHandler) (*ProviderResponse, error)
+}
+
+// Message represents a single message in a conversation, used by Provider implementations.
+type Message struct {
+	// Role is the sender: "user", "assistant", "system", "tool", or "function".
+	Role string `json:"role"`
+
+	// Content is the message text.
+	Content string `json:"content"`
+
+	// ToolCallID identifies the tool call this message is the result of.
+	// Set on messages with role "tool" or "function"; empty otherwise.
+	ToolCallID string `json:"tool_call_id,omitempty"`
+
+	// ToolCalls lists the tool invocations requested by an assistant message.
+	// Empty for all other roles. Providers map these to their native wire
+	// format (e.g. Anthropic tool_use content blocks).
+	ToolCalls []ToolCall `json:"tool_calls,omitempty"`
+}
+
+// Validate checks that the Message has required fields set.
+func (m *Message) Validate() error {
+	if m.Role == "" {
+		return ErrMessageEmpty
+	}
+	if m.Content == "" {
+		return ErrMessageEmpty
+	}
+	// Enforce reasonable message length limits.
+	if len(m.Content) > MaxMessageLength {
+		return fmt.Errorf("types: message content exceeds maximum length of %d bytes", MaxMessageLength)
+	}
+	return nil
+}
+
+// Sanitize removes leading/trailing whitespace from content.
+func (m *Message) Sanitize() {
+	m.Content = strings.TrimSpace(m.Content)
+}
+
+// ProviderRuntimeConfig holds the configuration needed to create a Provider instance.
+type ProviderRuntimeConfig struct {
+	// Type is the provider type identifier (e.g., "anthropic", "openai").
+	Type string `json:"type"`
+
+	// APIKey is the API key for authenticating with the provider.
+	APIKey string `json:"api_key"`
+
+	// Model is the model identifier to use (e.g., "claude-sonnet-4-20250514").
+	Model string `json:"model,omitempty"`
+
+	// BaseURL is the base URL for the provider API (optional, uses defaults).
+	BaseURL string `json:"base_url,omitempty"`
+
+	// Timeout is the request timeout (0 = use provider default).
+	Timeout time.Duration `json:"timeout,omitempty"`
+
+	// RateLimit is the maximum number of requests per RateLimitWindow (0 = use provider default).
+	RateLimit int `json:"rate_limit,omitempty"`
+
+	// RateLimitWindow is the time window for rate limiting (0 = use provider default).
+	RateLimitWindow time.Duration `json:"rate_limit_window,omitempty"`
+}
+
+// ProviderType constants for known provider types.
+const (
+	// ProviderTypeAnthropic is the provider type identifier for Anthropic.
+	ProviderTypeAnthropic = "anthropic"
+
+	// ProviderTypeOpenAI is the provider type identifier for OpenAI.
+	ProviderTypeOpenAI = "openai"
+
+	// ProviderTypeGoogle is the provider type identifier for Google Gemini.
+	ProviderTypeGoogle = "google"
+
+	// ProviderTypeMistral is the provider type identifier for Mistral.
+	ProviderTypeMistral = "mistral"
+
+	// ProviderTypeCohere is the provider type identifier for Cohere.
+	ProviderTypeCohere = "cohere"
+
+	// ProviderTypeHTTP is the provider type identifier for generic HTTP providers.
+	ProviderTypeHTTP = "http"
+)
+
+// IsKnownProviderType reports whether t is one of the built-in provider type
+// identifiers. It is the single source of truth for the known provider set:
+// config and catalog validation should consult it so the accepted types can
+// never drift from the registry's factories.
+func IsKnownProviderType(t string) bool {
+	switch t {
+	case ProviderTypeAnthropic, ProviderTypeOpenAI, ProviderTypeGoogle, ProviderTypeMistral, ProviderTypeCohere, ProviderTypeHTTP:
+		return true
+	default:
+		return false
+	}
+}
+
+// Validate checks that the ProviderRuntimeConfig has the required fields.
+func (c *ProviderRuntimeConfig) Validate() error {
+	if c == nil {
+		return fmt.Errorf("%w: provider config is nil", ErrProviderNotConfigured)
+	}
+	if c.Type == "" {
+		return fmt.Errorf("%w: provider type is required", ErrProviderNotConfigured)
+	}
+	if c.APIKey == "" {
+		return fmt.Errorf("%w: API key is required for provider %q", ErrProviderNotConfigured, c.Type)
+	}
+	return nil
+}
+
+// ProviderFactory creates Provider instances from configuration.
+type ProviderFactory interface {
+	// Create creates a new Provider based on the given config.
+	Create(config ProviderRuntimeConfig) (Provider, error)
+}
