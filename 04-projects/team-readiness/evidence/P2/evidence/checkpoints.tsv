@@ -1,3 +1,5 @@
 2026-09-03T00:26:18Z	CP-2	PASS	6 tasks (T-01..T-06), AC-4/AC-5; lane struck from AC-4 with reason
 2026-09-03T03:03:41Z	CP-3v	PASS	round 4 PASS; all 13 README Go blocks compile, count agrees, guards clean
 2026-09-03T03:33:03Z	CP-5	PASS	AC-4/5 observed; 13 README blocks compile, 291 docs scanned
+2026-09-03T03:39:39Z	CP-4	PASS	round 2; verifier built its own syntax probe, 6 residual blind spots recorded
+2026-09-03T03:41:07Z	CP-3	PASS	recorded after the fact; 8 commits, reconstructed from artifacts

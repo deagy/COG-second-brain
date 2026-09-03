@@ -117,6 +117,15 @@ for target in "$@"; do
     failures=$((failures + 1)); continue
   fi
 
+  # Same trap as ci-status: an unresolvable slug 404s on every call below,
+  # which leaves no licence and no tags -- and gets reported as a repository
+  # that carries neither, rather than as an argument that names nothing.
+  if ! gh api "repos/$slug" --jq .full_name >/dev/null 2>&1; then
+    printf '%-22s %s\n' "$slug" \
+      "no such repository -- a slug is owner/name, or pass a checkout directory"
+    failures=$((failures + 1)); continue
+  fi
+
   tags=$(gh api "repos/$slug/tags" --paginate --jq '.[].name' 2>/dev/null || true)
   releases=$(gh api "repos/$slug/releases" --paginate --jq '.[].tag_name' 2>/dev/null || true)
   # gh writes a 404 body to *stdout*, so redirecting stderr is not enough:

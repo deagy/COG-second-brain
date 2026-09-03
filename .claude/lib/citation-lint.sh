@@ -91,6 +91,26 @@ for doc in $files; do
     path=$(repo_path "$repo")
     [ -n "$path" ] || continue
     [ -d "$path/.git" ] || continue
+
+    # A GitHub Actions run id is decimal and about eleven digits, so it sits
+    # entirely inside [0-9a-f]{7,40} and reads as a sha to everything here.
+    # That collision is not hypothetical: the harness *requires* run ids in
+    # the ledger ("write the run id, not the word green"), so the two
+    # citation kinds were guaranteed to meet, and this check called four
+    # real run ids unresolvable commits.
+    #
+    # Resolving it by skipping decimals would drop real all-digit shas and,
+    # worse, make a run id unverifiable by being invisible. Instead the
+    # ambiguity is refused at the source: a run id has to say it is one.
+    if printf '%s' "$sha" | grep -qE '^[0-9]{9,}$'; then
+      printf '%s:%s  %s `%s` looks like a CI run id written as a commit citation\n' "$doc" "$line" "$repo" "$sha"
+      printf '    Decimal and eleven digits is a run id, not a sha, and nothing downstream\n'
+      printf '    can tell them apart. Write it as `%s validate run %s` so a reader knows\n' "$repo" "$sha"
+      printf '    which artifact to open.\n'
+      findings=$((findings + 1))
+      continue
+    fi
+
     checked_commits=$((checked_commits + 1))
     if ! git -C "$path" cat-file -e "${sha}^{commit}" 2>/dev/null; then
       printf '%s:%s  %s `%s` does not resolve in %s\n' "$doc" "$line" "$repo" "$sha" "$path"
