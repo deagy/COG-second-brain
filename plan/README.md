@@ -64,7 +64,7 @@ with placeholder values, not a schema. The authoritative lifecycle contract is
 | 1 | Run-record as the shared object | Every harness run emits a run-record with auditable provenance | new schema + template, `closed-loop/SKILL.md`, `WORKFLOW.md`, new lint | low | implemented (`1d8966b`) |
 | 2 | Per-task amend semantics | COG's CP-3v verify loop gets deny/re-entry teeth | `closed-loop/SKILL.md`, `task-verifier.md`, `checkpoint.sh`, `WORKFLOW.md` | low | implemented (`8a07f03`) |
 | 3 | Gate the high-consequence mutations | External writes go through a named authority + explicit approval | `publish-to-confluence`, `team-brief`, `content-factory` skills | medium | implemented (`883b7fd`) |
-| 4 | Roster dispatch for specialized execution | Skills resolve domain specialists from the roster and dispatch them | roster-dispatch skill; resolver + run-record generator | high | implemented (`9b443bc`) |
+| 4 | Roster dispatch for specialized execution | — | — | high | **descoped** (see below) |
 
 ## Sequencing
 
@@ -80,9 +80,30 @@ foundation everything else reads, even though its full wiring comes later.
 3. Gate the high-consequence mutations — touches three skills and needs an
    authority mapping decided up front. Depends on the run-record for the approval
    trail.
-4. Roster dispatch — most speculative, and it depends on the roster being
-   available in-vault before anything else. Last, and gated on that dependency —
-now met, so it is built.
+4. Roster dispatch — descoped. It was built (`a40c471`, `9b443bc`) and then
+   removed, for a reason the build surfaced rather than a change of taste.
+
+   The `cadre@cadre-team` plugin is installed user-scope and auto-updating, and
+   it already exposes all 159 roles as named, dispatchable agents carrying their
+   capability tier's tools. Comparing its `catalog.yaml` against the vendored
+   copy gives 159 role ids on each side and an empty diff. So vendoring the
+   roster into `05-knowledge/` produced a frozen second copy of a live one: the
+   drift check would eventually fire because the *plugin* had moved, and the
+   resolve/dispatch layer reimplemented a named dispatch the runner already
+   does natively — `runner-capabilities.json` records
+   `named_agent_dispatch_supported: true` for claude-code, and the skill had to
+   be corrected during review for documenting codex's `spawn_agent` instead.
+
+   The packaging boundary said the same thing independently: `FRAMEWORK_FILES`
+   is a flat file list, so the 357-file roster cannot ship, and
+   `/roster-dispatch` worked in exactly one checkout.
+
+   This is the "two authorities for one shape" defect recorded in the
+   2026-08-28 braindump, one level down. Changes 1-3 do not depend on it — none
+   of `run-record-lint.sh`, `checkpoint.sh`, `closed-loop/SKILL.md`, or
+   `authority-gates.md` reference the roster. If COG wants specialist dispatch,
+   the cheap version calls the installed plugin by role name and writes a
+   run-record; it needs no vendored copy.
 
 Each sub-plan below is self-contained: the change, the files it touches, the
 acceptance criteria that define done, the risk, and the one decision that unblocks
@@ -104,7 +125,9 @@ below creates a second claim.
 - No porting of the full G1-G10 lifecycle onto COG.
 - No change to COG's capture-loop speed or its low-friction braindumps.
 - No decision on the four-repository split itself; that is the agentic-sdlc
-  project's call. This plan consumes the outcome (the run-record schema, the
-  roster) as it stands.
+  project's call. This plan consumes the outcome (the run-record schema) as it
+  stands.
+- No vendored roster. Specialist dispatch, if COG ever wants it, goes through
+  the installed `cadre` plugin rather than a copy in the vault (see Change 4).
 - No implementation. These documents specify what done looks like, not how each
   line is written.

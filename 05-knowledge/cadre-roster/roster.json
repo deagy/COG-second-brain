@@ -1,9 +1,0 @@
-{
-  "schema_version": 1,
-  "id": "cadre-secure-cloud",
-  "version": "1.0.0",
-  "catalog": "catalog.yaml",
-  "routing": "orchestration/routing.json",
-  "role_root": ".",
-  "shared_policy_root": "shared"
-}

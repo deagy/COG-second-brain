@@ -571,31 +571,6 @@ COG ships no hooks, so nothing stages automatically until you wire it up yoursel
 
 ---
 
-### /roster-dispatch
-
-**Description:** Dispatch a domain specialist from COG's vendored kadre roster (~159 roles). Resolves a role from `catalog.yaml`, loads its `AGENT.md`, computes the sandbox from the capability tier, dispatches it, writes a run-record, and routes the output to a different agent for peer review.
-
-**Triggers:**
-- `/roster-dispatch <role-id>` or `/roster-dispatch <description of the work>`
-- Bounded specialist work — a review, an implementation slice, a diagram, a write-up — that should go to a named role rather than a generalist
-- "who should review this", "dispatch a specialist", "which roster role fits"
-
-**Purpose:** Route bounded work to an accountable named role instead of reusing a generalist, and audit the dispatch the same way COG audits its own work. The capability tier is the blast-radius control: a `read_only` role reads and reports, it never edits.
-
-**What it does:**
-1. Resolves the role (`bash .claude/lib/cadre-roster-resolve.sh <role-id>`, or `--list` to discover one)
-2. Reads the role's `AGENT.md` — that file is the specialist's system prompt, used verbatim
-3. Computes the sandbox from the capability tier (`runner-capabilities.json`)
-4. Dispatches one specialist per call, which writes its output to a file and returns a short status + path
-5. Emits a run-record naming the role and sandbox (`python3 .claude/lib/cadre-dispatch-record.py ... <run-dir>/run-record.json`), validated by `bash .claude/lib/run-record-lint.sh <run-dir>`
-6. Routes the output to a different agent for peer review — the dispatching lead cannot be the reviewer
-
-**Gates:** A failing roster drift check (`bash .claude/lib/cadre-roster-drift.sh`) blocks dispatch; an unknown role id is never invented; a run-record that fails lint means the dispatch is not complete.
-
-**Output:** The specialist's output file plus a lint-clean `run-record.json` in the dispatch's run directory.
-
----
-
 ### Craft Skills
 
 The following 7 skills raise output quality on writing and visual work. They encode taste as mechanical rules rather than vibes.

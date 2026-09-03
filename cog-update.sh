@@ -37,12 +37,8 @@ FRAMEWORK_FILES=(
   ".claude/lib/checkpoint.sh"
   ".claude/lib/lane-classify.sh"
 
-  # Cadre roster dispatch (Change 4) + run-record contract (Change 1)
-  ".claude/lib/cadre-dispatch-record.py"
-  ".claude/lib/cadre-roster-drift.sh"
-  ".claude/lib/cadre-roster-resolve.sh"
+  # Run-record contract (Change 1)
   ".claude/lib/run-record-lint.sh"
-  ".claude/lib/cadre-roster.manifest.sha256"
   ".github/MARKETPLACE.md"
   "scripts/validate-agent-surface.sh"
 
@@ -69,7 +65,6 @@ FRAMEWORK_FILES=(
   ".claude/skills/memory-hygiene/SKILL.md"
   ".claude/skills/content-factory/SKILL.md"
   ".claude/skills/closed-loop/SKILL.md"
-  ".claude/skills/roster-dispatch/SKILL.md"
   ".claude/skills/ultragoal/SKILL.md"
   ".claude/skills/harvest/SKILL.md"
   ".claude/skills/retro/SKILL.md"
@@ -145,7 +140,7 @@ FRAMEWORK_FILES=(
   "05-knowledge/run-record.provenance.json"
   "06-templates/run-record.template.json"
 
-  # Cadre roster dispatch plan docs (Change 3/4)
+  # Authority gate registry (Change 3)
   # Only authority-gates.md ships: the gate registry is referenced by the
   # publish/post/sync skills. plan/README.md and plan/01-04 are this
   # integration's own working documents, not framework content.
@@ -188,7 +183,6 @@ FRAMEWORK_FILES=(
   ".agents/skills/onboarding/SKILL.md"
   ".agents/skills/product-ui-taste/SKILL.md"
   ".agents/skills/publish-to-confluence/SKILL.md"
-  ".agents/skills/roster-dispatch/SKILL.md"
   ".agents/skills/retro/SKILL.md"
   ".agents/skills/review-cockpit/SKILL.md"
   ".agents/skills/scout/SKILL.md"
