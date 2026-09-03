@@ -9,15 +9,15 @@ Current phase: P1–P5 built; verification and gates in progress · Overall: **i
 |---|---|---|---|---|
 | P0 | — | **done** | assessment.html | 9 criteria, 5 phases, from a clean-container install as a non-author |
 | P1 | AC-1, AC-2, AC-3 | **built, CP-3v PASS** | evidence/P1/ | CP-3v round 1 failed on this phase's own new file — `--root` not carried in the kernel README's example. CP-4 has run four rounds on one defect class |
-| P2 | AC-4, AC-5 | **built, CP-3v round 4 running** | evidence/P2/ | The overview page, the glossary, and a dead-path guard that scans every live document. Each CP-3v round found defects in the README blocks the round before had not compiled |
+| P2 | AC-4, AC-5 | **built, CP-3v PASS** | evidence/P2/ | The overview page, the glossary, and a dead-path guard that scans every live document. Each CP-3v round found defects in the README blocks the round before had not compiled |
 | P3 | AC-6 | **built, CP-3v PASS** | evidence/P3/ | Three rounds, three distinct reasons the branch was unreachable: a config block nothing parsed, a credential that could not be persisted, a header the authenticator never read |
 | P4 | AC-7, AC-9 | **built, CP-3v PASS** | evidence/P4/ | Verified with 30+ real processes and deliberate namespace-escape attempts, both beyond what the implementation's own tests reach |
 | P5 | AC-8 | **built, CP-3v PASS** | evidence/P5/ | Absence confirmed independently through `recall store info`, not only through cadre's own search |
 
 ## Open AC-n (no PASS row yet)
 
-None outstanding at CP-3v. AC-4 and AC-5 await P2's round 4; every other
-criterion has a PASS row from a fresh verifier against released artifacts.
+None. All nine criteria carry a CP-3v PASS row from a fresh verifier working
+against released artifacts rather than a checkout.
 
 Releases the criteria are verified against: cadre `cli-v0.7.9`, recall
 `v0.3.6`, cadre-kernel `v0.14.4`.
@@ -31,14 +31,35 @@ Releases the criteria are verified against: cadre `cli-v0.7.9`, recall
 
 ## Next action (resume cold from here)
 
-**P1, CP-2: plan the first hour.** The tasks are already named by P0's evidence and want decomposing into `T-nn` with AC mappings:
+**CP-4 for P3, P4 and P5 is running as one cross-phase verification**, because
+the integration question spans them and sits inside none: P5's deletion
+evidence takes its actor from the resolver P3 built, and P4's namespace scoping
+decides whether two people sharing that store can reach each other's records.
 
-- The `claude` authentication step — document it, including whether a headless path exists. This is the one that stops a colleague dead, and if no headless path exists that is itself the finding to record rather than route around.
-- Prerequisites stated before the command that needs them: `curl`, `git`, Python 3.10+, Go and its version, `PATH`, network egress.
-- cadre's "Choose your path" table gains an install link; cadre-kernel gains a `README.md`; recall gains an installation section naming its released binaries.
-- GitHub descriptions on cadre and recall — both blank today.
+Then: CP-4 for P1 and P2, CP-5 acceptance per phase, CP-6, CP-7 retro, and the
+north-star gate over all nine criteria.
 
-Working notes from P0 are `ready-install.md`, `ready-multiuser.md` and `ready-docs.md` in this folder; the synthesis a reader should start from is `assessment.html`.
+**Releases the criteria are verified against:** cadre `cli-v0.7.9`, recall
+`v0.3.6`, cadre-kernel `v0.14.4`. Every phase from P3 cut one before its
+criteria were checked, per the charter.
+
+## Findings carried to the retro, not fixed in-phase
+
+- **The two repositories check different things.** recall runs `golangci-lint`
+  and `gofmt -s`; cadre ran neither `-s` nor a linter. A cadre file failed
+  recall's build, and a doc comment describing the wrong function reached a
+  push. cadre now checks `-s`; the linter gap remains.
+- **recall's CI checks out `deagy/cadre` with no ref**, so a push to cadre can
+  turn recall red without recall changing.
+- **`GET /diagnostics` is unauthenticated and lists tenant namespaces.** Names,
+  never content, and outside AC-7 — but it only became a question when P4 made
+  multi-tenant use possible.
+- **The id a colleague has is not the id `delete-ingested` wants**: `KS-…`
+  against the corpus id `proposed-knowledge:KS-…`. The refusal is correct; the
+  friction is first-hour, which is P1's subject.
+- **`ingest`'s retirement message suggests `recall upload`**, a path whose
+  content cannot later be deleted through cadre unless `knowledge init` ran
+  before anything landed.
 
 ## Watch for
 
