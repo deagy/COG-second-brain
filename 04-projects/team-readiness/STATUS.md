@@ -2,21 +2,25 @@
 
 North-star: a colleague who has never seen these repositories can install cadre, the lifecycle kernel and recall unaided, learn from the documentation how the three fit together, and read a record of who did what that names a person the system actually verified.
 Spec: 04-projects/team-readiness/spec.md · Registry: 04-projects/harness/ultragoals.md
-Current phase: P1 · Overall: **in progress**
+Current phase: P1–P5 built; verification and gates in progress · Overall: **in progress**
 
 ## Phases
 | Phase | AC covered | State | Evidence | Notes |
 |---|---|---|---|---|
-| P0 | — | **done** | assessment.html | 9 criteria, 5 phases, from a clean-container install as a non-author plus live multi-user probing |
-| P1 | AC-1, AC-2, AC-3 | **next** | evidence/P1/ | The first hour: prerequisites, the authentication path, front pages that route |
-| P2 | AC-4, AC-5 | pending | evidence/P2/ | One document explaining the three, a glossary, and the 18 false claims corrected |
-| P3 | AC-6 | pending | evidence/P3/ | Wire cadre to `recall-server`; the actor becomes an authenticated subject |
-| P4 | AC-7, AC-9 | pending | evidence/P4/ | Two credentials on one store; concurrency that survives two processes |
-| P5 | AC-8 | pending | evidence/P5/ | Deletion of ingested content, with evidence that outlives it |
+| P0 | — | **done** | assessment.html | 9 criteria, 5 phases, from a clean-container install as a non-author |
+| P1 | AC-1, AC-2, AC-3 | **built, CP-3v PASS** | evidence/P1/ | CP-3v round 1 failed on this phase's own new file — `--root` not carried in the kernel README's example. CP-4 has run four rounds on one defect class |
+| P2 | AC-4, AC-5 | **built, CP-3v round 4 running** | evidence/P2/ | The overview page, the glossary, and a dead-path guard that scans every live document. Each CP-3v round found defects in the README blocks the round before had not compiled |
+| P3 | AC-6 | **built, CP-3v PASS** | evidence/P3/ | Three rounds, three distinct reasons the branch was unreachable: a config block nothing parsed, a credential that could not be persisted, a header the authenticator never read |
+| P4 | AC-7, AC-9 | **built, CP-3v PASS** | evidence/P4/ | Verified with 30+ real processes and deliberate namespace-escape attempts, both beyond what the implementation's own tests reach |
+| P5 | AC-8 | **built, CP-3v PASS** | evidence/P5/ | Absence confirmed independently through `recall store info`, not only through cadre's own search |
 
 ## Open AC-n (no PASS row yet)
 
-All nine. Nothing has been built yet — P0 measured, it did not fix.
+None outstanding at CP-3v. AC-4 and AC-5 await P2's round 4; every other
+criterion has a PASS row from a fresh verifier against released artifacts.
+
+Releases the criteria are verified against: cadre `cli-v0.7.9`, recall
+`v0.3.6`, cadre-kernel `v0.14.4`.
 
 ## Decisions taken at charter
 
