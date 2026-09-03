@@ -28,6 +28,8 @@
 #      recorded one. A mismatch there means origin moved past the vendored
 #      revision -> re-vendor WARN (the vendored copy is still valid on its own).
 
+set -euo pipefail
+
 # Resolve repo root: this script lives at <root>/.claude/lib/, so root is two
 # directories up from it.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -80,7 +82,7 @@ fi
 python3 - "$SCHEMA_FILE" "$RUN_RECORD_PATH" <<'PY'
 import json, sys
 try:
-    from jsonschema import Draft202012Validator
+    from jsonschema import Draft202012Validator, FormatChecker
 except ImportError:
     sys.stderr.write("FAIL: python3 jsonschema is required (pip install jsonschema)\n")
     sys.exit(2)
@@ -92,7 +94,8 @@ except json.JSONDecodeError as e:
     sys.stderr.write(f"FAIL: {sys.argv[2]} is not valid JSON: {e}\n")
     sys.exit(1)
 
-errors = sorted(Draft202012Validator(schema).iter_errors(instance),
+validator = Draft202012Validator(schema, format_checker=FormatChecker())
+errors = sorted(validator.iter_errors(instance),
                 key=lambda e: list(e.absolute_path))
 if errors:
     sys.stderr.write(f"FAIL: {sys.argv[2]} does not validate against the vendored schema:\n")

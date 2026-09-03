@@ -30,11 +30,11 @@ the person who approved the mutation.
 
 | COG mutation | External system | Gate | Deciding authority |
 |---|---|---|---|
-| Publish a page to Confluence / Notion | Shared wiki | G7 release-readiness | Release Owner |
-| Post to Slack / socials / webhook | Public channel | G8 deployment-auth | Release Owner |
-| Sync a team brief back to Linear | Issue tracker | G9 release authority | Release Authority |
-| content-factory publish | Public post | G7 + G8 | Release Owner + Release Authority |
-| update-knowledge-base sync to external wiki | Shared KB | G7 | Release Owner |
+| Publish a page to Confluence / Notion | Shared wiki | G9 release-readiness | Publisher |
+| Post to Slack / socials / webhook | Public channel | G10 deployment-authorization | Publisher |
+| Sync a team brief back to Linear | Issue tracker | G8 evidence | Publisher |
+| content-factory publish | Public post | G9 + G10 | Publisher |
+| update-knowledge-base sync to external wiki | Shared KB | G9 release-readiness | Publisher |
 
 Everything that stays internal — writing to `05-knowledge/`, a local braindump, a
 draft PRD, a consolidated framework that is not synced — takes no gate. The
@@ -50,9 +50,9 @@ stays inside the project and work that reaches it.
 - `skills/publish-to-confluence/SKILL.md` — the approval step records the authority
   and gate in the run-record before the page is created, and the post-condition
   re-fetches the page to confirm it matches.
-- `skills/team-brief/SKILL.md` — the sync-back to Linear is gated as G9 with the
-  Release Authority's explicit approval recorded; the sync is the post-condition.
-- `skills/content-factory/SKILL.md` — the publish step is gated G7+G8 with a
+- `skills/team-brief/SKILL.md` — the sync-back to Linear is gated as G8 with the
+  Publisher's explicit approval recorded; the sync is the post-condition.
+- `skills/content-factory/SKILL.md` — the publish step is gated G9+G10 with a
   screenshot as the post-condition, matching the existing voice-checklist.
 
 ## Acceptance criteria
@@ -99,10 +99,10 @@ Created `plan/authority-gates.md`, the one registry mapping each external mutati
 exactly one gate and one authority. Gate numbers are kept for kadre traceability; the
 authority is renamed from cadre's software-release role to **Publisher** (the human who
 approves the external write) so the mapping stays legible to a COG user. AC-1 met:
-content-factory spans G7+G8 but has one approval — one authority signs the whole publish.
-The three publishing skills reference the registry and record the approval in the
+content-factory spans G9+G10 but has one approval — one authority signs the whole publish.
+The four publishing skills reference the registry and record the approval in the
 run-record's `human_approvals` binding before the mutation (AC-3): publish-to-confluence
-G7, team-brief G9, content-factory G7+G8. Each skill already ran a post-condition
+G9, team-brief G8, content-factory G9+G10, update-knowledge-base G9. Each skill already ran a post-condition
 re-fetch (AC-4); internal writes remain ungated (AC-5, unchanged).
 
 One note for a later pass: the registry is currently a plan doc; its production form is

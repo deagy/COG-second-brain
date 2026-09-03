@@ -291,6 +291,11 @@ mkdir -p "05-knowledge/_logs"
 
 ### Phase 6: Optional Wiki Sync (requires approval)
 
+Syncing to an external wiki is a **G9** external mutation with the **Publisher** as
+deciding authority (`plan/authority-gates.md`). Record the approval (authority, gate,
+timestamp, approver) in the run-record's `human_approvals` binding before the sync runs;
+an unapproved sync does not run. The re-fetched wiki page is the post-condition.
+
 If Confluence or Notion is active, offer to sync updated entries:
 
 ```

@@ -36,6 +36,13 @@ FRAMEWORK_FILES=(
   "WORKFLOW.md"
   ".claude/lib/checkpoint.sh"
   ".claude/lib/lane-classify.sh"
+
+  # Cadre roster dispatch (Change 4) + run-record contract (Change 1)
+  ".claude/lib/cadre-dispatch-record.py"
+  ".claude/lib/cadre-roster-drift.sh"
+  ".claude/lib/cadre-roster-resolve.sh"
+  ".claude/lib/run-record-lint.sh"
+  ".claude/lib/cadre-roster.manifest.sha256"
   ".github/MARKETPLACE.md"
   "scripts/validate-agent-surface.sh"
 
@@ -62,6 +69,7 @@ FRAMEWORK_FILES=(
   ".claude/skills/memory-hygiene/SKILL.md"
   ".claude/skills/content-factory/SKILL.md"
   ".claude/skills/closed-loop/SKILL.md"
+  ".claude/skills/roster-dispatch/SKILL.md"
   ".claude/skills/ultragoal/SKILL.md"
   ".claude/skills/harvest/SKILL.md"
   ".claude/skills/retro/SKILL.md"
@@ -131,6 +139,19 @@ FRAMEWORK_FILES=(
   # People CRM
   "05-knowledge/people/README.md"
   "06-templates/people-profile-template.md"
+
+  # Run-record contract (Change 1)
+  "05-knowledge/run-record.schema.json"
+  "05-knowledge/run-record.provenance.json"
+  "06-templates/run-record.template.json"
+
+  # Cadre roster dispatch plan docs (Change 3/4)
+  "plan/README.md"
+  "plan/01-run-record.md"
+  "plan/02-per-task-amend.md"
+  "plan/03-gate-mutations.md"
+  "plan/04-roster-dispatch.md"
+  "plan/authority-gates.md"
 
   # Framework config
   "CLAUDE.md"

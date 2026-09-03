@@ -66,7 +66,7 @@ Dedup check before producing: topic slug + source URL against the ledger AND aga
 
 ## Phase 4 — PUBLISH (safety gates)
 
-Publishing is a **G7 + G8** external mutation with the **Publisher** as deciding authority
+Publishing is a **G9 + G10** external mutation with the **Publisher** as deciding authority
 (`plan/authority-gates.md`). Record the approval (authority, gate, timestamp, approver) in
 the run-record before the post goes out; an unapproved publish does not run.
 

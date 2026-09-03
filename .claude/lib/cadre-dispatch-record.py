@@ -17,6 +17,7 @@ gates, which is what AC-3 requires.
 import hashlib
 import json
 import os
+import subprocess
 import sys
 from datetime import datetime, timezone
 
@@ -63,13 +64,13 @@ def identity(role_id: str, kind: str = "agent") -> dict:
 
 
 def gate(tier, gate_id, name, applicability, status, preparer, verifier,
-         artifact_id, reentry=None):
+         artifact_id, binding, reentry=None):
     bindings = []
     if applicability == "applicable" and artifact_id is not None:
         bindings = [{
             "artifact_id": artifact_id,
             "revision": "0.1.0",
-            "digest": sha256_hex(artifact_id),
+            "digest": sha256_hex(f"{artifact_id}|{binding}"),
         }]
     return {
         "tier": tier,
@@ -85,7 +86,7 @@ def gate(tier, gate_id, name, applicability, status, preparer, verifier,
         "preparers": [identity(preparer)],
         "independent_verifier": identity(verifier) if verifier else None,
         "independence_declaration": {
-            "verifier_confirmed_not_preparer": True,
+            "verifier_confirmed_not_preparer": False,
             "verifier_made_material_correction": False,
         },
         "authority_requirements": [],
@@ -109,7 +110,37 @@ def main():
         return 2
 
     role_id, sandbox, model, codex_model, effort, phase, task_id, baseline = sys.argv[1:9]
-    lifecycle_phase = PHASE_MAP.get(phase, "verify")
+    if phase not in PHASE_MAP:
+        sys.stderr.write(
+            f"FAIL: unknown phase '{phase}' (valid: {', '.join(sorted(PHASE_MAP))})\n"
+        )
+        return 2
+    lifecycle_phase = PHASE_MAP[phase]
+
+    # AC-3: the record must not attest a role or sandbox the vendored roster does
+    # not actually hold. Resolve the role and its sandbox from the roster; reject a
+    # role that is not in the roster, or a sandbox that does not match its capability
+    # tier, rather than recording an unverifiable claim.
+    _resolve = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "cadre-roster-resolve.sh"
+    )
+    _role_check = subprocess.run(
+        ["bash", _resolve, role_id], capture_output=True, text=True
+    )
+    if _role_check.returncode != 0:
+        sys.stderr.write(f"FAIL: role '{role_id}' is not in the vendored roster\n")
+        return 2
+    _expected_sandbox = subprocess.run(
+        ["bash", _resolve, "--key", "sandbox_mode", role_id],
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    if _expected_sandbox != sandbox:
+        sys.stderr.write(
+            f"FAIL: sandbox '{sandbox}' does not match roster role '{role_id}' "
+            f"(expected '{_expected_sandbox}')\n"
+        )
+        return 2
 
     binding = json.dumps({
         "role_id": role_id,
@@ -142,8 +173,9 @@ def main():
         status = "approved" if applicability == "not-applicable" else "pending"
         art = f"{role_id}-{gid}-artifact"
         g = gate("lifecycle", gid, name, applicability, status,
-                 preparer=role_id, verifier=f"{role_id}-verifier",
-                 artifact_id=art if applicability == "applicable" else None)
+                 preparer=role_id, verifier=None,
+                 artifact_id=art if applicability == "applicable" else None,
+                 binding=binding)
         lifecycle_gates.append(g)
         exec_gates[gid] = {
             "configured": True,
@@ -162,8 +194,9 @@ def main():
     # role and sandbox — the audit trail AC-3 requires.
     specialist = gate("specialist", "S1", "specialist attestation",
                       "applicable", "pending", preparer=role_id,
-                      verifier=f"{role_id}-verifier",
-                      artifact_id=f"{role_id}-artifact")
+                      verifier=None,
+                      artifact_id=f"{role_id}-artifact",
+                      binding=binding)
     specialist["name"] = f"{role_id} ({sandbox}) attestation"
 
     record = {

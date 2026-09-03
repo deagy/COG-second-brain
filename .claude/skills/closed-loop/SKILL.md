@@ -83,30 +83,37 @@ missed are missing from the evidence as well.
 ## Phase 4 — CP-3v Component verify
 
 ```
-retry=0
+AMEND_BOUND=3
+attempt=0
 loop:
-  spawn task-verifier (fresh context, read-only)
+  spawn task-verifier (fresh context, read-only) — the re-reviewer must be a
+  different context than the one that made the prior amend (reviewer becomes author)
   merge EVIDENCE rows into evidence/ledger.md
   if PASS → break
   if FAIL:escalate → record CP-3v FAIL, escalate
-  if FAIL:fixable && retry < 2 → fix-agent → retry++
+  if FAIL:fixable:
+    attempt++
+    if attempt > AMEND_BOUND → record terminal FAIL:escalate telemetry row, escalate
+    record re-entry: checkpoint.sh record_reentry <run-dir> <attempt> "<reentry>" "<invalidates>" "<reason>"
+    fix-agent applies the amend, stating which criteria it amends and which
+    downstream criteria it invalidates (invalidation cascade) → loop
   else → escalate
 ```
 
-**The budget is two attempts, and it is not yours to extend.** The tempting
-argument on a third failure is that the method has materially changed, so
+**The budget is three attempts, and it is not yours to extend.** The tempting
+argument on a fourth failure is that the method has materially changed, so
 this attempt is different in kind rather than a repeat. That argument was
 made three times in one phase and was not baseless — each new method did
 find defects the last one could not have. It was still the wrong call,
 because it is the worker's own assessment of the worker's own work, which is
 the judgment this budget exists to distrust.
 
-On a third failure of the same criterion, stop and put it to the user:
+On a fourth failure of the same criterion, stop and put it to the user:
 name the pattern across the failures, propose the new method, and let them
 decide whether to spend the attempt. That costs one message. Self-authorising
 the attempt costs a round, and the round after it if you are wrong again.
 
-The retry count is observable; the judgment is not. A worker convinced this
+The amend count is observable; the judgment is not. A worker convinced this
 attempt differs in kind from the last will record it as a first attempt at a
 new method, and the count will agree with them.
 
@@ -193,6 +200,7 @@ arrive for another reason.
 
 - Append to `.claude/logs/loop-ledger.tsv`
 - Update spec traceability matrix statuses to `verified`
+- **Write the run-record.** Emit `04-projects/harness/runs/<id>/run-record.json` — the machine-enforceable provenance for this run (who ran it, what objective it was given, its current lifecycle phase, the evidence that backs it, what authority approved it, what findings were raised, what it invalidated). Map the V-model checkpoints to the run-record `current_lifecycle_phase` enum via the single source of truth in `05-knowledge/run-record.provenance.json` (CP-0 `intent` → CP-7 `feedback`); reference that mapping, do not re-type the enum. Lint it before finishing: `bash .claude/lib/run-record-lint.sh 04-projects/harness/runs/<id>` must exit 0. **A harness run with no lint-clean run-record is not a finished run.**
 - **`full` lane / big task:** generate an HTML rollup from `references/report-template.html` → `04-projects/harness/runs/<id>/report.html`, filled from `criteria.md` + `evidence/ledger.md` (criteria, AC traceability, verifier verdicts, post-condition observations). Self-contained; `SendUserFile` it or publish as an Artifact. Skip for `normal`/`tiny`.
 - Suggest `/retro <run-dir>` for CP-7
 

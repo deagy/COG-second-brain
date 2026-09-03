@@ -149,6 +149,11 @@ Proceed with publishing? (yes/no)
 
 ### Phase 5: Publish
 
+Publishing a page is a **G9** external mutation with the **Publisher** as deciding
+authority (`plan/authority-gates.md`). Record the approval (authority, gate, timestamp,
+approver) in the run-record's `human_approvals` binding before the page is created; an
+unapproved publish does not run. The re-fetched page is the post-condition.
+
 #### Create New Page
 ```
 Use WebFetch to POST to Confluence REST API:

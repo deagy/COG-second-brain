@@ -28,13 +28,13 @@ external write. Each mutation names exactly one authority (AC-1).
 
 | COG mutation | External system | Gate | Deciding authority |
 |---|---|---|---|
-| Publish a page to Confluence / Notion | Shared wiki | G7 release-readiness | Publisher |
-| Post to Slack / socials / webhook | Public channel | G8 deployment-auth | Publisher |
-| Sync a team brief back to Linear | Issue tracker | G9 release authority | Publisher |
-| content-factory publish | Public post | G7 + G8 | Publisher |
-| update-knowledge-base sync to external wiki | Shared KB | G7 | Publisher |
+| Publish a page to Confluence / Notion | Shared wiki | G9 release-readiness | Publisher |
+| Post to Slack / socials / webhook | Public channel | G10 deployment-authorization | Publisher |
+| Sync a team brief back to Linear | Issue tracker | G8 evidence | Publisher |
+| content-factory publish | Public post | G9 + G10 | Publisher |
+| update-knowledge-base sync to external wiki | Shared KB | G9 release-readiness | Publisher |
 
-content-factory spans G7 and G8 but has one approval — one authority signs off the whole
+content-factory spans G9 and G10 but has one approval — one authority signs off the whole
 publish, not one per gate. That is the one-shape rule (AC-1): the approval record carries a
 single authority even when two gates apply.
 
@@ -64,12 +64,14 @@ each skill already runs; the gate simply makes the approval a first-class, audit
 
 ## Enforcement
 
-Each of the three skills records the approval in the run-record before the mutation and
+Each of the four skills records the approval in the run-record before the mutation and
 references this registry:
 
-- `skills/publish-to-confluence/SKILL.md` — G7, Publisher; the run-record approval is
+- `skills/publish-to-confluence/SKILL.md` — G9, Publisher; the run-record approval is
   written before the page is created; the post-condition re-fetches the page.
-- `skills/team-brief/SKILL.md` — G9, Publisher; the Linear sync-back is gated with explicit
+- `skills/team-brief/SKILL.md` — G8, Publisher; the Linear sync-back is gated with explicit
   approval recorded; the sync is the post-condition.
-- `skills/content-factory/SKILL.md` — G7 + G8, Publisher; the publish is gated with the
+- `skills/content-factory/SKILL.md` — G9 + G10, Publisher; the publish is gated with the
   approval recorded; the screenshot/curl is the post-condition.
+- `skills/update-knowledge-base/SKILL.md` — G9, Publisher; the sync to an external wiki is
+  gated with the approval recorded; the post-condition re-fetches the wiki.

@@ -3,6 +3,7 @@
 # Usage:
 #   checkpoint.sh init <run-dir>
 #   checkpoint.sh record <run-dir> <CP-id> PASS|FAIL|SKIP "<note>"
+#   checkpoint.sh record_reentry <run-dir> <amend_attempt> "<reentry-criteria>" "<invalidated-criteria>" "<reason>"
 #   checkpoint.sh status <run-dir>
 set -euo pipefail
 

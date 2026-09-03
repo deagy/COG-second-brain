@@ -109,7 +109,7 @@ Every dispatch writes a run-record so the execution is audited the same way COG'
 own work is. It names the role and the sandbox (AC-3).
 
 ```bash
-bash .claude/lib/cadre-dispatch-record.py \
+python3 .claude/lib/cadre-dispatch-record.py \
   <role-id> <sandbox_mode> <model> <codex_model> <reasoning_effort> \
   <phase> <task-id> <baseline-revision> <run-dir>/run-record.json
 ```

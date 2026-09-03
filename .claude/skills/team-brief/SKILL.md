@@ -155,6 +155,11 @@ This is the most critical phase. The orchestrator must:
 
 **This phase writes data BACK to Linear to keep it up-to-date with reality from GitHub, Slack, and meetings.**
 
+This is a **G8** external mutation with the **Publisher** as deciding authority
+(`plan/authority-gates.md`). Record the approval (authority, gate, timestamp, approver) in
+the run-record before any Linear write; a sync-back without a recorded approval does not
+run.
+
 Use ToolSearch to load the necessary Linear update tools: "+linear update issue", "+linear update initiative", "+linear update project", "+linear create comment", "+linear create attachment", "+linear save status update", "+linear update milestone".
 
 #### Step 1: PR ↔ Issue Linkage

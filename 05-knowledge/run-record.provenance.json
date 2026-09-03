@@ -2,7 +2,7 @@
   "_note": "Single source of truth for the vendored run-record schema's origin and for the COG-CP -> lifecycle-phase mapping. The schema file itself is pure JSON with no provenance or comments (a JSON Schema must stay machine-parseable); both live here so the schema is never re-declared in a skill or note (AC-5).",
   "schema": {
     "origin_repo": "cadre-kernel",
-    "origin_repo_path": "/home/deagy/sdk/cadre-kernel",
+    "origin_repo_path": "cadre-kernel",
     "origin_path": "kernel/contracts/run-record.schema.json",
     "origin_revision": "d4fb0894bc1e206df01f2e016b1bc8db04be1aad",
     "origin_sha256": "0a14c607a24414b7412cf413b56920ba3b3f0b76905af41288904344959ac218",

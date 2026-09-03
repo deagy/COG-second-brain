@@ -7,7 +7,7 @@
 
 **This document governs harness runs, and nothing else.** A session that never invoked the harness owes it no checkpoints, no lane classification, and no evidence ledger. Notes, briefs, research, drafts, and ordinary edits are not harness runs.
 
-A harness run with no lint-clean run-record is not a finished run: the run-record is the shared provenance object that makes this run auditable and interoperable with the agentic-lifecycle run-record shape.
+A harness run with no lint-clean run-record is not a finished run: the run-record is the shared provenance object that makes this run auditable and interoperable with the agentic-lifecycle run-record shape. The procedure that produces and lints it lives in `plan/01-run-record.md` (schema + template ship via `cog-update.sh`); every one of `/closed-loop`, `/ultragoal`, `/retro` finishes by emitting a lint-clean run-record, so the governing doc here is self-sufficient to complete them.
 
 You are in a harness run when you invoked `/closed-loop`, `/ultragoal`, `/retro`, `/harvest`, or `/review-cockpit`; asked for the closed loop, proper verification, or an evidence trail in those words; or set `verification_harness: on` in `00-inbox/MY-PROFILE.md`. Otherwise you are not, and the two rules in `CLAUDE.md` § Verification Harness are the whole of what applies.
 
@@ -129,8 +129,8 @@ orchestrator (/closed-loop or a skill that invokes it)
         ▼
    CP-3v: task-verifier (read-only) ──► evidence rows per AC-n
         │
-         ├── FAIL:fixable ─▶ fix-agent (amend: names invalidates + reentry) ─▶ re-review by a different context
-         └── after 3 amend cycles ─▶ terminal FAIL:escalate (telemetry) ─▶ stop
+        ├── FAIL:fixable ─▶ fix-agent (amend: names invalidates + reentry) ─▶ re-review by a different context
+        └── after 3 amend cycles ─▶ terminal FAIL:escalate (telemetry) ─▶ stop
         │
         ▼
    CP-4: integration-verifier (multi-task / full lane only)

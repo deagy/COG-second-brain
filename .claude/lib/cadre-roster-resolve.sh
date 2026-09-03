@@ -16,7 +16,8 @@
 #
 # Exit codes:
 #   0  role resolved, listed, or key printed
-#   1  role not found / usage error
+#   1  role not found
+#   2  usage error
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

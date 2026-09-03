@@ -31,7 +31,7 @@ MANIFEST="${ROOT_DIR}/.claude/lib/cadre-roster.manifest.sha256"
 [ -f "$MANIFEST" ] || { echo "FAIL: roster manifest not found at $MANIFEST" >&2; exit 2; }
 
 EXPECTED="$(head -n1 "$MANIFEST")"
-ACTUAL="$(cd "$ROSTER_DIR" && find . -type f ! -name PROVENANCE.md -print0 | sort -z | xargs -0 sha256sum | sha256sum | awk '{print $1}')"
+ACTUAL="$(cd "$ROSTER_DIR" && find . -type f ! -name PROVENANCE.md -print0 | LC_ALL=C sort -z | xargs -0r sha256sum | sha256sum | awk '{print $1}')"
 
 if [ "$EXPECTED" != "$ACTUAL" ]; then
   echo "FAIL: vendored kadre roster has drifted" >&2
@@ -43,5 +43,5 @@ if [ "$EXPECTED" != "$ACTUAL" ]; then
   exit 1
 fi
 
-echo "PASS: vend kadre roster un-drifted ($ACTUAL)"
+echo "PASS: vendored kadre roster un-drifted ($ACTUAL)"
 exit 0
