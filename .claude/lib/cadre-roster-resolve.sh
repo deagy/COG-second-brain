@@ -24,8 +24,16 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 ROSTER_DIR="${ROOT_DIR}/05-knowledge/cadre-roster"
 CATALOG="${ROSTER_DIR}/catalog.yaml"
+RUNNER_CAPS="${ROSTER_DIR}/runner-capabilities.json"
 
-[ -f "$CATALOG" ] || { echo "FAIL: catalog not found at $CATALOG" >&2; exit 2; }
+if [ ! -f "$CATALOG" ]; then
+  echo "FAIL: roster catalog not found at $CATALOG" >&2
+  echo "      The vendored kadre roster is not distributed by cog-update.sh (357 files);" >&2
+  echo "      it must be vendored into this vault before /roster-dispatch can run." >&2
+  echo "      Re-vendoring steps: 05-knowledge/cadre-roster/PROVENANCE.md" >&2
+  exit 2
+fi
+[ -f "$RUNNER_CAPS" ] || { echo "FAIL: runner-capabilities.json not found at $RUNNER_CAPS" >&2; exit 2; }
 
 MODE="resolve"
 ARG=""
@@ -43,23 +51,26 @@ else
   exit 2
 fi
 
-python3 - "$MODE" "$KEY" "$ARG" "$CATALOG" <<'PY'
-import sys, yaml
+python3 - "$MODE" "$KEY" "$ARG" "$CATALOG" "$RUNNER_CAPS" <<'PY'
+import sys, json, yaml
 
-mode, key, arg, catalog = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
+mode, key, arg, catalog, runner_caps = sys.argv[1:6]
 agents = yaml.safe_load(open(catalog)).get("agents", {})
 
-# capability -> sandbox_mode, from roster runner-capabilities.json
-# capability_tiers (read_only is read-only; every authoring/operator tier is
-# workspace-write). Kept explicit here rather than re-reading the JSON so the
-# resolver has one place to edit when the runner contract changes.
+# capability -> sandbox_mode, read from the roster's own runner-capabilities.json
+# capability_tiers. Re-declaring it here would let a re-vendored roster change a
+# tier's sandbox_mode while the resolver kept reporting the stale one -- the drift
+# check compares the tree against a manifest regenerated on every re-vendor, so it
+# would not catch that.
+_tiers = json.load(open(runner_caps)).get("capability_tiers", {})
 SANDBOX = {
-    "read_only": "read-only",
-    "document_author": "workspace-write",
-    "code_author": "workspace-write",
-    "test_author": "workspace-write",
-    "environment_operator": "workspace-write",
+    tier: spec["sandbox_mode"]
+    for tier, spec in _tiers.items()
+    if isinstance(spec, dict) and "sandbox_mode" in spec
 }
+if not SANDBOX:
+    print(f"FAIL: no capability_tiers in {runner_caps}", file=sys.stderr)
+    sys.exit(2)
 
 if mode == "list":
     for rid, role in agents.items():

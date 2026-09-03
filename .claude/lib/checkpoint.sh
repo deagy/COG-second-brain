@@ -51,11 +51,18 @@ record_reentry() {
   # invalidation def. A denial (invalidation) and its re-entry (reset) are two
   # separate claims: a run may sit in "no longer valid" before it is "being redone".
   local dir="$1" attempt="$2" reentry="$3" invalidated="$4" reason="${5:-}"
-  local ts
+  local ts hist
   ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
   mkdir -p "$dir/evidence"
-  echo -e "${ts}\t${attempt}\t${reentry}\t${invalidated}\t${reason}" >> "$dir/evidence/re_entry_history.tsv"
-  echo "recorded re-entry amend ${attempt} → ${dir}/evidence/re_entry_history.tsv"
+  hist="$dir/evidence/re_entry_history.tsv"
+  [[ -f "$hist" ]] || echo -e "timestamp\tamend_attempt\treentry\tinvalidates\treason" >> "$hist"
+  echo -e "${ts}\t${attempt}\t${reentry}\t${invalidated}\t${reason}" >> "$hist"
+  # Also land it in the cross-run ledger: an amend cycle burned against
+  # AMEND_BOUND is the thing an operator looks for, and the per-run file is
+  # not where they look.
+  [[ -f "$LOG" ]] || echo -e "timestamp\tcp\tresult\tnote\trun_dir" >> "$LOG"
+  echo -e "${ts}\tCP-3v\tREENTRY\tamend ${attempt}: reentry=${reentry} invalidates=${invalidated} ${reason}\t${dir}" >> "$LOG"
+  echo "recorded re-entry amend ${attempt} → ${hist}"
 }
 
 status_run() {
@@ -64,6 +71,11 @@ status_run() {
     column -t -s $'\t' "$dir/evidence/checkpoints.tsv" 2>/dev/null || cat "$dir/evidence/checkpoints.tsv"
   else
     echo "no checkpoints yet: $dir"
+  fi
+  if [[ -f "$dir/evidence/re_entry_history.tsv" ]]; then
+    echo
+    echo "re-entry history (amend bound 3):"
+    column -t -s $'\t' "$dir/evidence/re_entry_history.tsv" 2>/dev/null || cat "$dir/evidence/re_entry_history.tsv"
   fi
 }
 

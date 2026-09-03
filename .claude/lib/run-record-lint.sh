@@ -37,16 +37,21 @@ ROOT_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
 SCHEMA_FILE="${ROOT_DIR}/05-knowledge/run-record.schema.json"
 PROVENANCE_FILE="${ROOT_DIR}/05-knowledge/run-record.provenance.json"
-ORIGIN_REPO_PATH="${ORIGIN_CADRE_KERNEL_PATH:-/home/deagy/sdk/cadre-kernel}"
-ORIGIN_SCHEMA_PATH="${ORIGIN_REPO_PATH}/kernel/contracts/run-record.schema.json"
+ORIGIN_REPO_PATH="${ORIGIN_CADRE_KERNEL_PATH:-}"
+if [ -n "$ORIGIN_REPO_PATH" ]; then
+  ORIGIN_SCHEMA_PATH="${ORIGIN_REPO_PATH}/kernel/contracts/run-record.schema.json"
+else
+  ORIGIN_SCHEMA_PATH=""
+fi
 RUN_RECORD_NAME="run-record.json"
 
-die() { echo "FAIL: $*" >&2; exit 1; }
+# exit 2 = usage / environment error; exit 1 = a check failed (see header).
+die() { echo "FAIL: $*" >&2; exit 2; }
 
 [ -f "$SCHEMA_FILE" ] || die "vendored schema not found at $SCHEMA_FILE"
 [ -f "$PROVENANCE_FILE" ] || die "provenance sidecar not found at $PROVENANCE_FILE"
 
-# --- Locate the run-record to validate ---
+# Locate the run-record to validate.
 TARGET="${1:-}"
 [ -n "$TARGET" ] || { echo "usage: bash .claude/lib/run-record-lint.sh <run-dir|run-record.json>" >&2; exit 2; }
 if [ -f "$TARGET" ]; then
@@ -59,7 +64,7 @@ else
 fi
 [ -f "$RUN_RECORD_PATH" ] || die "no ${RUN_RECORD_NAME} at $RUN_RECORD_PATH"
 
-# --- Drift check (AC-3): vendored copy must equal its stated origin sha256 ---
+# Drift check (AC-3): the vendored copy must equal its stated origin sha256.
 EXPECTED_SHA="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["schema"]["origin_sha256"])' "$PROVENANCE_FILE")"
 ACTUAL_SHA="$(sha256sum "$SCHEMA_FILE" | awk '{print $1}')"
 if [ "$EXPECTED_SHA" != "$ACTUAL_SHA" ]; then
@@ -69,8 +74,8 @@ if [ "$EXPECTED_SHA" != "$ACTUAL_SHA" ]; then
   exit 1
 fi
 
-# --- Drift check (best-effort forward-drift): has origin moved past vendored rev? ---
-if [ -f "$ORIGIN_SCHEMA_PATH" ]; then
+# Best-effort forward-drift check: has origin moved past the vendored revision?
+if [ -n "$ORIGIN_SCHEMA_PATH" ] && [ -f "$ORIGIN_SCHEMA_PATH" ]; then
   ORIGIN_SHA="$(sha256sum "$ORIGIN_SCHEMA_PATH" | awk '{print $1}')"
   if [ "$ORIGIN_SHA" != "$EXPECTED_SHA" ]; then
     echo "WARN: origin run-record.schema.json has moved past the vendored revision" >&2
@@ -78,7 +83,7 @@ if [ -f "$ORIGIN_SCHEMA_PATH" ]; then
   fi
 fi
 
-# --- Schema validation (AC-2): does the run-record satisfy the vendored schema? ---
+# Schema validation (AC-2): does the run-record satisfy the vendored schema?
 python3 - "$SCHEMA_FILE" "$RUN_RECORD_PATH" <<'PY'
 import json, sys
 try:
@@ -100,6 +105,16 @@ except json.JSONDecodeError as e:
 # otherwise-valid records. Pin it to the rfc3339 date-time check (jsonschema's
 # default date-time check delegates to the rfc3339_validator package).
 _default_checkers = FormatChecker().checkers
+if "date-time" not in _default_checkers:
+    # jsonschema registers the date-time checker only when rfc3339-validator is
+    # installed. Without it the filter below yields an empty checker set and
+    # every date-time silently stops being validated while the lint still
+    # prints PASS -- fail loudly instead.
+    sys.stderr.write(
+        "FAIL: jsonschema has no date-time format checker "
+        "(pip install rfc3339-validator); refusing to lint without it\n"
+    )
+    sys.exit(2)
 _format_checker = FormatChecker()
 _format_checker.checkers = {
     k: v for k, v in _default_checkers.items() if k == "date-time"
@@ -116,8 +131,6 @@ if errors:
     sys.exit(1)
 print(f"PASS: {sys.argv[2]} validates against the vendored schema")
 PY
-status=$?
-[ "$status" -eq 0 ] || exit "$status"
 
 echo "PASS: run-record lint clean (schema valid, vendored copy un-drifted)"
 exit 0

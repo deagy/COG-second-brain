@@ -146,11 +146,9 @@ FRAMEWORK_FILES=(
   "06-templates/run-record.template.json"
 
   # Cadre roster dispatch plan docs (Change 3/4)
-  "plan/README.md"
-  "plan/01-run-record.md"
-  "plan/02-per-task-amend.md"
-  "plan/03-gate-mutations.md"
-  "plan/04-roster-dispatch.md"
+  # Only authority-gates.md ships: the gate registry is referenced by the
+  # publish/post/sync skills. plan/README.md and plan/01-04 are this
+  # integration's own working documents, not framework content.
   "plan/authority-gates.md"
 
   # Framework config
@@ -190,6 +188,7 @@ FRAMEWORK_FILES=(
   ".agents/skills/onboarding/SKILL.md"
   ".agents/skills/product-ui-taste/SKILL.md"
   ".agents/skills/publish-to-confluence/SKILL.md"
+  ".agents/skills/roster-dispatch/SKILL.md"
   ".agents/skills/retro/SKILL.md"
   ".agents/skills/review-cockpit/SKILL.md"
   ".agents/skills/scout/SKILL.md"

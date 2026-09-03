@@ -69,6 +69,9 @@ references this registry:
 
 - `.claude/skills/publish-to-confluence/SKILL.md` — G9, Publisher; the run-record approval is
   written before the page is created; the post-condition re-fetches the page.
+- `.claude/agents/worker-publisher.md` — G10 for Slack / socials / webhooks and G9 for
+  Confluence / Notion pages, Publisher; the agent that actually posts confirms the
+  recorded approval before publishing and observes the artifact afterwards.
 - `.claude/skills/team-brief/SKILL.md` — G8, Publisher; the Linear sync-back is gated with explicit
   approval recorded; the sync is the post-condition.
 - `.claude/skills/content-factory/SKILL.md` — G9 + G10, Publisher; the publish is gated with the

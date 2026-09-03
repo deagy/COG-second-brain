@@ -27,11 +27,16 @@ ROOT_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 ROSTER_DIR="${ROOT_DIR}/05-knowledge/cadre-roster"
 MANIFEST="${ROOT_DIR}/.claude/lib/cadre-roster.manifest.sha256"
 
-[ -d "$ROSTER_DIR" ] || { echo "FAIL: vendored roster not found at $ROSTER_DIR" >&2; exit 2; }
+if [ ! -d "$ROSTER_DIR" ]; then
+  echo "FAIL: vendored roster not found at $ROSTER_DIR" >&2
+  echo "      cog-update.sh does not distribute the roster (357 files); vendor it first." >&2
+  echo "      Re-vendoring steps: 05-knowledge/cadre-roster/PROVENANCE.md" >&2
+  exit 2
+fi
 [ -f "$MANIFEST" ] || { echo "FAIL: roster manifest not found at $MANIFEST" >&2; exit 2; }
 
 EXPECTED="$(head -n1 "$MANIFEST")"
-ACTUAL="$(cd "$ROSTER_DIR" && find . -type f ! -name PROVENANCE.md -print0 | LC_ALL=C sort -z | xargs -0r sha256sum | sha256sum | awk '{print $1}')"
+ACTUAL="$(cd "$ROSTER_DIR" && find . \( -type f -o -type l \) ! -name PROVENANCE.md -print0 | LC_ALL=C sort -z | xargs -0r sha256sum | sha256sum | awk '{print $1}')"
 
 if [ "$EXPECTED" != "$ACTUAL" ]; then
   echo "FAIL: vendored kadre roster has drifted" >&2

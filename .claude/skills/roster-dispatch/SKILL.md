@@ -15,7 +15,18 @@ The dispatch is audited like any other COG work: the run-record (Change 1)
 records which role executed under what sandbox, and the output is reviewed by a
 different agent than the one that produced it.
 
-## 0. WHEN TO USE THIS
+## 0. PREREQUISITE
+
+The roster itself is **not distributed by `cog-update.sh`** — it is 357 vendored
+files and `FRAMEWORK_FILES` is a flat file list. The tooling ships; the roster does
+not. In a vault without it, step 1 exits 2 and says so. Vendor it first, following
+`05-knowledge/cadre-roster/PROVENANCE.md`, then confirm:
+
+```bash
+bash .claude/lib/cadre-roster-drift.sh   # must PASS before any dispatch
+```
+
+## 0.1 WHEN TO USE THIS
 
 Use it when the task is bounded enough to hand to a single specialist role — a
 review, an implementation slice, a diagram, a write-up. Do not use it to replace

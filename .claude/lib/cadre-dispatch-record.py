@@ -64,14 +64,20 @@ def identity(role_id: str, kind: str = "agent") -> dict:
 
 
 def gate(tier, gate_id, name, applicability, status, preparer, verifier,
-         artifact_id, binding, reentry=None):
+         artifact_id, binding, reentry=None, artifact=None,
+         artifact_revision="0.1.0"):
+    # This record is written at dispatch time, before the specialist has produced
+    # anything: every applicable gate is still "pending". A binding here could only
+    # digest its own synthesized artifact_id, which would match by construction and
+    # attest integrity over a file that does not exist. Bind only a real artifact.
     bindings = []
-    if applicability == "applicable" and artifact_id is not None:
-        bindings = [{
-            "artifact_id": artifact_id,
-            "revision": "0.1.0",
-            "digest": sha256_hex(artifact_id),
-        }]
+    if artifact is not None:
+        with open(artifact, "rb") as fh:
+            bindings = [{
+                "artifact_id": artifact_id or os.path.basename(artifact),
+                "revision": artifact_revision,
+                "digest": hashlib.sha256(fh.read()).hexdigest(),
+            }]
     return {
         "tier": tier,
         "gate_id": gate_id,
@@ -102,13 +108,39 @@ def gate(tier, gate_id, name, applicability, status, preparer, verifier,
 
 
 def main():
+    argv = sys.argv[1:]
+    verifier_id = None
+    artifact_path = None
+    rest = []
+    i = 0
+    while i < len(argv):
+        if argv[i] == "--verifier" and i + 1 < len(argv):
+            verifier_id = argv[i + 1]
+            i += 2
+        elif argv[i] == "--artifact" and i + 1 < len(argv):
+            artifact_path = argv[i + 1]
+            i += 2
+        else:
+            rest.append(argv[i])
+            i += 1
+    sys.argv = [sys.argv[0]] + rest
+
+    if artifact_path is not None and not os.path.isfile(artifact_path):
+        sys.stderr.write(f"FAIL: --artifact {artifact_path} does not exist\n")
+        return 2
+
     if len(sys.argv) < 9:
         sys.stderr.write(
             "usage: cadre-dispatch-record.py <role_id> <sandbox_mode> <model> "
             "<codex_model> <reasoning_effort> <phase> <task_id> <baseline> "
-            "[output-path]\n"
+            "[output-path] [--verifier <role-id>] [--artifact <path>]\n"
             "  output-path defaults to ./run-record.json; pass "
             "<run-dir>/run-record.json so the record lands with the work.\n"
+            "  --verifier  the role that peer-reviewed the output (AC-4). "
+            "Omitted, the record states no independent verifier.\n"
+            "  --artifact  a real file to bind and digest. Omitted, gates carry "
+            "no artifact_bindings -- correct at dispatch time, when nothing "
+            "has been produced yet.\n"
         )
         return 2
 
@@ -130,14 +162,28 @@ def main():
     _role_check = subprocess.run(
         ["bash", _resolve, role_id], capture_output=True, text=True
     )
-    if _role_check.returncode != 0:
+    if _role_check.returncode == 1:
         sys.stderr.write(f"FAIL: role '{role_id}' is not in the vendored roster\n")
         return 2
-    _expected_sandbox = subprocess.run(
+    if _role_check.returncode != 0:
+        sys.stderr.write(
+            "FAIL: could not resolve the roster "
+            f"(cadre-roster-resolve.sh exited {_role_check.returncode}): "
+            f"{_role_check.stderr.strip()}\n"
+        )
+        return 2
+    _sandbox_run = subprocess.run(
         ["bash", _resolve, "--key", "sandbox_mode", role_id],
         capture_output=True,
         text=True,
-    ).stdout.strip()
+    )
+    if _sandbox_run.returncode != 0:
+        sys.stderr.write(
+            "FAIL: could not read sandbox_mode for "
+            f"'{role_id}': {_sandbox_run.stderr.strip()}\n"
+        )
+        return 2
+    _expected_sandbox = _sandbox_run.stdout.strip()
     if _expected_sandbox != sandbox:
         sys.stderr.write(
             f"FAIL: sandbox '{sandbox}' does not match roster role '{role_id}' "
@@ -176,9 +222,10 @@ def main():
         status = "approved" if applicability == "not-applicable" else "pending"
         art = f"{role_id}-{gid}-artifact"
         g = gate("lifecycle", gid, name, applicability, status,
-                 preparer=role_id, verifier=None,
+                 preparer=role_id, verifier=verifier_id,
                  artifact_id=art if applicability == "applicable" else None,
-                 binding=binding)
+                 binding=binding,
+                 artifact=artifact_path if applicability == "applicable" else None)
         lifecycle_gates.append(g)
         exec_gates[gid] = {
             "configured": True,
@@ -197,9 +244,10 @@ def main():
     # role and sandbox — the audit trail AC-3 requires.
     specialist = gate("specialist", "S1", "specialist attestation",
                       "applicable", "pending", preparer=role_id,
-                      verifier=None,
+                      verifier=verifier_id,
                       artifact_id=f"{role_id}-artifact",
-                      binding=binding)
+                      binding=binding,
+                      artifact=artifact_path)
     specialist["name"] = f"{role_id} ({sandbox}) attestation"
 
     record = {
