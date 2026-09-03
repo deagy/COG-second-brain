@@ -40,6 +40,9 @@ FRAMEWORK_FILES=(
   # Run-record contract (Change 1)
   ".claude/lib/run-record-lint.sh"
 
+  # Authority gate registry (Change 3) — referenced by the publish/post/sync skills
+  "plan/authority-gates.md"
+
   # Harness gate scripts. The closed-loop, ultragoal and retro skills invoke these
   # as blocking checks ("non-zero means the phase cannot be marked done"), so a vault
   # that has the skills but not the scripts gets "No such file or directory" where a

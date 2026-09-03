@@ -144,6 +144,12 @@ Proceed with publishing? (yes/no)
 
 ### Phase 5: Publish
 
+Publishing a page is a **G8 release-readiness** external mutation with the **Publisher**
+as deciding authority (`plan/authority-gates.md`). Record the approval with
+`bash .claude/lib/checkpoint.sh record_approval G8 Publisher <approver> "<page-url>" [run-dir]`
+before the page is created; an unapproved publish does not run. The ledger exists in every
+session, so this works outside a harness run. The re-fetched page is the post-condition.
+
 #### Create New Page
 ```
 Use WebFetch to POST to Confluence REST API:

@@ -4,6 +4,7 @@
 #   checkpoint.sh init <run-dir>
 #   checkpoint.sh record <run-dir> <CP-id> PASS|FAIL|SKIP "<note>"
 #   checkpoint.sh record_reentry <run-dir> <amend_attempt> "<reentry-criteria>" "<invalidated-criteria>" "<reason>"
+#   checkpoint.sh record_approval <gate> <authority> <approver> "<artifact>" [run-dir]
 #   checkpoint.sh status <run-dir>
 set -euo pipefail
 
@@ -15,6 +16,7 @@ ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 # a split row miscounts it. Collapse both to spaces at the boundary.
 tsv() { printf '%s' "$1" | tr '\t\n' '  '; }
 LOG="$ROOT/.claude/logs/checkpoint-ledger.tsv"
+APPROVAL_LOG="$ROOT/.claude/logs/approval-ledger.tsv"
 mkdir -p "$ROOT/.claude/logs"
 
 cmd="${1:-}"
@@ -96,12 +98,53 @@ record_reentry() {
   echo "recorded re-entry amend ${attempt} → ${hist}"
 }
 
+record_approval() {
+  # An approval is a moment-fact; a run-record is an end-of-run document, so the
+  # approval cannot be written into one that Phase 7 has not created yet -- and the
+  # gated skills are not harness entry points, so in an ordinary session there is no
+  # run-record at all. Record it here instead, the way record_cp records checkpoints,
+  # and let Phase 7 fold the run's rows into the matching gate's human_approvals.
+  local gate="$1" authority="$2" approver="$3" artifact="${4:-}" dir="${5:-}"
+  local ts appr
+
+  # A mis-cased or typo'd gate writes a row that neither the publisher's check nor
+  # Phase 7's gate_id fold will ever match, so the approval silently does not exist
+  # for either consumer. Fail loudly instead.
+  case "$gate" in
+    G7|G8|G9) ;;
+    *)
+      echo "FAIL: '$gate' is not a gated mutation in plan/authority-gates.md" >&2
+      echo "      Valid gates: G7 (evidence), G8 (release-readiness), G9 (deployment-authorization)." >&2
+      exit 2 ;;
+  esac
+
+  ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  [[ -f "$APPROVAL_LOG" ]] || printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
+    timestamp gate authority approver artifact run_dir >> "$APPROVAL_LOG"
+  printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
+    "$ts" "$(tsv "$gate")" "$(tsv "$authority")" "$(tsv "$approver")" "$(tsv "$artifact")" "$dir" >> "$APPROVAL_LOG"
+  if [[ -n "$dir" ]]; then
+    mkdir -p "$dir/evidence"
+    appr="$dir/evidence/approvals.tsv"
+    [[ -f "$appr" ]] || printf '%s\t%s\t%s\t%s\t%s\n' \
+      timestamp gate authority approver artifact >> "$appr"
+    printf '%s\t%s\t%s\t%s\t%s\n' \
+      "$ts" "$(tsv "$gate")" "$(tsv "$authority")" "$(tsv "$approver")" "$(tsv "$artifact")" >> "$appr"
+  fi
+  echo "recorded approval: ${gate} by ${approver} (${authority}) → ${APPROVAL_LOG}"
+}
+
 status_run() {
   local dir="$1"
   if [[ -f "$dir/evidence/checkpoints.tsv" ]]; then
     column -t -s $'\t' "$dir/evidence/checkpoints.tsv" 2>/dev/null || cat "$dir/evidence/checkpoints.tsv"
   else
     echo "no checkpoints yet: $dir"
+  fi
+  if [[ -f "$dir/evidence/approvals.tsv" ]]; then
+    echo
+    echo "approvals:"
+    column -t -s $'\t' "$dir/evidence/approvals.tsv" 2>/dev/null || cat "$dir/evidence/approvals.tsv"
   fi
   if [[ -f "$dir/evidence/re_entry_history.tsv" ]]; then
     echo
@@ -121,12 +164,19 @@ case "$cmd" in
       exit 2
     fi
     record_reentry "$1" "$2" "$3" "$4" "${5:-}" ;;
+  record_approval)
+    if [[ $# -lt 3 ]]; then
+      echo "FAIL: record_approval needs <gate> <authority> <approver> [artifact] [run-dir]" >&2
+      exit 2
+    fi
+    record_approval "$1" "$2" "$3" "${4:-}" "${5:-}" ;;
   status) status_run "${1:?run-dir}" ;;
   *)
     echo "usage:" >&2
     echo "  checkpoint.sh init <run-dir>" >&2
     echo "  checkpoint.sh record <run-dir> <CP-id> PASS|FAIL|SKIP \"<note>\"" >&2
     echo "  checkpoint.sh record_reentry <run-dir> <amend_attempt> \"<reentry-criteria>\" \"<invalidated-criteria>\" \"<reason>\"" >&2
+    echo "  checkpoint.sh record_approval <gate> <authority> <approver> \"<artifact>\" [run-dir]" >&2
     echo "  checkpoint.sh status <run-dir>" >&2
     exit 1
     ;;

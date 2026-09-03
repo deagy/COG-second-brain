@@ -63,7 +63,7 @@ with placeholder values, not a schema. The authoritative lifecycle contract is
 |---|---|---|---|---|---|
 | 1 | Run-record as the shared object | Every harness run emits a run-record with auditable provenance | new schema + template, `closed-loop/SKILL.md`, `WORKFLOW.md`, new lint | low | implemented (`1d8966b`) |
 | 2 | Per-task amend semantics | COG's CP-3v verify loop gets deny/re-entry teeth | `closed-loop/SKILL.md`, `task-verifier.md`, `checkpoint.sh`, `WORKFLOW.md` | low | implemented (`8a07f03`) |
-| 3 | Gate the high-consequence mutations | External writes go through a named authority + explicit approval | four publishing skills + `worker-publisher` | medium | **split out** (see below) |
+| 3 | Gate the high-consequence mutations | External writes go through a named authority + explicit approval | four publishing skills + `worker-publisher` | medium | **on this branch — not ready** (see below) |
 | 4 | Roster dispatch for specialized execution | — | — | high | **descoped** (see below) |
 
 ## Sequencing
@@ -105,7 +105,7 @@ foundation everything else reads, even though its full wiring comes later.
    installed plugin by role name and writes a run-record; it needs no vendored
    copy.
 
-### Change 3 — split out to its own branch
+### Change 3 — this branch, and what is still wrong with it
 
 Gating the external mutations was built here and moved to `plan/cadre-cog-gates`
 (at `5205029`) to be designed once rather than patched a fifth time. Four review
@@ -127,10 +127,15 @@ did not gate anything:
   the page is created" against `<page-url>` cannot be satisfied.
 
 A control that looks like a control but passes unconditionally is worse than no
-control, so it does not ship in this state. Redesigning it means deciding what an
-approval *is* in a solo vault running autonomous skills: who records it, against
-what durable identity, and whether an unattended pipeline may publish at all. That
-is a design question, not a patch, and it gets its own PR.
+control, so it did not ship with Changes 1-2. This branch carries it for redesign.
+
+One of the four is fixed here: `record_approval` now rejects any gate outside
+G7/G8/G9, so a typo can no longer write a row that neither consumer will match.
+The other three are open, and they are the design question, not a patch: who
+records an approval so that it attests a human decision rather than the agent's own
+intent; what durable identity it binds to, given the artifact URL does not exist
+until after the mutation; and whether an unattended nightly pipeline may publish at
+all. Answer those three and the check writes itself.
 
 Until then the pre-existing discipline stands unchanged — `CLAUDE.md` § Skill
 Post-Condition Rule already requires explicit approval before an external mutation

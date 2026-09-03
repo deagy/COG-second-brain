@@ -291,6 +291,12 @@ mkdir -p "05-knowledge/_logs"
 
 ### Phase 6: Optional Wiki Sync (requires approval)
 
+Syncing to an external wiki is a **G8 release-readiness** external mutation with the
+**Publisher** as deciding authority (`plan/authority-gates.md`). Record the approval with
+`bash .claude/lib/checkpoint.sh record_approval G8 Publisher <approver> "<wiki-url>" [run-dir]`
+before the sync runs; an unapproved sync does not run. The ledger exists in every session,
+so this works outside a harness run. The re-fetched wiki page is the post-condition.
+
 If Confluence or Notion is active, offer to sync updated entries:
 
 ```
