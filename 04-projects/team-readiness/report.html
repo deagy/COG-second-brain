@@ -1,0 +1,411 @@
+<title>Team Readiness Ledger</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --paper: #f2f4f2;
+    --surface: #fbfcfa;
+    --ink: #1b1f1c;
+    --muted: #5f6a62;
+    --faint: #8b948c;
+    --rule: #d5dbd6;
+    --rule-strong: #b8c1b9;
+    --accent: #2f6f5e;
+    --ok: #3d7a4f;
+    --ok-bg: #e4efe6;
+    --warn: #8a6212;
+    --warn-bg: #f4ecd9;
+    --bad: #a33a2e;
+    --bad-bg: #f6e3e0;
+    --display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+    --body: "Source Serif 4", Georgia, "Times New Roman", serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #141715;
+      --surface: #1b201d;
+      --ink: #e4e8e4;
+      --muted: #9aa39c;
+      --faint: #737d76;
+      --rule: #2c332e;
+      --rule-strong: #3d453f;
+      --accent: #6fb9a3;
+      --ok: #7fc08e;
+      --ok-bg: #1e2c22;
+      --warn: #d3a445;
+      --warn-bg: #2e2718;
+      --bad: #e08479;
+      --bad-bg: #2f1e1c;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #141715;
+    --surface: #1b201d;
+    --ink: #e4e8e4;
+    --muted: #9aa39c;
+    --faint: #737d76;
+    --rule: #2c332e;
+    --rule-strong: #3d453f;
+    --accent: #6fb9a3;
+    --ok: #7fc08e;
+    --ok-bg: #1e2c22;
+    --warn: #d3a445;
+    --warn-bg: #2e2718;
+    --bad: #e08479;
+    --bad-bg: #2f1e1c;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  .wrap {
+    max-width: 60rem;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.75rem;
+  }
+  h1, h2, h3, .lab, .pill, th { font-family: var(--display); }
+  h1 {
+    font-size: 2.1rem;
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  h2 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    margin: 0 0 0.85rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--rule-strong);
+  }
+  h3 { font-size: 0.95rem; font-weight: 600; margin: 0 0 0.35rem; }
+  p { margin: 0 0 0.9rem; max-width: 62ch; }
+  p:last-child { margin-bottom: 0; }
+  a { color: var(--accent); }
+  code, .mono { font-family: var(--mono); font-size: 0.86em; }
+
+  .lab {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    color: var(--faint);
+    font-weight: 600;
+  }
+  header { display: flex; flex-direction: column; gap: 0.7rem; }
+  .north {
+    font-size: 1.02rem;
+    color: var(--muted);
+    font-style: italic;
+    max-width: 60ch;
+    margin: 0;
+  }
+  .verdict {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    align-self: flex-start;
+    background: var(--ok-bg);
+    color: var(--ok);
+    border: 1px solid currentColor;
+    padding: 0.3rem 0.75rem;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.04em;
+  }
+  .verdict span { font-weight: 500; font-size: 0.78rem; color: var(--muted); }
+
+  .strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+    gap: 0;
+    border: 1px solid var(--rule);
+    background: var(--surface);
+  }
+  .strip div {
+    padding: 0.85rem 1rem;
+    border-right: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .strip div:last-child { border-right: 0; }
+  .strip b {
+    font-family: var(--display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  th {
+    text-align: left;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--faint);
+    font-weight: 600;
+    padding: 0 0.7rem 0.45rem 0;
+    border-bottom: 1px solid var(--rule-strong);
+    white-space: nowrap;
+  }
+  td {
+    padding: 0.6rem 0.7rem 0.6rem 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  td:first-child, th:first-child { white-space: nowrap; }
+  .ac { font-family: var(--mono); font-weight: 500; color: var(--accent); }
+
+  .pill {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 0.12rem 0.45rem;
+    border: 1px solid currentColor;
+    white-space: nowrap;
+  }
+  .p-ok { color: var(--ok); background: var(--ok-bg); }
+  .p-warn { color: var(--warn); background: var(--warn-bg); }
+  .p-bad { color: var(--bad); background: var(--bad-bg); }
+
+  .chain { display: flex; flex-wrap: wrap; gap: 0; border: 1px solid var(--rule); }
+  .chain div {
+    flex: 1 1 7rem;
+    padding: 0.7rem 0.8rem;
+    border-right: 1px solid var(--rule);
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .chain div:last-child { border-right: 0; }
+  .chain .cp {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--accent);
+  }
+  .chain .n { font-size: 0.78rem; color: var(--muted); line-height: 1.35; }
+
+  .gates { font-family: var(--mono); font-size: 0.84rem; }
+  .gates tr td:last-child { text-align: right; white-space: nowrap; }
+
+  .note {
+    border-left: 3px solid var(--rule-strong);
+    padding: 0.1rem 0 0.1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .note.attention { border-left-color: var(--warn); }
+  .finding {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 1rem 1.15rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .stack { display: flex; flex-direction: column; gap: 1.5rem; }
+  .stack-tight { display: flex; flex-direction: column; gap: 0.9rem; }
+  footer {
+    border-top: 1px solid var(--rule);
+    padding-top: 1rem;
+    font-size: 0.8rem;
+    color: var(--faint);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.5rem;
+  }
+</style>
+
+<div class="wrap">
+
+  <header>
+    <div class="lab">Ultragoal &middot; closed 3 September 2026</div>
+    <h1>Team readiness</h1>
+    <p class="north">A colleague who has never seen these repositories can install cadre, the lifecycle kernel and recall unaided, learn from the documentation how the three fit together, and read a record of who did what that names a person the system actually verified.</p>
+    <div class="verdict">NORTH-STAR GATE PASS <span>9 of 9 criteria &middot; all 7 gates exit 0</span></div>
+  </header>
+
+  <div class="strip">
+    <div><span class="lab">Criteria</span><b>9&thinsp;/&thinsp;9</b></div>
+    <div><span class="lab">Phases</span><b>5</b></div>
+    <div><span class="lab">Checkpoints</span><b>35</b></div>
+    <div><span class="lab">Releases cut</span><b>10</b></div>
+    <div><span class="lab">Defects found by CP-4</span><b>4</b></div>
+  </div>
+
+  <section>
+    <h2>Acceptance criteria</h2>
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr><th>AC</th><th>Phase</th><th>What was observed</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="ac">AC-1</td><td>P1</td>
+            <td>A clean <code>node:22-bookworm-slim</code> container with no <code>~/sdk</code>, following only published documentation, reaching a working <code>cadre</code>, <code>agentic-sdlc</code> and <code>recall</code> from published artifacts.</td>
+            <td><span class="pill p-ok">Verified</span></td>
+          </tr>
+          <tr>
+            <td class="ac">AC-2</td><td>P1</td>
+            <td>Every prerequisite stated before the command that fails without it — <code>curl</code>, <code>git</code>, Python, Go, the <code>PATH</code> entry, egress, authentication. Read in order.</td>
+            <td><span class="pill p-ok">Verified</span></td>
+          </tr>
+          <tr>
+            <td class="ac">AC-3</td><td>P1</td>
+            <td>Front pages re-fetched through <code>gh api repos/&lt;r&gt;/readme</code> — what an outsider sees, not a checkout. cadre-kernel now has a README where P0 recorded none.</td>
+            <td><span class="pill p-ok">Verified</span></td>
+          </tr>
+          <tr>
+            <td class="ac">AC-4</td><td>P2</td>
+            <td>One overview page linked from all three front pages. Its structural claims checked against <code>go.mod</code> and the exec sites, its glossary term-by-term against code and <code>lifecycle-gates.json</code> — never against other prose.</td>
+            <td><span class="pill p-ok">Verified</span></td>
+          </tr>
+          <tr>
+            <td class="ac">AC-5</td><td>P2</td>
+            <td>A universal negative, so checked against a bounded set that grows by itself: 291 live documents discovered from <code>git ls-files</code> minus generated trees and records, not a curated list.</td>
+            <td><span class="pill p-ok">Verified</span></td>
+          </tr>
+          <tr>
+            <td class="ac">AC-6</td><td>P3</td>
+            <td>Refusal keyed to the authenticated subject, not string equality — the same typed names under two different credentials are <em>allowed</em>, which rules out a string compare. An API key returned as its own subject is refused rather than persisted.</td>
+            <td><span class="pill p-ok">Verified</span></td>
+          </tr>
+          <tr>
+            <td class="ac">AC-7</td><td>P4</td>
+            <td>Two scoped credentials against a live server, each proving it finds its own content first. Cross-namespace upload, spoofed query parameters and body fields, and a direct entity fetch all refused or scoped.</td>
+            <td><span class="pill p-ok">Verified</span></td>
+          </tr>
+          <tr>
+            <td class="ac">AC-8</td><td>P5</td>
+            <td>Ingest, delete, confirm absent, read the evidence back — end to end against a released binary, with absence confirmed through <code>recall store info</code> rather than cadre's own search.</td>
+            <td><span class="pill p-ok">Verified</span></td>
+          </tr>
+          <tr>
+            <td class="ac">AC-9</td><td>P4</td>
+            <td>Ten then twenty concurrent <code>recall upload</code> invocations as real OS processes — not goroutines, which is a different claim — with no locked-database error and exact chunk counts.</td>
+            <td><span class="pill p-ok">Verified</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>The chain, run for every phase</h2>
+    <div class="chain">
+      <div><span class="cp">CP-1</span><span class="n">Spec &mdash; 9 criteria, 5 phases</span></div>
+      <div><span class="cp">CP-2</span><span class="n">Plan &mdash; tasks traced to AC</span></div>
+      <div><span class="cp">CP-3</span><span class="n">Build</span></div>
+      <div><span class="cp">CP-3v</span><span class="n">Component verify</span></div>
+      <div><span class="cp">CP-4</span><span class="n">Integration &mdash; failed twice</span></div>
+      <div><span class="cp">CP-5</span><span class="n">Acceptance</span></div>
+      <div><span class="cp">CP-6</span><span class="n">Ship</span></div>
+      <div><span class="cp">CP-7</span><span class="n">Retro</span></div>
+    </div>
+  </section>
+
+  <section class="stack">
+    <h2>What CP-4 found that nothing else did</h2>
+
+    <div class="finding">
+      <h3>Deletion evidence lost while the content was already gone</h3>
+      <p>Reproduced with two real processes: <code>delete-ingested</code> removed the chunks, the evidence write lost the lock, and the command exited 1 having left no record. Re-running does not repair it — there is nothing left to delete.</p>
+      <p>The obvious fix does nothing. The connection string already sets <code>busy_timeout(5000)</code>, so the driver spends the whole budget inside the first <code>Exec</code> and the retry loop finds its deadline already expired. <strong>A retry whose budget is consumed before its first check is decoration.</strong></p>
+    </div>
+
+    <div class="finding">
+      <h3>A test that could not tell its own mutations apart</h3>
+      <p>The regression test passed with the longer budget removed, passed again with the retry removed entirely, then failed on unmodified code. Three results that cannot all describe the same property.</p>
+      <p>Chasing the inconsistency exposed the real defect: <code>CREATE TABLE IF NOT EXISTS</code> ran before the INSERT and absorbed the contention, so which statement failed depended only on whether an earlier command had made the table. One mutation would have hidden that; two disagreeing ones could not.</p>
+    </div>
+
+    <div class="finding">
+      <h3>Fixed on the path I changed, not the path the failure takes</h3>
+      <p>Round 2 measured the fix as uneven. A store that had recorded a deletion waited out a competing lock for the full budget and failed at <span class="mono">60.45&thinsp;s</span> naming the chunk count. A store that never had died at roughly <span class="mono">5&thinsp;s</span> with a bare <code>SQLITE_BUSY</code> — twelve times shorter, on the more common case, since it is a project's first deletion.</p>
+      <p>The failing call was in <code>initStagedSchema</code> at store open, a path I had not touched. Creating the table at open removes the case rather than widening a second budget, so no schema change runs after deletion becomes irreversible. Re-verified against <code>cli-v0.7.12</code>: cold now fails at <span class="mono">61.75&thinsp;s</span> and warm at <span class="mono">60.45&thinsp;s</span>, and the intermediate durations succeed — which is what distinguishes equalising at the long budget from equalising at the short one.</p>
+    </div>
+
+    <div class="finding">
+      <h3>A guard that could not see the claim it existed to catch</h3>
+      <p>The overview page asserted that a test fails if any document still places the kernel inside cadre. False in both halves: <code>terminology.md</code> still said so, in prose and in a mermaid label, and the guard read only backticked paths and markdown links. A verifier asked to build its own list of syntaxes probed thirty and found six the extended guard still cannot see — recorded as a coverage statement, not hidden.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Gate checks</h2>
+    <div class="scroll">
+      <table class="gates">
+        <thead><tr><th>Check</th><th>Result</th><th>Exit</th></tr></thead>
+        <tbody>
+          <tr><td>phase-gates.sh</td><td>all 5 phases, every required checkpoint recorded</td><td>0</td></tr>
+          <tr><td>ci-status.sh</td><td>cadre 24ac0863 &middot; recall cbccb179 &middot; kernel 765671bc</td><td>0</td></tr>
+          <tr><td>spec-lint.sh</td><td>clean</td><td>0</td></tr>
+          <tr><td>evidence-lint.sh</td><td>clean</td><td>0</td></tr>
+          <tr><td>citation-lint.sh</td><td>11 commit citations, 3 vault paths, all resolve</td><td>0</td></tr>
+          <tr><td>backlog-lint.sh</td><td>every row carries a disposition</td><td>0</td></tr>
+          <tr><td>release-hygiene.sh</td><td>cadre 86 tags &middot; recall 9 &middot; kernel 3 &mdash; every one accounted for</td><td>0</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="stack-tight">
+    <h2>Open, and needing a person</h2>
+
+    <div class="note attention">
+      <h3><span class="pill p-warn">Not yet proven</span> &nbsp;AC-1 is verified by a container, not by a colleague</h3>
+      <p>AC-1's own wording makes the container run the automated substitute, and the spec says plainly that it is <em>the confirmation no automated check replaces</em>. The row is correctly graded against the falsification test the criterion states, so this is not a misgraded row — but the north-star's plain sentence says a colleague installs unaided, and no colleague has yet. The gate raised this without being asked to.</p>
+      <p><strong>Handing the three repositories to an actual person and watching where they stop is the only remaining way to learn what the container cannot tell us.</strong></p>
+    </div>
+
+    <div class="note">
+      <h3><span class="pill p-ok">Closed</span> &nbsp;<code>cli-v0.7.10</code> deleted by the operator</h3>
+      <p>A tag created by hand before checking that cadre's workflow tags and publishes itself on a version bump, and skips any version already tagged — so it both failed to trigger a release and prevented the one that would have happened.</p>
+      <p><strong>It was never excepted.</strong> <code>release-hygiene.sh</code> went green because the defect was removed, not because the exception list grew — which is the difference between a check that still works and one that has been taught to look away.</p>
+    </div>
+
+    <div class="note">
+      <h3>Four scratch worktrees remain registered</h3>
+      <p>Deregistering a worktree is likewise the operator's to do.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Verified against</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Repository</th><th>Release</th><th>Assets</th><th>Runner</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">deagy/cadre</td><td class="mono">cli-v0.7.12</td><td>14, with checksums and an SBOM</td><td><span class="pill p-ok">Green</span></td></tr>
+          <tr><td class="mono">deagy/recall</td><td class="mono">v0.3.6</td><td>13, with <code>checksums-sha256.txt</code></td><td><span class="pill p-ok">Green</span></td></tr>
+          <tr><td class="mono">deagy/cadre-kernel</td><td class="mono">v0.14.4</td><td>6, with <code>SHA256SUMS</code></td><td><span class="pill p-ok">Green</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <span>Spec &middot; <code>04-projects/team-readiness/spec.md</code></span>
+    <span>Evidence &middot; <code>evidence/P0…P5/</code></span>
+    <span>Retro &middot; <code>harness/retro/2026-09-03-team-readiness.md</code></span>
+  </footer>
+
+</div>

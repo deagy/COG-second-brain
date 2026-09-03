@@ -1,0 +1,292 @@
+<title>Four Tools, One Team</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+:root{
+  --ink:#16211f; --ink-2:#3b4a47; --ink-3:#6a7a76;
+  --ground:#f6f5f1; --panel:#fffefb; --rule:#ddd9d0; --rule-2:#eae6dd;
+  --accent:#0f5f57; --accent-soft:#e2efec;
+  --stop:#8a3324; --stop-soft:#f6e5e0;
+  --watch:#8a6218; --watch-soft:#f7ecd8;
+  --solid:#2f6136; --solid-soft:#e3efe4;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#e8e6e0; --ink-2:#b9c2bf; --ink-3:#8b9a96;
+    --ground:#12100e; --panel:#1a1917; --rule:#333029; --rule-2:#26241f;
+    --accent:#6fc2b4; --accent-soft:#16302c;
+    --stop:#e08c78; --stop-soft:#331d17;
+    --watch:#dcb268; --watch-soft:#302514;
+    --solid:#8bbf92; --solid-soft:#1a2c1c;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#e8e6e0; --ink-2:#b9c2bf; --ink-3:#8b9a96;
+  --ground:#12100e; --panel:#1a1917; --rule:#333029; --rule-2:#26241f;
+  --accent:#6fc2b4; --accent-soft:#16302c;
+  --stop:#e08c78; --stop-soft:#331d17;
+  --watch:#dcb268; --watch-soft:#302514;
+  --solid:#8bbf92; --solid-soft:#1a2c1c;
+}
+
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:56px 26px 96px}
+@media(max-width:640px){.wrap{padding:34px 18px 64px}}
+
+h1,h2,h3{font-family:var(--serif);font-weight:500;text-wrap:balance;line-height:1.18;margin:0}
+h1{font-size:clamp(2.1rem,5.4vw,3.05rem);letter-spacing:-.015em}
+h2{font-size:clamp(1.35rem,3vw,1.72rem);margin:56px 0 6px}
+h3{font-size:1.1rem;font-weight:600;margin:30px 0 4px}
+p{margin:.85em 0;color:var(--ink-2)}
+p.lede{font-size:1.14rem;color:var(--ink-2)}
+strong{color:var(--ink);font-weight:600}
+a{color:var(--accent);text-underline-offset:2px}
+code{font-family:var(--mono);font-size:.855em;background:var(--rule-2);
+  padding:.1em .34em;border-radius:3px;color:var(--ink)}
+
+.eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 14px}
+header{border-bottom:1px solid var(--rule);padding-bottom:26px;margin-bottom:8px}
+.meta{font-family:var(--mono);font-size:.74rem;color:var(--ink-3);margin-top:16px;line-height:1.8}
+
+.verdict{background:var(--panel);border:1px solid var(--rule);
+  border-left:3px solid var(--stop);padding:22px 24px;margin:30px 0 8px;border-radius:2px}
+.verdict .v{font-family:var(--serif);font-size:1.5rem;color:var(--ink);display:block;margin-bottom:6px}
+.verdict p{margin:.5em 0 0}
+.verdict p:last-child{margin-bottom:0}
+
+.scroll{overflow-x:auto;margin:20px 0;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:560px}
+th{text-align:left;font-family:var(--mono);font-size:.68rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-3);font-weight:500;
+  padding:0 12px 8px 0;border-bottom:1px solid var(--rule)}
+td{padding:11px 12px 11px 0;border-bottom:1px solid var(--rule-2);
+  vertical-align:top;color:var(--ink-2)}
+td:first-child{color:var(--ink);font-weight:500;white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+.num{font-variant-numeric:tabular-nums}
+
+.pill{display:inline-block;font-family:var(--mono);font-size:.66rem;
+  letter-spacing:.07em;text-transform:uppercase;padding:2px 7px;
+  border-radius:2px;white-space:nowrap;font-weight:500}
+.p-stop{background:var(--stop-soft);color:var(--stop)}
+.p-watch{background:var(--watch-soft);color:var(--watch)}
+.p-solid{background:var(--solid-soft);color:var(--solid)}
+.p-flat{background:var(--rule-2);color:var(--ink-3)}
+
+.item{border-top:1px solid var(--rule-2);padding:20px 0 4px}
+.item:first-of-type{border-top:1px solid var(--rule)}
+.item h3{margin-top:0;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.ev{font-family:var(--mono);font-size:.76rem;color:var(--ink-3);
+  background:var(--rule-2);border-radius:2px;padding:9px 11px;margin:10px 0 2px;
+  white-space:pre-wrap;overflow-x:auto;line-height:1.55}
+
+.phase{background:var(--panel);border:1px solid var(--rule);border-radius:2px;
+  padding:20px 22px;margin:16px 0}
+.phase .top{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin-bottom:2px}
+.phase .n{font-family:var(--mono);font-size:.74rem;color:var(--accent);font-weight:500}
+.phase h3{margin:0;font-size:1.05rem}
+.phase .cost{margin-left:auto;font-family:var(--mono);font-size:.72rem;color:var(--ink-3)}
+.phase ul{margin:10px 0 0;padding-left:19px}
+.phase li{margin:5px 0;color:var(--ink-2)}
+.phase li::marker{color:var(--ink-3)}
+
+.note{border-left:2px solid var(--accent);background:var(--accent-soft);
+  padding:14px 18px;margin:22px 0;border-radius:0 2px 2px 0}
+.note p{margin:.35em 0;color:var(--ink-2)}
+.note p:first-child{margin-top:0}
+.note p:last-child{margin-bottom:0}
+
+footer{margin-top:64px;padding-top:22px;border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:.72rem;color:var(--ink-3);line-height:1.8}
+</style>
+
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Readiness assessment · 2026-09-02</p>
+  <h1>Four tools, one team</h1>
+  <p class="lede">Whether cadre, the lifecycle kernel, recall and gloop can be handed to an internal team today — and if not, what stands in the way.</p>
+  <p class="meta">cadre 5976dd2d · cadre-kernel c9500b6 · recall 6961d3e · gloop 9f0f9b9<br>All four green on CI. Evidence gathered by clean-container install, live commands against built binaries, and the GitHub API.</p>
+</header>
+
+<div class="verdict">
+  <span class="v">Not yet — but the gap is smaller than it looks.</span>
+  <p>Nothing here is unsound. The code is well tested, the install works, and the parts that were built carefully were built <em>very</em> carefully. What is missing is almost entirely the difference between <strong>one operator who knows everything</strong> and <strong>a colleague who knows nothing</strong>.</p>
+  <p>That is not an accident, and it is worth saying plainly: the readiness work that closed this morning was chartered against a stated bar — <em>“your own multi-agent work, run daily. One operator.”</em> Two of its decisions were justified <strong>by</strong> that fact. Both expire the day a second person logs in.</p>
+</div>
+
+<h2>Where each repository actually stands</h2>
+
+<div class="scroll">
+<table>
+  <thead><tr><th>Repo</th><th>Shareable</th><th>Licence</th><th>Latest</th><th>Tests</th><th>The catch</th></tr></thead>
+  <tbody>
+    <tr><td>cadre</td><td><span class="pill p-watch">with work</span></td><td>Apache-2.0</td><td class="num">cli-v0.7.5</td><td class="num">1,616</td><td>Front page never links its own install guide; first real task needs an interactive login</td></tr>
+    <tr><td>cadre-kernel</td><td><span class="pill p-watch">with work</span></td><td>Apache-2.0</td><td class="num">v0.14.4</td><td class="num">167</td><td>No <code>README.md</code> at all — the repo front page is blank</td></tr>
+    <tr><td>recall</td><td><span class="pill p-solid">close</span></td><td>MIT</td><td class="num">v0.3.3</td><td class="num">1,451</td><td>Zero broken links, but no install section and never mentions its own released binaries</td></tr>
+    <tr><td>gloop</td><td><span class="pill p-stop">no</span></td><td>none</td><td class="num">—</td><td class="num">1,695</td><td>Private, no releases by decision, and no teammate holds access</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="note">
+  <p><strong>gloop does not block the other three.</strong> Nothing imports it — not cadre, not the kernel, not recall. Its README calls it “the orchestration engine behind cadre,” but the coupling is a dispatch-plan file rather than a code dependency. You can ship the other three and decide about gloop separately.</p>
+</div>
+
+<h2>What stops a colleague in their first hour</h2>
+
+<p>These were found by installing into a clean container as someone who has never seen the repositories, following only what the docs say. Each is cheap to fix; together they are the difference between “this works” and “this works for me.”</p>
+
+<div class="item">
+  <h3>The first real task needs an interactive login <span class="pill p-stop">blocker</span></h3>
+  <p>Installing succeeds. Then the entire point — dispatching work across the specialist roles — stops dead. There is no headless or CI path documented anywhere.</p>
+  <div class="ev">$ echo "" | claude -p "say hi"
+Not logged in · Please run /login</div>
+  <p>Worse for a newcomer: a typo'd or expired key does not fail. It hangs, silently, with no output for over ninety seconds and then exits <code>0</code>. Someone debugging that alone will not get there.</p>
+</div>
+
+<div class="item">
+  <h3>The documented first command cannot be typed <span class="pill p-watch">friction</span></h3>
+  <p>The install line is <code>curl … | sh</code>, on an image with no <code>curl</code>, no <code>git</code> and no <code>python3</code>. <code>INSTALL.md</code> says the script needs git and Python — it does not say they may be absent, and it never mentions needing curl to fetch the installer at all.</p>
+  <div class="ev">$ docker exec cadre-test which git python3 curl
+exec: "git": executable file not found in $PATH
+exec: "python3": executable file not found in $PATH</div>
+  <p>Then <code>cadre</code> is not on <code>PATH</code>. The installer prints a note about it after finishing; a reader who skips that line gets <code>command not found</code> on the very next documented step.</p>
+</div>
+
+<div class="item">
+  <h3>Three of four front pages send a newcomer nowhere <span class="pill p-watch">friction</span></h3>
+  <p>cadre's README opens with a “Choose your path” table linking six documents — <code>docs/INSTALL.md</code> is not among them; its only two links sit further down inside a runner table. cadre-kernel has no README at all. recall has no installation section, and never tells the reader that prebuilt binaries for six platforms exist on its releases page.</p>
+</div>
+
+<div class="item">
+  <h3>Nothing explains how the four fit together <span class="pill p-stop">blocker</span></h3>
+  <p>This is the largest documentation gap and the one no individual repo owns. cadre's README and <code>IDENTITY.md</code> never mention recall or gloop. recall never mentions cadre. What exists is four one-directional pointers, each visible only from inside the dependent repo — including the sole statement of the cadre↔recall relationship, buried three directories deep in a subsystem README.</p>
+  <p>No document anywhere gives an adoption order. A team would have to derive it.</p>
+</div>
+
+<div class="item">
+  <h3>Eighteen documentation claims are still false or dangling <span class="pill p-watch">friction</span></h3>
+  <p>Counted, not sampled: nine in cadre, three in the kernel, five in recall, one in gloop. The sharpest are a README that asserts both that the kernel lives in-repo and that it does not; a kernel document citing a reference provider file that does not exist; and <code>&lt;subcommand&gt; --help</code> documented as the way to discover options while failing for 27 of 30 subcommands.</p>
+</div>
+
+<h2>What changes when there are N of you</h2>
+
+<p>Two properties were correct under one operator and stop being correct with a team. Both are recorded honestly in the code's own <code>SECURITY.md</code> — neither is a surprise, and neither has been fixed because until today it did not need to be.</p>
+
+<div class="item">
+  <h3>The audit trail cannot tell two people from one <span class="pill p-stop">blocker</span></h3>
+  <p>Actor fields are caller-supplied text. Separation of duties is enforced by comparing two strings for equality. A single process, one keyboard, staged a record as one person and approved it as another — both accepted, with a byte-identical observed actor on each row.</p>
+  <div class="ev">staged_by   "alice@example.com"   observed_actor "os:deagy git:test@example.com"
+decided_by  "bob@example.com"     observed_actor "os:deagy git:test@example.com"
+→ accepted</div>
+  <p>The charter's reasoning was <em>“with one operator there is nobody to impersonate.”</em> With a team, an approval record that names a person nobody verified is a record of a string.</p>
+</div>
+
+<div class="item">
+  <h3>You cannot honour a deletion request <span class="pill p-stop">blocker</span></h3>
+  <p><code>retention-report</code>, <code>delete-ingested</code> and <code>deletion-evidence</code> existed in the Python CLI and were never rebuilt. Nothing records a retention window at ingest, nothing ages out, and no shipped command can remove ingested content — only still-staged proposals, which <em>are</em> properly handled with durable evidence.</p>
+  <p>The charter accepted this because <em>“no third party's content enters the store.”</em> A colleague's notes are a third party's content.</p>
+</div>
+
+<div class="item">
+  <h3>There is no shared store, and the sharing bug already happened once <span class="pill p-watch">friction</span></h3>
+  <p>A store is a local SQLite file — project-local or global, both plain paths, with no sync, server or replication in the path cadre uses. Issue <code>#249</code> was exactly this hazard realised: the tier walk conflated project-local and global, a write landed in the shared store, and reversing it needed an authorised deletion.</p>
+  <p>Separately, recall's own store sets its pragmas per-connection with no busy timeout and no retry — the precise pattern cadre already had to fix in its staged store after two concurrent writers hit <em>database is locked</em>. It has not been load-tested. Two people sharing a store is when it would bite.</p>
+</div>
+
+<h2>What is already strong enough to build on</h2>
+
+<p>Worth stating, because the roadmap below should not accidentally rebuild any of it.</p>
+
+<div class="scroll">
+<table>
+  <thead><tr><th>Property</th><th>Evidence</th></tr></thead>
+  <tbody>
+    <tr><td>Concurrency, staged store</td><td>Six parallel proposals against one store: all succeeded, all seven records present, no lock errors, no lost writes</td></tr>
+    <tr><td>Deletion evidence</td><td>Deleting a staged record writes an evidence row with no foreign key to its subject, deliberately, so the record outlives what it describes</td></tr>
+    <tr><td>Secret hygiene</td><td>Enforced, not conventional: cadre hard-errors on secret-shaped config keys; gloop stores only env-var <em>names</em>, and redacts by construction</td></tr>
+    <tr><td>Supportability</td><td><code>cadre doctor</code> reports install kind, which binary actually ran, and where the kernel came from — the thing that makes another person's machine diagnosable</td></tr>
+    <tr><td>Test surface</td><td>4,929 test functions across the four; all green on their own runners at the commits above</td></tr>
+    <tr><td>Kernel install</td><td>Release archives plus <code>SHA256SUMS</code> verify and install exactly as documented</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="note">
+  <p><strong>The finding that shortens everything below:</strong> recall already ships <code>recall-server</code> as a released binary on six platforms, with API-key, namespace-scoped and JWT authentication behind 37 tests — and its <code>Authenticate</code> returns a <em>subject</em>, which is precisely the verified identity the actor fields lack today.</p>
+  <p>cadre never wires to it; <code>internal/retrieval</code> opens a local file directly. So multi-user identity and a shared store are mostly an integration of something that already exists, not an auth system to design.</p>
+</div>
+
+<h2>Roadmap</h2>
+
+<div class="phase">
+  <div class="top"><span class="n">P0</span><h3>Make the first hour survivable</h3><span class="cost">days · docs only</span></div>
+  <p>Nothing here needs code. It is the difference between a colleague succeeding and quietly giving up.</p>
+  <ul>
+    <li>Document the <code>claude</code> authentication step, including a headless path — or state plainly that an interactive login is required and there is no CI story yet.</li>
+    <li>List every prerequisite before the first command: <code>curl</code>, <code>git</code>, Python 3.10+, Go and its version, network egress, and the <code>PATH</code> entry.</li>
+    <li>Put an install link in cadre's “Choose your path” table. Give cadre-kernel a README. Give recall an installation section that names its released binaries.</li>
+    <li>Set the GitHub description on cadre, recall and gloop — three of four are blank, and it is the first thing anyone sees.</li>
+    <li>Fix the eighteen counted false or dangling claims, starting with cadre's README contradicting itself about where the kernel lives.</li>
+  </ul>
+</div>
+
+<div class="phase">
+  <div class="top"><span class="n">P1</span><h3>One page that explains the four together</h3><span class="cost">days · one document</span></div>
+  <p>The single highest-value artifact that does not exist. It needs to say what each tool is for, that the kernel records and validates while cadre drives, that recall is the knowledge backend both cadre and gloop use independently, and what order to adopt them in.</p>
+  <ul>
+    <li>One overview, linked from all four front pages, not a fifth scattered pointer.</li>
+    <li>A glossary: roster, catalog, routing, dispatch plan, gate, G1–G10, provider, lane, kernel. A newcomer currently has to find each definition in a different repository.</li>
+  </ul>
+</div>
+
+<div class="phase">
+  <div class="top"><span class="n">P2</span><h3>Make the record mean something with more than one person</h3><span class="cost">weeks · integration</span></div>
+  <p>Either close the identity gap or scope the claim down — but do not leave an approval trail that reads as authoritative while being unverified.</p>
+  <ul>
+    <li>Derive the recorded actor from an authenticated subject. <code>recall-server</code>'s <code>Authenticate</code> already returns one; the work is wiring cadre's retrieval and knowledge paths to it rather than to a local file.</li>
+    <li>Compare the observed actor against the asserted name — today it is written and never consulted by any check.</li>
+    <li>If that is more than you want to spend now, the honest alternative is to say in the tool's own output that actor fields are unverified, so nobody builds a process on them.</li>
+  </ul>
+</div>
+
+<div class="phase">
+  <div class="top"><span class="n">P3</span><h3>Retention and erasure, for real</h3><span class="cost">weeks</span></div>
+  <ul>
+    <li>Record a retention window at ingest, so something can age out.</li>
+    <li>Rebuild <code>delete-ingested</code> and <code>deletion-evidence</code> against recall's library delete, which exists but is reachable only by writing Go.</li>
+    <li>Load-test recall's store under two concurrent processes, and give it the connection-string pragmas and busy-retry that cadre's staged store already has.</li>
+  </ul>
+</div>
+
+<div class="phase">
+  <div class="top"><span class="n">P4</span><h3>Decide about gloop</h3><span class="cost">a decision, then days</span></div>
+  <p>This one is yours and nothing else depends on it. Three coherent options:</p>
+  <ul>
+    <li><strong>Leave it out of the team story.</strong> Cheapest and currently true — it is private, unreleased, and nothing imports it.</li>
+    <li><strong>Share it internally.</strong> Grant collaborator access (no teammate has any today), add a licence, and decide whether tags produce releases. Its <code>go.mod</code> also pins <code>recall v0.1.0</code> against a shipped v0.3.3 — a real release, so not broken, but three minors behind.</li>
+    <li><strong>Fold it in.</strong> If gloop is genuinely the runtime for cadre's plans, that relationship deserves to exist in code and documentation rather than in one sentence of gloop's README.</li>
+  </ul>
+</div>
+
+<h2>If you want the short version</h2>
+
+<p><strong>Ship recall now</strong> — it is licensed, released, has zero broken links, and needs an installation section. <strong>Ship cadre and the kernel after P0 and P1</strong>, which are days of documentation, not engineering. <strong>Hold the knowledge store's approval workflow</strong> until P2, or tell people plainly that its actor names are unverified. <strong>Decide about gloop separately</strong>, because nothing waits on it.</p>
+
+<p>The thing not to do is hand over all four today and let a colleague discover the login wall, the blank front page and the unverified approval trail on their own — because each of those reads as “this tool is broken” rather than “this tool has not been introduced yet,” and first impressions of internal tooling are difficult to re-earn.</p>
+
+<footer>
+Evidence: clean-container install on aarch64 (no <code>~/sdk</code>, no Go, <code>claude</code> via npm); live commands against binaries built at the commits above; GitHub API for access, releases and licences.<br>
+Working notes: <code>/tmp/claude-1000/ready-install.md</code> · <code>ready-multiuser.md</code> · <code>ready-docs.md</code>
+</footer>
+
+</div>

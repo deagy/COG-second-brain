@@ -922,7 +922,7 @@ COG includes 10 specialized agents (`.claude/agents/`) that handle data-heavy an
 |---|---|---|
 | **task-verifier** | Checks a worker's output against acceptance criteria by observing the artifact, not the worker's summary | CP-3v |
 | **integration-verifier** | Cross-task wiring and global acceptance for multi-task specs | CP-4 |
-| **fix-agent** | Targeted fixes after `task-verifier` returns `FAIL:fixable`; max 2 attempts | CP-3v retry |
+| **fix-agent** | Targeted fixes after `task-verifier` returns `FAIL:fixable`; amend bound of 3 | CP-3v amend |
 | **harvest-curator** | Shapes session learnings into adoption notes; propose-only, never writes durable knowledge | CP-7 |
 
 **Key rules:**

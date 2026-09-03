@@ -1,2 +1,14 @@
 2026-09-02T17:10:31Z	CP-2	PASS	3 tasks; live set scoped to ~1,283 lines on the docs index's own classification, records exempt only where they say so
 2026-09-02T17:21:50Z	CP-3	PASS	3 tasks; --config stated correctly on the fourth attempt, 3 defects in help text, 1 self-contradicting payload, 22 records banner-declared; 8 guards, all falsified
+2026-09-02T17:33:26Z	CP-3v	FAIL	round 1: 19 claims; handoff is not one bucket — the fifth wrong statement of --config, generalised from subcommand to command like the four before it
+2026-09-02T17:43:34Z	CP-3v	FAIL	round 2: 9 claims; the guard checked the name, not the row — a bucket flip passed. Now derives each classification by running and compares it to the row
+2026-09-02T17:50:24Z	CP-3v	FAIL	round 3: FAIL:escalate — third failure of AC-3b, same shape each time (silent omission). Escalating under AI-18 rather than spending a fourth attempt
+2026-09-02T18:06:38Z	CP-3v	FAIL	round 4: 14 claims; the three earlier findings now fail correctly. Two new: a dispatch branch can bypass registration entirely, and a third provider list sat outside the guard
+2026-09-02T18:17:54Z	CP-3v	FAIL	round 5: 2 false claims in live docs — a fourth stale provider list and a metrics sample that never compiled. Compile guard added; it immediately found stale mocks and a mockery config naming interfaces that do not exist
+2026-09-02T18:28:32Z	CP-3v	FAIL	round 6: 4 false claims, all in categories no guard read — a deleted package, a self-contradicting roadmap, invalid go doc syntax twice, and a file fixed in round 5 left wrong twice more in itself
+2026-09-02T18:49:19Z	CP-3v	FAIL	round 7: 4 false claims in four unchecked categories — an ASCII diagram, a JSON example that does not parse, prose describing removed behaviour, and a tagged build that has not compiled for weeks
+2026-09-02T18:56:38Z	CP-3v	FAIL	round 8: 1 false claim, in the paragraph round 7 had quoted — I fixed the section it cited and not the claim it was about, which is AI-16 twice in one file
+2026-09-02T19:06:24Z	CP-3v	PASS	round 9: no new false claim across all six live documents; 21 fixed over nine rounds, 14 guards all falsified. The binary's own --help was corrected as residue
+2026-09-02T19:19:56Z	CP-4	FAIL	round 1: a guard deleted by a scripted rewrite and unnoticed for five rounds, a 16MB binary committed by the README's own build instruction, and a guard count never measured
+2026-09-02T19:25:55Z	CP-4	PASS	round 2: all three round-1 fixes verified by mutation, three more guards independently falsified, guard count measured and agreeing across three sources, cross-repo fixtures still pass
+2026-09-02T19:25:55Z	CP-5	PASS	AC-3b accepted: 22 false claims fixed, 20 guards all falsified, CP-3v round 9 and CP-4 round 2 both PASS

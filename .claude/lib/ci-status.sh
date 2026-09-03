@@ -52,8 +52,19 @@ for target in "$@"; do
   else
     slug="$target"
     sha=$(gh api "repos/$slug/commits/HEAD" --jq .sha 2>/dev/null || true)
-    if [ -z "${sha:-}" ]; then
-      printf '%-28s %s\n' "$slug" "cannot resolve HEAD"
+    # gh writes a 404 body to *stdout*, so an unresolvable slug leaves $sha
+    # holding `{"message": "Not Found"...}` -- non-empty, and therefore past
+    # an emptiness check. It is then handed to `gh run list --commit`, which
+    # finds nothing, and the repository is reported as having no CI run.
+    #
+    # Fail-closed, so it never invents a green. What it does instead is give
+    # the wrong reason: a bare `cadre` where `deagy/cadre` was meant reads as
+    # "this repository has no CI", and someone goes looking at the runner
+    # instead of at the argument. Three repositories were reported un-green
+    # that way, all three of them green.
+    if ! printf '%s' "$sha" | grep -qE '^[0-9a-f]{7,40}$'; then
+      printf '%-28s %s\n' "$slug" \
+        "no such repository -- a slug is owner/name, or pass a checkout directory"
       failures=$((failures + 1))
       continue
     fi

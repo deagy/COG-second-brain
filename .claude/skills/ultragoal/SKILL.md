@@ -136,6 +136,28 @@ Pointed at that commit today, this check reports
 **A local test exit code is evidence about a laptop.** Write the run id into
 the ledger, not the word "green".
 
+**Cutting a release is the same check, one step earlier.** In most of these
+repositories the release job and the validate job trigger on the same push and
+neither waits for the other, so a release can publish from a commit whose suite
+is failing — `cli-v0.7.0` and `plugin-v0.24.0` both did. Run `ci-status.sh`
+against the commit *before* tagging it, not only before the gate.
+
+The release job could require the validate run's conclusion, and that is a cost
+decision rather than an impossibility: it serialises every release behind a full
+matrix. Until someone decides that trade is worth it, this is a step you run.
+
+**Read how a repository releases before tagging it.** cadre's release workflow
+tags and publishes *itself* when a version bump lands on `main`, and skips any
+version already tagged. A tag made by hand therefore does two things at once: it
+fails to trigger a release, and it prevents the release that would have
+happened. `cli-v0.7.10` was created that way and is a tag with no release behind
+it — which `release-hygiene.sh` correctly refuses, and which cannot be cleaned
+up from inside a session, because deleting a remote tag needs human approval.
+
+The check that would have prevented it is reading one workflow file. Nothing
+observes the intent at the moment of tagging; the result is caught afterwards,
+by which point the repair needs someone else.
+
 ### And every phase must have been asked its gates
 
 ```bash
@@ -205,6 +227,31 @@ through:
   does. The check triggers on a plan naming its own axes, because that is
   what such plans do and a self-declaration can be forgotten — which is the
   same omission it exists to catch.
+
+### And the repositories have to be honest about what they publish
+
+```bash
+bash .claude/lib/release-hygiene.sh <each repo the trail makes claims about>
+```
+
+Two properties, both found by a person looking rather than by a check:
+
+- **A tag with no release behind it.** recall carried `v0.3.0`, `v0.3.1` and
+  `v0.3.2` — three tags whose pipeline published nothing, for two reasons at
+  once: a tag pushed with the workflow's own `GITHUB_TOKEN` triggers no
+  further workflow, and the release job lacked a checkout its fail-closed
+  contract guard needed. A tag with no release looks exactly like a tag whose
+  release you have not looked for yet.
+- **A repository carrying no licence of its own.** Nothing in any of the four
+  gates on it, and recall's `go-licenses` checks *dependency* licences and
+  would not notice. The lifecycle kernel was public and unlicensed while
+  cadre's installer fetched it by version.
+
+Exceptions are legitimate and each one carries its reason in the script.
+A stale exception — a tag that no longer exists, a licence exception for a
+repository that has since acquired one — is a failure, not a no-op. An
+exception list nobody prunes grows until it covers the next real defect,
+and every entry still reads as deliberate.
 
 ### And the citations have to resolve
 

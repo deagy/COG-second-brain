@@ -1,0 +1,8 @@
+2026-09-02T23:30:03Z	CP-2	PASS	6 tasks (T-01..T-06), AC-1/2/3
+2026-09-02T23:35:06Z	CP-3	PASS	6 tasks; cadre a6ce2a48, kernel da0678f, recall b423d12
+2026-09-02T23:45:07Z	CP-3v	PASS	round 2 PASS; round 1 found --root not carried in the kernel README's own example
+2026-09-03T03:33:03Z	CP-5	PASS	AC-1/2/3 observed from a clean container and outsider-fetched front pages
+2026-09-03T03:39:39Z	CP-4	PASS	round 2; guard extended after its own claim proved false
+2026-09-03T18:50:15Z	CP-6	PASS	released artifacts observed as an outsider; cli-v0.7.12, v0.3.6, v0.14.4
+2026-09-03T18:52:54Z	CP-7	PASS	retro: 04-projects/harness/retro/2026-09-03-team-readiness.md
+2026-09-03T18:58:53Z	CP-5	PASS	north-star gate PASS 2026-09-03, all 9 criteria

@@ -21,6 +21,16 @@
 #              keeping. The verdict is judgment; looking before judging is
 #              not.
 #
+#   machinery  A PASS row that verified the machinery for a criterion whose
+#              own words name the artifact. AC-8 of the production-readiness
+#              goal said "the lifecycle kernel has one release home, not
+#              two"; the phase checked that `release.yml` no longer publishes
+#              kernel releases and recorded PASS. Six phases later the
+#              north-star gate found six releases with downloadable assets
+#              still served from that repository. A workflow that has stopped
+#              publishing and a repository that serves nothing are
+#              indistinguishable from inside the workflow file.
+#
 #   axes       A port or extraction plan missing one of its five inventory
 #              axes. The originating defect was not a badly filled axis but
 #              an absent one: four axes were run against the source
@@ -113,6 +123,81 @@ for goal in "$@"; do
     Five axes, and the fifth is the one that was missed: four described what
     moves and none asked what it moves into."
   done < <(find "$goal" -type f -name '*plan*.md' 2>/dev/null)
+  # ---- machinery: a PASS row about the publisher, for a criterion about the published ----
+  # Deliberately narrow. It fires only where all three hold:
+  #   the criterion's own words name a published artifact,
+  #   the observation is about publishing machinery (release.yml, a job
+  #     graph, "no longer publishes"),
+  #   and the artifact field records no external observation at all -- no
+  #     URL, no `gh`, no `curl`, no container, no run id, no issue or PR.
+  # The third condition is what keeps it honest: a row that read the workflow
+  # *and* listed the releases has done the work, and does not fire.
+  if [ -f "$goal/spec.md" ]; then
+    python3 - "$goal" <<'PYEOF' > "$hits" || true
+import os, re, sys, glob
+goal = sys.argv[1]
+spec = open(os.path.join(goal, "spec.md"), encoding="utf-8").read()
+
+# AC-n criterion text: the spec's own table rows, "| AC-8 | title | detail |"
+criteria = {}
+for m in re.finditer(r"^\|\s*(AC-[0-9]+[a-z]?)\s*\|([^|]*)\|([^|]*)\|", spec, re.M):
+    criteria.setdefault(m.group(1), "")
+    criteria[m.group(1)] += " " + m.group(2) + " " + m.group(3)
+
+PUBLISHED  = re.compile(r"releases?\b|published|publish\b|installed|install\b|downloadable|artifacts?\b", re.I)
+MACHINERY  = re.compile(r"release\.yml|job graph|jobs are|needs:|publish(es|ing)? job|no longer publish|publish-|release job", re.I)
+EXTERNAL   = re.compile(r"https?://|`?gh `|gh api|gh release|gh issue|gh run|curl|docker|releases/|issues/|/pull/|#[0-9]{2,}|run [0-9]{6,}|live run|container", re.I)
+
+docs = []
+for root, _dirs, files in os.walk(goal):
+    for f in files:
+        if f.endswith(".md"):
+            docs.append(os.path.join(root, f))
+
+for doc in sorted(docs):
+    try:
+        lines = open(doc, encoding="utf-8").read().splitlines()
+    except OSError:
+        continue
+    for i, line in enumerate(lines, 1):
+        if not line.startswith("EVIDENCE "):
+            continue
+        parts = [p.strip() for p in line.split("|")]
+        if len(parts) < 5:
+            continue
+        acm = re.match(r"EVIDENCE\s+(AC-[0-9]+[a-z]?)", parts[0])
+        if not acm:
+            continue
+        ac = acm.group(1)
+        if "PASS" not in parts[2].upper():
+            continue
+        # Only the checkpoints that make a criterion-level claim. A CP-3v row
+        # verifying the publishing machinery is doing exactly its job --
+        # component verification is *about* the machinery. It is CP-4 and
+        # CP-5 that assert the criterion is met.
+        if parts[1].upper() not in ("CP-4", "CP-5"):
+            continue
+        crit = criteria.get(ac, "")
+        if not crit or not PUBLISHED.search(crit):
+            continue
+        observation = parts[3]
+        artifact = " ".join(parts[4:])
+        if not MACHINERY.search(observation):
+            continue
+        if EXTERNAL.search(artifact):
+            continue
+        print("%s\t%d\t%s\t%s" % (doc, i, ac, artifact[:110]))
+PYEOF
+    while IFS=$'\t' read -r doc line ac art; do
+      [ -z "${doc:-}" ] && continue
+      note "$doc" "$line" "$ac PASS verified the publishing machinery, and the criterion names the published thing
+    Cited artifact: $art
+    A workflow that has stopped publishing and a repository that serves
+    nothing look the same from inside the workflow file. Observe the
+    releases, the issue body, the fetched URL -- the class of thing the
+    criterion's own words name."
+    done < "$hits"
+  fi
 done
 
 echo
