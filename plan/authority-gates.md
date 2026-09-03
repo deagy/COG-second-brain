@@ -40,22 +40,38 @@ single authority even when two gates apply.
 
 ## Approval-record shape
 
-The approval is recorded in the run-record's `approval` binding **before** the mutation
-runs (AC-3), mirroring the schema vendored in Change 1:
+The approval is recorded **before** the mutation runs (AC-3), in the `human_approvals`
+array **of the gate it approves**. `human_approvals` is a property of a gate object, not of
+the run-record root: the root is `additionalProperties: false`, so a top-level
+`human_approvals` is rejected by `run-record-lint.sh` with
+`<root>: Additional properties are not allowed`, and by `WORKFLOW.md` the run is then not a
+finished run. Find the entry in `lifecycle_gates` whose `gate_id` is the gate from the
+table above, and fill its array:
 
 ```
-"human_approvals": [
+"lifecycle_gates": [
   {
+    "gate_id": "G9",
     "status": "approved",
-    "approver": {"id": "<user>", "role": "Publisher", "kind": "human"},
-    "decided_at": "<date-time>",
-    "evidence_refs": [{"evidence_id": "<gate>-<slug>", "uri": "<artifact>",
-                       "hash_algorithm": "sha256", "hash": "<digest>",
-                       "classification": "internal"}],
-    "note": "gate: G<n> | authority: Publisher"
+    "human_approvals": [
+      {
+        "status": "approved",
+        "approver": {"id": "<user>", "role": "Publisher", "kind": "human"},
+        "decided_at": "<date-time>",
+        "evidence_refs": [{"evidence_id": "<gate>-<slug>", "uri": "<artifact>",
+                           "hash_algorithm": "sha256", "hash": "<digest>",
+                           "classification": "internal"}],
+        "note": "authority: Publisher"
+      }
+    ]
   }
 ]
 ```
+
+Only the three keys that change are shown; the gate object keeps its other sixteen
+properties as the template defines them. A mutation spanning two gates (content-factory,
+G9 + G10) still has one approval — record it on the gate the table names first and note the
+span, per the one-shape rule above.
 
 A mutation without a recorded approval is not executed: the skill stops at the gate and
 asks (AC-2). After the mutation, the external artifact is re-fetched or re-read and

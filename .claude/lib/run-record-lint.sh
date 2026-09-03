@@ -45,8 +45,12 @@ else
 fi
 RUN_RECORD_NAME="run-record.json"
 
-# exit 2 = usage / environment error; exit 1 = a check failed (see header).
-die() { echo "FAIL: $*" >&2; exit 2; }
+# Two failure kinds, two codes (see header). die() is for a broken environment --
+# the vendored schema or its sidecar missing means the lint cannot run at all.
+# fail() is for a check that ran and did not pass, which includes a missing
+# run-record: that is the run being unfinished, not the tooling being unusable.
+die()  { echo "FAIL: $*" >&2; exit 2; }
+fail() { echo "FAIL: $*" >&2; exit 1; }
 
 [ -f "$SCHEMA_FILE" ] || die "vendored schema not found at $SCHEMA_FILE"
 [ -f "$PROVENANCE_FILE" ] || die "provenance sidecar not found at $PROVENANCE_FILE"
@@ -62,7 +66,7 @@ else
   echo "usage: bash .claude/lib/run-record-lint.sh <run-dir|run-record.json>" >&2
   exit 2
 fi
-[ -f "$RUN_RECORD_PATH" ] || die "no ${RUN_RECORD_NAME} at $RUN_RECORD_PATH"
+[ -f "$RUN_RECORD_PATH" ] || fail "no ${RUN_RECORD_NAME} at $RUN_RECORD_PATH"
 
 # Drift check (AC-3): the vendored copy must equal its stated origin sha256.
 EXPECTED_SHA="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["schema"]["origin_sha256"])' "$PROVENANCE_FILE")"

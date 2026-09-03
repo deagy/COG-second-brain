@@ -293,7 +293,8 @@ mkdir -p "05-knowledge/_logs"
 
 Syncing to an external wiki is a **G9** external mutation with the **Publisher** as
 deciding authority (`plan/authority-gates.md`). Record the approval (authority, gate,
-timestamp, approver) in the run-record's `human_approvals` binding before the sync runs;
+timestamp, approver) in the `human_approvals` array of the run-record's **G9** gate before
+the sync runs — it is a property of the gate, not of the run-record root;
 an unapproved sync does not run. The re-fetched wiki page is the post-condition.
 
 If Confluence or Notion is active, offer to sync updated entries:

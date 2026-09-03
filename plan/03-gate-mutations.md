@@ -91,7 +91,7 @@ cosmetic decision, not a structural one.
 
 Decide the external/internal boundary by listing each skill's writes and tagging
 them, and confirm the authority names. The run-record (change 1) must carry the
-`approval` binding, and the amend semantics (change 2) must exist so a denied
+`approval` binding, and the amend semantics (change 2) must exist so a denied mutation has a defined re-entry rather than a dead end.
 
 ## Implementation (committed: 883b7fd)
 
@@ -108,5 +108,3 @@ re-fetch (AC-4); internal writes remain ungated (AC-5, unchanged).
 One note for a later pass: the registry is currently a plan doc; its production form is
 the small schema in `05-knowledge/` the plan calls for. That is a move, not a change, and
 is left for the merge.
-
-mutation has a defined re-entry rather than a dead end.

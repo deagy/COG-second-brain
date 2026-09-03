@@ -11,12 +11,12 @@ tags: ["#plan", "#integration", "#cadre", "#cog", "#harness"]
 ## What this is
 
 Four contained changes that wire the cadre/agentic-lifecycle execution and
-governance stack into COG's second-brain harness. This is a plan, and the work
-to implement it, living on the `plan/cadre-cog-integration` branch of this
-worktree's repo. Changes 1–4 are implemented and committed on the
-`plan/cadre-cog-integration` branch. The worktree
-exists so the plan has an isolated place to live and so file paths below
-resolve against a real checkout.
+governance stack into COG's second-brain harness. This is a plan and the work to
+implement it, living on the `plan/cadre-cog-integration-core` branch of this
+worktree's repo. Changes 1–3 are implemented and committed there; Change 4 was
+built, then descoped and removed — the table and the sequencing section below
+record why. The worktree exists so the plan has an isolated place to live and so
+file paths below resolve against a real checkout.
 
 The composition the four changes assume:
 

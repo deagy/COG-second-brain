@@ -146,7 +146,8 @@ Proceed with publishing? (yes/no)
 
 Publishing a page is a **G9** external mutation with the **Publisher** as deciding
 authority (`plan/authority-gates.md`). Record the approval (authority, gate, timestamp,
-approver) in the run-record's `human_approvals` binding before the page is created; an
+approver) in the `human_approvals` array of the run-record's **G9** gate before the page
+is created — it is a property of the gate, not of the run-record root; an
 unapproved publish does not run. The re-fetched page is the post-condition.
 
 #### Create New Page

@@ -157,8 +157,9 @@ This is the most critical phase. The orchestrator must:
 
 This is a **G8** external mutation with the **Publisher** as deciding authority
 (`plan/authority-gates.md`). Record the approval (authority, gate, timestamp, approver) in
-the run-record before any Linear write; a sync-back without a recorded approval does not
-run.
+the `human_approvals` array of the run-record's **G8** gate before any Linear write — it is
+a property of the gate, not of the run-record root; a sync-back without a recorded approval
+does not run.
 
 Use ToolSearch to load the necessary Linear update tools: "+linear update issue", "+linear update initiative", "+linear update project", "+linear create comment", "+linear create attachment", "+linear save status update", "+linear update milestone".
 

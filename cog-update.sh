@@ -39,6 +39,19 @@ FRAMEWORK_FILES=(
 
   # Run-record contract (Change 1)
   ".claude/lib/run-record-lint.sh"
+
+  # Harness gate scripts. The closed-loop, ultragoal and retro skills invoke these
+  # as blocking checks ("non-zero means the phase cannot be marked done"), so a vault
+  # that has the skills but not the scripts gets "No such file or directory" where a
+  # gate should run.
+  ".claude/lib/backlog-lint.sh"
+  ".claude/lib/ci-status.sh"
+  ".claude/lib/citation-lint.sh"
+  ".claude/lib/crossref-lint.sh"
+  ".claude/lib/evidence-lint.sh"
+  ".claude/lib/phase-gates.sh"
+  ".claude/lib/release-hygiene.sh"
+  ".claude/lib/spec-lint.sh"
   ".github/MARKETPLACE.md"
   "scripts/validate-agent-surface.sh"
 

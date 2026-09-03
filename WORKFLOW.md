@@ -7,9 +7,11 @@
 
 **This document governs harness runs, and nothing else.** A session that never invoked the harness owes it no checkpoints, no lane classification, and no evidence ledger. Notes, briefs, research, drafts, and ordinary edits are not harness runs.
 
-A harness run with no lint-clean run-record is not a finished run: the run-record is the shared provenance object that makes this run auditable and interoperable with the agentic-lifecycle run-record shape. The procedure that produces and lints it is Phase 7 of `.claude/skills/closed-loop/SKILL.md`, against the vendored `05-knowledge/run-record.schema.json` and `06-templates/run-record.template.json` (all three ship via `cog-update.sh`).
+A build run with no lint-clean run-record is not a finished run: the run-record is the shared provenance object that makes this run auditable and interoperable with the agentic-lifecycle run-record shape. The procedure that produces and lints it is Phase 7 of `.claude/skills/closed-loop/SKILL.md`, against the vendored `05-knowledge/run-record.schema.json` and `06-templates/run-record.template.json` (all three ship via `cog-update.sh`).
 
-`/closed-loop` emits it directly, and `/ultragoal` inherits it because every phase is its own full closed-loop run. `/retro` is the exception: it closes a run that already has one and records CP-7 through `checkpoint.sh`, so it emits no new run-record.
+The requirement binds the two skills that take a task through the V and produce the artifact a run-record describes: `/closed-loop` emits it directly, and `/ultragoal` inherits it because every phase is its own full closed-loop run.
+
+The other three harness entry points emit none, and that is correct rather than a gap — none of them is a build. `/retro` closes a run that already has one and records CP-7 through `checkpoint.sh`. `/harvest` stages learnings for human promotion. `/review-cockpit` maintains a review surface. Read literally against all five entry points the rule above would make those three permanently unfinishable; it is a completion condition for a build run, not for every session that touched the harness.
 
 You are in a harness run when you invoked `/closed-loop`, `/ultragoal`, `/retro`, `/harvest`, or `/review-cockpit`; asked for the closed loop, proper verification, or an evidence trail in those words; or set `verification_harness: on` in `00-inbox/MY-PROFILE.md`. Otherwise you are not, and the two rules in `CLAUDE.md` § Verification Harness are the whole of what applies.
 

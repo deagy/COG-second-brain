@@ -90,7 +90,7 @@ what makes the drift a failing test rather than a silent one.
 
 The one decision needed before this can be built: confirm the run-record schema is
 vendored from the current `cadre/kernel` revision and pin that revision in the
-schema header. Everything downstream depends on that one copy being the source of
+schema header. Everything downstream depends on that one copy being the source of truth.
 
 ## Implementation (committed: 1d8966b)
 
@@ -108,5 +108,3 @@ hand-edited schema and a malformed record both fail. One correction from the pla
 phase mapping uses the run-record enum's actual members (`architecture`, `verify`) rather
 than the plan's shorthand (`architecture-design`, `verification`) — the shorthand would
 not have validated.
-
-truth.

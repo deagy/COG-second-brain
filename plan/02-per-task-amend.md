@@ -93,7 +93,7 @@ explicitly rather than assuming a team-mode second agent always exists.
 
 Decide the amend-bound number and the solo-mode re-review definition. Both come
 from reading what cadre already does at the phase level; neither should be guessed.
-The run-record scaffold (change 1) must exist so `re_entry_history` has a place to
+The run-record scaffold (change 1) must exist so `re_entry_history` has a place to land.
 
 ## Implementation (committed: 8a07f03)
 
@@ -114,5 +114,3 @@ decision — kadre records `amend_attempt` as telemetry without a fixed cap), an
 re-review is a fresh verifier context that reads the deliverable against the criterion
 with no memory of the amend. AC-1/AC-2/AC-3/AC-4 are met; AC-5 (a recorded-but-effectless
 denial is not a pass) is enforced by requiring the re-entry record on every FAIL:fixable.
-
-land.

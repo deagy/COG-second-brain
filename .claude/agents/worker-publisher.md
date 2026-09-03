@@ -37,8 +37,10 @@ Every platform above is an external mutation with the **Publisher** as deciding
 authority (`plan/authority-gates.md`): Slack, socials, and webhooks are **G10
 deployment-authorization**; Confluence and Notion pages are **G9
 release-readiness**. Before publishing, confirm the approval exists and is recorded
-in the run-record's `human_approvals` binding — authority, gate, timestamp,
-approver. You are the executor, not the authority: an unrecorded approval is a
+in the `human_approvals` array of the run-record gate it belongs to (G10 or G9 per the
+table above) — authority, gate, timestamp, approver. It is a property of the gate, not
+of the run-record root.
+ You are the executor, not the authority: an unrecorded approval is a
 missing approval, and the publish does not run.
 
 After publishing, observe the artifact — re-fetch the page, the message, or the
