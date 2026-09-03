@@ -19,7 +19,7 @@ Current phase: P1–P5 built; verification and gates in progress · Overall: **i
 None. All nine criteria carry a CP-3v PASS row from a fresh verifier working
 against released artifacts rather than a checkout.
 
-Releases the criteria are verified against: cadre `cli-v0.7.9`, recall
+Releases the criteria are verified against: cadre `cli-v0.7.11`, recall
 `v0.3.6`, cadre-kernel `v0.14.4`.
 
 ## Decisions taken at charter
@@ -31,8 +31,8 @@ Releases the criteria are verified against: cadre `cli-v0.7.9`, recall
 
 ## Next action (resume cold from here)
 
-**Round 2 of CP-4 for P3, P4 and P5**, against the release cut from cadre
-`68095d81` (`cli-v0.7.10`). Round 1 returned FAIL:fixable on two cross-phase
+**Round 2 of CP-4 for P3, P4 and P5**, against `cli-v0.7.11`, released from
+cadre `eb1ef9f5`. Round 1 returned FAIL:fixable on two cross-phase
 findings; both are fixed and the fixes are falsified, but a fix verified by its
 author is not verified.
 
@@ -45,7 +45,7 @@ phases.
 is the capability-parity failure repeated, and the reason the gate counts rows
 rather than reading this file.
 
-**Releases the criteria are verified against:** cadre `cli-v0.7.9`, recall
+**Releases the criteria are verified against:** cadre `cli-v0.7.11`, recall
 `v0.3.6`, cadre-kernel `v0.14.4`. Every phase from P3 cut one before its
 criteria were checked, per the charter.
 
@@ -74,3 +74,27 @@ criteria were checked, per the charter.
 **Every phase from P3 owes a release before its criteria can be verified.** Verifying an installed-artifact criterion from a checkout is exactly the position this goal exists to leave, and the previous goal spent six container runs learning that a working checkout cannot see an installation defect.
 
 **P1's real test is a person, and the harness cannot run it.** The container run is the substitute. Handing the three repositories to an actual colleague and watching where they stop is the confirmation, and it is the user's to schedule.
+
+## Harness defects found while running the gates, for the retro
+
+Four, all in the checking machinery rather than in the software under test.
+
+- **`citation-lint` read every CI run id as a commit sha.** An eleven-digit
+  decimal run id sits inside `[0-9a-f]{7,40}`, and the ultragoal skill requires
+  run ids in the ledger, so the collision was guaranteed. It called four real
+  run ids unresolvable commits. Now refused at the source: a run id has to say
+  it is one.
+- **`ci-status` and `release-hygiene` accepted a bare repository name.**
+  `cadre` where `deagy/cadre` was meant 404s on every call, and `gh` writes the
+  404 body to *stdout*, so the error JSON became the sha and passed the
+  emptiness check. Three green, licensed repositories were reported as having
+  no CI and no licence. Fail-closed, but with a false reason — which sends the
+  reader to the runner instead of to the argument.
+- **A hand-made tag defeats cadre's release workflow.** It tags and publishes
+  itself when a version bump lands on main, and skips any version already
+  tagged. `cli-v0.7.10` was created by hand and is now a tag with no release —
+  exactly what `release-hygiene.sh` refuses. Removing it needs the operator.
+- **`TestAStandaloneBinaryAnswersTheBasics` shells out to an untagged `go
+  build`**, which cannot reuse the `sqlite_fts5` build cache the suite itself
+  uses. On a cold cache that CGO build ran 8m49s and blew Go's default
+  ten-minute package timeout; warm, the package finishes in 14s.
