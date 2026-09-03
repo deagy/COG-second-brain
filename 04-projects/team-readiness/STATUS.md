@@ -40,7 +40,7 @@ checksumming it against the release's own `SHA256SUMS`, and running it.
 Verified against cadre `cli-v0.7.12`, recall `v0.3.6`, cadre-kernel `v0.14.4`.
 All three repositories green on their own runners at the commits the criteria
 name. `phase-gates.sh`, `spec-lint.sh`, `evidence-lint.sh` and
-`citation-lint.sh` all exit 0.
+`citation-lint.sh` all exit 0, and so does `release-hygiene.sh` once the hand-made tag was removed.
 
 ### The one criterion that is verified and not yet proven
 
@@ -59,12 +59,11 @@ what the container cannot tell us.
 
 ### Open for the operator
 
-- `cli-v0.7.10` — a tag with no release behind it, created by hand before
-  checking that cadre's workflow tags and publishes itself. `release-hygiene.sh`
-  is red until it goes, and it is not being excepted, because an exception would
-  file the mistake as a stated reason. `git -C ~/sdk/cadre push origin
-  :refs/tags/cli-v0.7.10`. The gate judged it not a blocker: it gates none of
-  the releases that actually shipped and were verified.
+- ~~`cli-v0.7.10`~~ — **deleted by the operator, 2026-09-03.**
+  `release-hygiene.sh` now exits 0 across all three repositories: cadre 86 tags,
+  recall 9, cadre-kernel 3, every one with a release or a stated reason. It was
+  never excepted, so the check went green on the defect being fixed rather than
+  on the list being edited.
 - Four scratch worktrees remain registered from earlier phases.
 
 ## Findings carried to the retro, not fixed in-phase

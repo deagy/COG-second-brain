@@ -107,5 +107,5 @@ of the observation rather than the result:
 
 ## Open for the operator
 
-- **`cli-v0.7.10` must be deleted.** `git -C ~/sdk/cadre push origin :refs/tags/cli-v0.7.10`. It points at `68095d81`, nothing references it, and `release-hygiene.sh` is red until it is gone. Deleting a remote tag is a human-approval action and is blocked in-session.
+- ~~`cli-v0.7.10`~~ — **deleted by the operator, 2026-09-03**, and `release-hygiene.sh` now exits 0 across all three repositories. Worth noting how it closed: the check went green because the defect was removed, not because the exception list grew. AI-38 stands as advice regardless — the result was caught, the intent was not.
 - **Four scratch worktrees remain registered** from earlier phases. Deregistering a worktree is likewise the operator's to do.

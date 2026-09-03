@@ -239,7 +239,7 @@
     <div class="lab">Ultragoal &middot; closed 3 September 2026</div>
     <h1>Team readiness</h1>
     <p class="north">A colleague who has never seen these repositories can install cadre, the lifecycle kernel and recall unaided, learn from the documentation how the three fit together, and read a record of who did what that names a person the system actually verified.</p>
-    <div class="verdict">NORTH-STAR GATE PASS <span>9 of 9 criteria verified</span></div>
+    <div class="verdict">NORTH-STAR GATE PASS <span>9 of 9 criteria &middot; all 7 gates exit 0</span></div>
   </header>
 
   <div class="strip">
@@ -361,7 +361,7 @@
           <tr><td>evidence-lint.sh</td><td>clean</td><td>0</td></tr>
           <tr><td>citation-lint.sh</td><td>11 commit citations, 3 vault paths, all resolve</td><td>0</td></tr>
           <tr><td>backlog-lint.sh</td><td>every row carries a disposition</td><td>0</td></tr>
-          <tr><td>release-hygiene.sh</td><td>one problem: <code>cli-v0.7.10</code>, a tag with no release</td><td>1</td></tr>
+          <tr><td>release-hygiene.sh</td><td>cadre 86 tags &middot; recall 9 &middot; kernel 3 &mdash; every one accounted for</td><td>0</td></tr>
         </tbody>
       </table>
     </div>
@@ -376,10 +376,10 @@
       <p><strong>Handing the three repositories to an actual person and watching where they stop is the only remaining way to learn what the container cannot tell us.</strong></p>
     </div>
 
-    <div class="note attention">
-      <h3><span class="pill p-bad">Blocked in-session</span> &nbsp;<code>cli-v0.7.10</code> is a tag with no release</h3>
-      <p>Created by hand before checking that cadre's workflow tags and publishes itself on a version bump, and skips any version already tagged — so the tag both failed to trigger a release and prevented the one that would have happened. It gates none of the releases that actually shipped.</p>
-      <p>It is not being excepted, because an exception entry would file the mistake as a stated reason. Deleting a remote tag needs human approval: <code>git -C ~/sdk/cadre push origin :refs/tags/cli-v0.7.10</code></p>
+    <div class="note">
+      <h3><span class="pill p-ok">Closed</span> &nbsp;<code>cli-v0.7.10</code> deleted by the operator</h3>
+      <p>A tag created by hand before checking that cadre's workflow tags and publishes itself on a version bump, and skips any version already tagged — so it both failed to trigger a release and prevented the one that would have happened.</p>
+      <p><strong>It was never excepted.</strong> <code>release-hygiene.sh</code> went green because the defect was removed, not because the exception list grew — which is the difference between a check that still works and one that has been taught to look away.</p>
     </div>
 
     <div class="note">
