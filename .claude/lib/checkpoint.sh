@@ -3,7 +3,7 @@
 # Usage:
 #   checkpoint.sh init <run-dir>
 #   checkpoint.sh record <run-dir> <CP-id> PASS|FAIL|SKIP "<note>"
-#   checkpoint.sh record_reentry <run-dir> <amend_attempt> "<reentry-criteria>" "<invalidated-criteria>" "<reason>"
+#   checkpoint.sh record_reentry <run-dir> <amend_attempt> "<reentry-criteria>" "<invalidated-criteria>" "<reason>" [denier]
 #   checkpoint.sh status <run-dir>
 set -euo pipefail
 
@@ -57,6 +57,10 @@ record_reentry() {
   # invalidation def. A denial (invalidation) and its re-entry (reset) are two
   # separate claims: a run may sit in "no longer valid" before it is "being redone".
   local dir="$1" attempt="$2" reentry="$3" invalidated="$4" reason="${5:-}"
+  # The denier is the run-record's invalidation.actor. It defaults to task-verifier
+  # because that is the only agent that issues FAIL:fixable; pass it explicitly when
+  # a differently-named verifier denied, so the fold does not have to guess.
+  local denier="${6:-task-verifier}"
   local ts hist prev
   local AMEND_BOUND=3
 
@@ -85,8 +89,8 @@ record_reentry() {
   fi
   ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
   mkdir -p "$dir/evidence"
-  [[ -f "$hist" ]] || printf '%s\t%s\t%s\t%s\t%s\n' timestamp amend_attempt reentry invalidates reason >> "$hist"
-  printf '%s\t%s\t%s\t%s\t%s\n' "$ts" "$attempt" "$(tsv "$reentry")" "$(tsv "$invalidated")" "$(tsv "$reason")" >> "$hist"
+  [[ -f "$hist" ]] || printf '%s\t%s\t%s\t%s\t%s\t%s\n' timestamp amend_attempt reentry invalidates reason denier >> "$hist"
+  printf '%s\t%s\t%s\t%s\t%s\t%s\n' "$ts" "$attempt" "$(tsv "$reentry")" "$(tsv "$invalidated")" "$(tsv "$reason")" "$(tsv "$denier")" >> "$hist"
   # Also land it in the cross-run ledger: an amend cycle burned against
   # AMEND_BOUND is the thing an operator looks for, and the per-run file is
   # not where they look.
@@ -120,13 +124,13 @@ case "$cmd" in
       echo "      pass \"none\" deliberately if the amend really invalidates no criterion." >&2
       exit 2
     fi
-    record_reentry "$1" "$2" "$3" "$4" "${5:-}" ;;
+    record_reentry "$1" "$2" "$3" "$4" "${5:-}" "${6:-task-verifier}" ;;
   status) status_run "${1:?run-dir}" ;;
   *)
     echo "usage:" >&2
     echo "  checkpoint.sh init <run-dir>" >&2
     echo "  checkpoint.sh record <run-dir> <CP-id> PASS|FAIL|SKIP \"<note>\"" >&2
-    echo "  checkpoint.sh record_reentry <run-dir> <amend_attempt> \"<reentry-criteria>\" \"<invalidated-criteria>\" \"<reason>\"" >&2
+    echo "  checkpoint.sh record_reentry <run-dir> <amend_attempt> \"<reentry-criteria>\" \"<invalidated-criteria>\" \"<reason>\" [denier]" >&2
     echo "  checkpoint.sh status <run-dir>" >&2
     exit 1
     ;;

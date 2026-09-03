@@ -123,7 +123,7 @@ loop:
   if FAIL:fixable:
     attempt++
     if attempt > AMEND_BOUND → record terminal FAIL:escalate telemetry row, escalate
-    record re-entry: checkpoint.sh record_reentry <run-dir> <attempt> "<reentry>" "<invalidates>" "<reason>"
+    record re-entry: checkpoint.sh record_reentry <run-dir> <attempt> "<reentry>" "<invalidates>" "<reason>" [denier]
     fix-agent applies the amend, stating which criteria it amends and which
     downstream criteria it invalidates (invalidation cascade) → loop
   else → escalate
@@ -306,7 +306,21 @@ arrive for another reason.
 - Append to `.claude/logs/loop-ledger.tsv`
 - Update spec traceability matrix statuses to `verified`
 - **Write the run-record.** Emit `04-projects/harness/runs/<id>/run-record.json` — the machine-enforceable provenance for this run (who ran it, what objective it was given, its current lifecycle phase, the evidence that backs it, what authority approved it, what findings were raised, what it invalidated). Map the V-model checkpoints to the run-record `current_lifecycle_phase` enum via the single source of truth in `05-knowledge/run-record.provenance.json` (CP-0 `intent` → CP-7 `feedback`); reference that mapping, do not re-type the enum. Lint it before finishing: `bash .claude/lib/run-record-lint.sh 04-projects/harness/runs/<id>` must exit 0. **A harness run with no lint-clean run-record is not a finished run.**
-- **Fold in the run's re-entry history.** If `<run-dir>/evidence/re_entry_history.tsv` has rows (written by `checkpoint.sh record_reentry` at each `FAIL:fixable`), copy each into the run-record's root `re_entry_history` array as an `invalidation` object — `invalidated_at` from the row's timestamp, `actor` the verifier that denied, `reason` the row's reason, `earliest_gate` the gate the re-entry returns to, `invalidated_gate_ids` the cascade. Without this the TSV is the only record that an amend happened, and a re-entered run is indistinguishable from a first-pass one in the object this run-record exists to make auditable.
+- **Fold in the run's re-entry history.** If `<run-dir>/evidence/re_entry_history.tsv` has rows (written by `checkpoint.sh record_reentry` at each `FAIL:fixable`), append one `invalidation` object to the run-record's root `re_entry_history` per row. `$defs/invalidation` is `additionalProperties: false` with seven required fields, so fill exactly these and nothing else — do not copy the TSV columns across verbatim, and do not invent a value for any of them:
+
+  | field | value |
+  |---|---|
+  | `invalidated_at` | the row's `timestamp` |
+  | `actor` | the row's `denier` |
+  | `reason` | the row's `reason`, prefixed `amend <amend_attempt>: re-enter <reentry>, invalidates <invalidates> — ` so the criterion-level detail survives |
+  | `earliest_gate` | `"G6"` |
+  | `invalidated_gate_ids` | `["G6"]` |
+  | `affected_artifact_bindings` | `[]` |
+  | `superseding_artifact_id` | `null` |
+
+  **Why G6 is a constant, not a judgement.** `record_reentry` is called from one place — the CP-3v amend loop in Phase 4. `05-knowledge/run-record.provenance.json` maps `cp-3v_component_verify` to the `verify` phase, and the gate carrying that phase is the one this run-record's own `lifecycle_gates` names *Verification and Test*, `G6`. Nothing else in the loop invalidates a gate, and the criteria the TSV names are `AC-n` acceptance criteria, which are not gates and must not be written into a gate enum.
+
+  Without this the TSV is the only record that an amend happened, and a re-entered run is indistinguishable from a first-pass one in the object this run-record exists to make auditable. Lint after folding — a malformed `invalidation` fails the run-record, and a run with no lint-clean run-record is not finished.
 - **`full` lane / big task:** generate an HTML rollup from `references/report-template.html` → `04-projects/harness/runs/<id>/report.html`, filled from `criteria.md` + `evidence/ledger.md` (criteria, AC traceability, verifier verdicts, post-condition observations). Self-contained; `SendUserFile` it or publish as an Artifact. Skip for `normal`/`tiny`.
 - Suggest `/retro <run-dir>` for CP-7
 
