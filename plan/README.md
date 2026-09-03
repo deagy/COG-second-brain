@@ -63,7 +63,7 @@ with placeholder values, not a schema. The authoritative lifecycle contract is
 |---|---|---|---|---|---|
 | 1 | Run-record as the shared object | Every harness run emits a run-record with auditable provenance | new schema + template, `closed-loop/SKILL.md`, `WORKFLOW.md`, new lint | low | implemented (`1d8966b`) |
 | 2 | Per-task amend semantics | COG's CP-3v verify loop gets deny/re-entry teeth | `closed-loop/SKILL.md`, `task-verifier.md`, `checkpoint.sh`, `WORKFLOW.md` | low | implemented (`8a07f03`) |
-| 3 | Gate the high-consequence mutations | External writes go through a named authority + explicit approval | four publishing skills + `worker-publisher` | medium | **split out** (see below) |
+| 3 | Gate the high-consequence mutations | A gate-id mapping; the enforcement it proposed was withdrawn | `plan/authority-gates.md` only | medium | **withdrawn** (see below) |
 | 4 | Roster dispatch for specialized execution | — | — | high | **descoped** (see below) |
 
 ## Sequencing
@@ -105,36 +105,41 @@ foundation everything else reads, even though its full wiring comes later.
    installed plugin by role name and writes a run-record; it needs no vendored
    copy.
 
-### Change 3 — split out to its own branch
+### Change 3 — withdrawn, and why
 
-Gating the external mutations was built here and moved to `plan/cadre-cog-gates`
-(at `5205029`) to be designed once rather than patched a fifth time. Four review
-passes each found defects in it, including every high-severity finding across all
-four; Changes 1 and 2 produced only mechanical defects that stayed closed.
+Gating the external mutations was built, reviewed four times, and withdrawn. No code from
+it is on `main`. What survives is `plan/authority-gates.md` as a gate-id mapping document
+plus the reasoning for the withdrawal, which is the part worth keeping.
 
-The last pass found the reason the patching was not converging. The gate as built
-did not gate anything:
+The gate did not gate anything. `content-factory` is "designed to run unattended on a
+schedule (nightly)", and the gate text instructed the agent to record the approval and then
+publish — the agent signing its own permission slip; `team-brief`'s Linear sync-back had the
+same shape. The check meant to catch that matched on gate number alone, so any prior
+approval row cleared an unrelated artifact. And the artifact identity it should have matched
+on does not exist at approval time, because a new page's URL is assigned by the server on
+POST.
 
-- `content-factory` is "designed to run unattended on a schedule (nightly)", and
-  the gate text instructed the *agent* to record the approval and then publish —
-  the agent signing its own permission slip. `team-brief`'s Linear sync-back had
-  the same shape.
-- The check meant to catch that matched on gate number alone, so any prior G8 or
-  G9 row satisfied the gate for an unrelated artifact. Demonstrated: a G8 row for
-  a wiki page cleared a Slack post.
-- The artifact it should have matched on is unknowable at approval time — a new
-  page's URL is assigned by the server on POST, so "record the approval before
-  the page is created" against `<page-url>` cannot be satisfied.
+Underneath all three is one property of the setting: **in a solo vault the agent supplies
+every field of its own approval.** The Publisher and the approver are the same person, and
+`record_approval` was a bash command the agent ran with arguments the agent chose. No
+validation fixes that, because the agent fills the validation's inputs too. The mechanism
+was also strictly weaker than what already existed — `publish-to-confluence` and
+`update-knowledge-base` already stop for an explicit yes, so the row added nothing there,
+while in the two skills with no prompt it manufactured the appearance of a control.
 
-A control that looks like a control but passes unconditionally is worse than no
-control, so it does not ship in this state. Redesigning it means deciding what an
-approval *is* in a solo vault running autonomous skills: who records it, against
-what durable identity, and whether an unattended pipeline may publish at all. That
-is a design question, not a patch, and it gets its own PR.
+A second check should have come first and did not: `00-inbox/MY-INTEGRATIONS.md` lists
+Slack, Linear, Confluence and Notion as **Disabled** and only **GitHub** and **Discord** as
+Active. Three of the registry's five rows gate services that do not run in this vault, and
+both surfaces that do run are absent from it. `CLAUDE.md` § Integration Preferences says to
+check that file before using any external integration.
 
-Until then the pre-existing discipline stands unchanged — `CLAUDE.md` § Skill
-Post-Condition Rule already requires explicit approval before an external mutation
-and observation of the artifact after it.
+**What to build instead**, if a control on publishing is wanted: deny-by-default
+`permissions` entries in `.claude/settings.json` for GitHub and Discord — an approval the
+agent cannot issue to itself, landing in the transcript, buildable today with the
+`update-config` skill. For the unattended pipeline, make `content-factory`'s existing
+envelope explicit and refusable rather than adding a per-run approval it writes at 2am.
+Until either exists, `CLAUDE.md` § Skill Post-Condition Rule plus the per-skill "wait for
+explicit yes" is the stronger control, because it stops at a real human turn.
 
 Each sub-plan below is self-contained: the change, the files it touches, the
 acceptance criteria that define done, the risk, and the one decision that unblocks
