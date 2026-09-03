@@ -105,7 +105,10 @@ def main():
     if len(sys.argv) < 9:
         sys.stderr.write(
             "usage: cadre-dispatch-record.py <role_id> <sandbox_mode> <model> "
-            "<codex_model> <reasoning_effort> <phase> <task_id> <baseline>\n"
+            "<codex_model> <reasoning_effort> <phase> <task_id> <baseline> "
+            "[output-path]\n"
+            "  output-path defaults to ./run-record.json; pass "
+            "<run-dir>/run-record.json so the record lands with the work.\n"
         )
         return 2
 

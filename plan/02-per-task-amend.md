@@ -41,7 +41,7 @@ change makes it explicit: a maximum number of amend cycles, and a terminal
 
 ## Where it lands
 
-- `skills/closed-loop/SKILL.md` Phase 4 — replace the bare retry loop with the
+- `.claude/skills/closed-loop/SKILL.md` Phase 4 — replace the bare retry loop with the
   deny/re-entry contract: on `FAIL:fixable`, the fix must state which criteria it
   amends and which downstream criteria it invalidates; the re-review is performed
   by a different agent than the one that amended; after the amend bound, `FAIL:escalate`.
@@ -71,7 +71,7 @@ change makes it explicit: a maximum number of amend cycles, and a terminal
 
 ## Files touched
 
-Edited: `skills/closed-loop/SKILL.md`, `.claude/agents/task-verifier.md`,
+Edited: `.claude/skills/closed-loop/SKILL.md`, `.claude/agents/task-verifier.md`,
 `.claude/lib/checkpoint.sh`, `WORKFLOW.md`. No new files.
 
 ## Risk
@@ -104,7 +104,7 @@ earliest-affected re-entry (`gatesFrom` in `cadre/internal/engine/executor/reent
 and reviewer-becomes-author (`decideGate`/`applyApproval` fail-closed separation of
 duties). `checkpoint.sh` gains `record_reentry` (append to a run's `re_entry_history`,
 mirroring the run-record invalidation def); validated with `bash -n` and a live
-`record_reentry` run. `skills/closed-loop/SKILL.md` Phase 4 replaces the bare
+`record_reentry` run. `.claude/skills/closed-loop/SKILL.md` Phase 4 replaces the bare
 `retry < 2` loop with an `AMEND_BOUND=3` amend-and-re-review loop ending in a terminal
 `FAIL:escalate`; `WORKFLOW.md` states the bound, the invalidation rule, and the terminal
 escalate in the checkpoint table and the per-task loop.

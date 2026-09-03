@@ -59,6 +59,27 @@ Record: `checkpoint.sh record <run-dir> CP-2 PASS`
 
 Worker implements. Returns deliverable path only.
 
+**When a criterion says *every* file, build the enumeration before editing
+anything, and enumerate by capability concept rather than by identifier.**
+
+Doing it the other way round — fixing the locations a report named, then
+believing the set was covered — failed three verification rounds in a row.
+The third failure is the instructive one: the enumeration was real, but it
+matched removed *verb names*, and the remaining defects asserted the
+capabilities without naming any command ("TTL-based expiration", "the store
+does have deletion capability"). No name-based search could have reached
+them. Search for what the capability *is*, then confirm the count is zero by
+re-running the same enumeration — not by rereading the files you edited.
+
+Two mechanical habits, because careful reading demonstrably did not
+substitute for either: check every occurrence in a file rather than the
+first, and check for near-duplicate paragraphs, where one of a pair is stale.
+
+No check reaches this one, and the reason is worth stating: **nothing
+observes an enumeration that was never run.** A search scoped too narrowly
+produces output indistinguishable from a complete one, and the hits it
+missed are missing from the evidence as well.
+
 ## Phase 4 — CP-3v Component verify
 
 ```
@@ -79,6 +100,40 @@ loop:
   else → escalate
 ```
 
+**The budget is three attempts, and it is not yours to extend.** The tempting
+argument on a fourth failure is that the method has materially changed, so
+this attempt is different in kind rather than a repeat. That argument was
+made three times in one phase and was not baseless — each new method did
+find defects the last one could not have. It was still the wrong call,
+because it is the worker's own assessment of the worker's own work, which is
+the judgment this budget exists to distrust.
+
+On a fourth failure of the same criterion, stop and put it to the user:
+name the pattern across the failures, propose the new method, and let them
+decide whether to spend the attempt. That costs one message. Self-authorising
+the attempt costs a round, and the round after it if you are wrong again.
+
+The amend count is observable; the judgment is not. A worker convinced this
+attempt differs in kind from the last will record it as a first attempt at a
+new method, and the count will agree with them.
+
+### When you built a check *and* a document telling people to satisfy it
+
+Test the pair, not each half. Write the artifact the document instructs —
+literally, following its own words — and run the check on it.
+
+A check verified against inputs you formatted yourself proves the check
+works. It proves nothing about whether anyone reading the instructions will
+produce those inputs. `retro/SKILL.md` taught three spellings of a
+disposition and the lint accepted a fourth, so an author following the
+skill failed on their first attempt, for a convention stated nowhere. Both
+halves were individually correct and independently verified; the defect
+lived only at the join.
+
+No check reaches this one. At authoring time there is no artifact to compare
+against — the defect is that two artifacts were never brought together, and
+nothing can observe that until someone does it.
+
 Copy verifier EVIDENCE rows into `evidence/CP-3v-component.md`.
 
 Record: `checkpoint.sh record <run-dir> CP-3v PASS|FAIL`
@@ -93,6 +148,16 @@ Record: `checkpoint.sh record <run-dir> CP-4 PASS|SKIP`
 
 ## Phase 6 — CP-5 Acceptance (post-condition)
 
+**If the run touched a repository with CI, check its runner before anything else:**
+
+```bash
+bash .claude/lib/ci-status.sh <repo>
+```
+
+A green local suite says nothing about the pushed commit. This has produced a
+false PASS row in a real evidence trail — recorded from a local exit code
+while the runner had been red since that same commit. Cite the run id.
+
 For each mutation, observe artifact (curl, screenshot, re-fetch). Emit:
 
 `EVIDENCE AC-n | CP-5 | PASS | <observation> | <artifact>`
@@ -102,6 +167,34 @@ For each mutation, observe artifact (curl, screenshot, re-fetch). Emit:
 Write `evidence/CP-5-acceptance.md`. **Traceability closure**: every AC in matrix has ≥1 PASS row in ledger.
 
 Record: `checkpoint.sh record <run-dir> CP-5 PASS|FAIL`
+
+### Falsifying a check
+
+Assert the injection landed before running the check. A `sed` that errors, a
+`str.replace` whose target moved, a heredoc into a path that does not
+exist — each leaves the check running against an unmodified file and
+reporting a clean pass, which reads exactly like the check being correct.
+
+That has now happened twice in one session, once reporting three consecutive
+false passes. A falsification that cannot fail is the same defect as a guard
+that cannot fail, one level up, and it is the more dangerous of the two
+because it certifies the other.
+
+### After a revert
+
+`git checkout -- <file>` restores the file to HEAD, not to the state you
+had in mind. If you reverted a probe, an injected test defect, or a bad
+edit, and that file also held uncommitted work you meant to keep, the
+revert took both. Diff against HEAD and confirm what survived before
+continuing — a revert you believe happened is not a revert you observed.
+This has already silently discarded three real edits in one session, one
+commit after the rule was written down.
+
+A hook could diff after every `git checkout --` and refuse the surprise.
+COG ships no hook infrastructure, so this is a cost argument rather than an
+impossibility — the same one that keeps the write-and-commit rule in
+`CLAUDE.md` § Git out of a check, and both close together if hooks ever
+arrive for another reason.
 
 ## Phase 7 — Record + handoff
 

@@ -207,6 +207,11 @@
       "description": "One living review document per multi-item session - cockpit header plus per-item cards you approve or request changes on directly in the doc"
     },
     {
+      "name": "roster-dispatch",
+      "path": ".claude/skills/roster-dispatch/SKILL.md",
+      "description": "Dispatch a domain specialist from the vendored kadre roster - resolves the role, computes its sandbox from the capability tier, writes a run-record, and routes the output to a different agent for peer review"
+    },
+    {
       "name": "no-ai-slop",
       "path": ".claude/skills/no-ai-slop/SKILL.md",
       "description": "Edit drafts into sharper, more human writing while preserving personal voice, or detect AI-slop patterns without rewriting"

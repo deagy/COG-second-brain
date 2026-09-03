@@ -66,7 +66,7 @@ metadata:
 
 ## The Loop (see /loop-engineering)
 
-Scan-until-done over the entry list with a per-entry budget guard (~1 min). The deterministic verifier is the environment itself (`test -e`, `curl`, `gh`) — never the agent's own recollection of whether something "should" still exist. Human escalation: all deletions/archives.
+Delegates the read-only verification sweep to the `memory-verifier` agent (Sonnet), which scans-until-done over the entry list with a per-entry budget guard (~1 min) and writes its report + proposed mutations to `/tmp/memory-hygiene-<date>.md`. The deterministic verifier is the environment itself (`test -e`, `curl`, `gh`) — never the agent's own recollection of whether something "should" still exist. The lead applies the agent's proposed stamps and verified body fixes (direct-apply), confirms any archives (propose-only), and writes the final report to `01-daily/`. Human escalation: all deletions/archives.
 
 ## Report (single file)
 

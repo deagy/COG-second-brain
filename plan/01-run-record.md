@@ -35,7 +35,7 @@ not re-write it.
   `cadre/kernel/contracts/`, marked with its origin revision and a drift note.
 - `06-templates/run-record.template.json` — an annotated example a run fills in,
   so the shape is discoverable without opening the schema.
-- `skills/closed-loop/SKILL.md` — Phase 7 gains a step: write the run-record for
+- `.claude/skills/closed-loop/SKILL.md` — Phase 7 gains a step: write the run-record for
   the run and mark the run incomplete without it.
 - `WORKFLOW.md` — the File homes table gains a row; the Scope section gains one
   sentence that a harness run without a run-record is not a finished run.
@@ -75,7 +75,7 @@ one file, not a second implementation of the lifecycle.
 ## Files touched
 
 New: `05-knowledge/run-record.schema.json`, `06-templates/run-record.template.json`,
-`.claude/lib/run-record-lint.sh`. Edited: `skills/closed-loop/SKILL.md`,
+`.claude/lib/run-record-lint.sh`. Edited: `.claude/skills/closed-loop/SKILL.md`,
 `WORKFLOW.md`.
 
 ## Risk
@@ -99,7 +99,7 @@ Vendored the authoritative `cadre-kernel/kernel/contracts/run-record.schema.json
 no edits. Added `05-knowledge/run-record.provenance.json` (origin + the COG-CP→lifecycle
 mapping in one place), `06-templates/run-record.template.json` (a valid, lint-fillable
 example), and `.claude/lib/run-record-lint.sh` (schema validation via jsonschema draft
-2020-12 + a sha256 drift check). `skills/closed-loop/SKILL.md` Phase 7 now emits a
+2020-12 + a sha256 drift check). `.claude/skills/closed-loop/SKILL.md` Phase 7 now emits a
 lint-clean run-record for every harness run; `WORKFLOW.md` records the mapping and states
 a run without a run-record is not finished.
 

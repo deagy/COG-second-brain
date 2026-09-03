@@ -47,12 +47,12 @@ stays inside the project and work that reaches it.
   production form is a small schema in `05-knowledge/`) listing each mutation, its
   gate, its authority, and its approval-record shape. This is the one claim on the
   authority mapping, owned in one place.
-- `skills/publish-to-confluence/SKILL.md` — the approval step records the authority
+- `.claude/skills/publish-to-confluence/SKILL.md` — the approval step records the authority
   and gate in the run-record before the page is created, and the post-condition
   re-fetches the page to confirm it matches.
-- `skills/team-brief/SKILL.md` — the sync-back to Linear is gated as G8 with the
+- `.claude/skills/team-brief/SKILL.md` — the sync-back to Linear is gated as G8 with the
   Publisher's explicit approval recorded; the sync is the post-condition.
-- `skills/content-factory/SKILL.md` — the publish step is gated G9+G10 with a
+- `.claude/skills/content-factory/SKILL.md` — the publish step is gated G9+G10 with a
   screenshot as the post-condition, matching the existing voice-checklist.
 
 ## Acceptance criteria
@@ -71,8 +71,8 @@ stays inside the project and work that reaches it.
 ## Files touched
 
 New: `plan/authority-gates.md` (temporary home). Edited:
-`skills/publish-to-confluence/SKILL.md`, `skills/team-brief/SKILL.md`,
-`skills/content-factory/SKILL.md`.
+`.claude/skills/publish-to-confluence/SKILL.md`, `.claude/skills/team-brief/SKILL.md`,
+`.claude/skills/content-factory/SKILL.md`.
 
 ## Risk
 
