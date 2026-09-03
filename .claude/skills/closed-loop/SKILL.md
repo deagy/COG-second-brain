@@ -139,6 +139,40 @@ The retry count is observable; the judgment is not. A worker convinced this
 attempt differs in kind from the last will record it as a first attempt at a
 new method, and the count will agree with them.
 
+### Mutate before believing a green test, and mutate more than once
+
+A test that passes under the mutation it exists to catch is worse than no test:
+it advertises a guarantee it does not check, and the next person reads the green
+as coverage.
+
+The `mutation-verify` skill exists for this. What failed in the team-readiness
+goal was invoking it. A contention test written to prove deletion evidence
+survives a lock race passed with its retry budget reverted, passed again with
+the retry removed altogether, and then failed on unmodified code — three results
+that cannot all be about the same property.
+
+**The inconsistency is the finding.** Chasing why the mutations were
+indistinguishable is what exposed the real defect: a `CREATE TABLE IF NOT
+EXISTS` running before the INSERT was absorbing the contention, so which
+statement failed depended on whether an earlier command had created the table.
+One mutation would have hidden that. Two disagreeing mutations could not.
+
+No check reaches this. Which mutation is meaningful *is* the claim the test
+makes, so a program deciding that would already know what the test is for.
+
+### A retry budget that a blocking call has already spent buys nothing
+
+Before adding an application-level retry, check what the layer beneath already
+waits for. SQLite's connection string carried `busy_timeout(5000)` and the
+retry loop's deadline was the same five seconds, so the driver consumed the
+entire budget inside the first `Exec` and the loop found its deadline expired
+before its first check. The retry ran exactly once, which is not a retry.
+
+Where a driver already waits, the application budget has to *exceed* the
+driver's or it is decoration. And a budget is a claim about how much patience
+the failure deserves: a write that can be re-run needs less than one that
+happens after an irreversible mutation, where "try again" is not available.
+
 ### A fixture can destroy the evidence it exists to produce
 
 Two shapes, both of which passed and meant nothing:

@@ -146,6 +146,18 @@ The release job could require the validate run's conclusion, and that is a cost
 decision rather than an impossibility: it serialises every release behind a full
 matrix. Until someone decides that trade is worth it, this is a step you run.
 
+**Read how a repository releases before tagging it.** cadre's release workflow
+tags and publishes *itself* when a version bump lands on `main`, and skips any
+version already tagged. A tag made by hand therefore does two things at once: it
+fails to trigger a release, and it prevents the release that would have
+happened. `cli-v0.7.10` was created that way and is a tag with no release behind
+it — which `release-hygiene.sh` correctly refuses, and which cannot be cleaned
+up from inside a session, because deleting a remote tag needs human approval.
+
+The check that would have prevented it is reading one workflow file. Nothing
+observes the intent at the moment of tagging; the result is caught afterwards,
+by which point the repair needs someone else.
+
 ### And every phase must have been asked its gates
 
 ```bash
