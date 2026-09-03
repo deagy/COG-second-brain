@@ -148,15 +148,35 @@ if errors:
         loc = "/".join(str(p) for p in e.absolute_path) or "<root>"
         sys.stderr.write(f"  {loc}: {e.message}\n")
     sys.exit(1)
+# The template also ships fixed fake sha256 values and a fixed recorded_at, which
+# do not start with TODO. An agent that fills the TODOs and leaves those produces a
+# lint-clean record whose artifact bindings are constants -- the same
+# matches-by-construction defect, one level up.
+# sys.argv[1] is the vendored schema, at <root>/05-knowledge/run-record.schema.json,
+# so the repo root is two levels up.
+_TEMPLATE = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(sys.argv[1]))),
+    "06-templates", "run-record.template.json",
+)
+if not os.path.isfile(_TEMPLATE):
+    sys.stderr.write(f"FAIL: template not found at {_TEMPLATE}\n")
+    sys.exit(2)
+_template_constants = set()
+with open(_TEMPLATE) as _fh:
+    for _p, _v in _walk(json.load(_fh)):
+        if isinstance(_v, str) and (_v.startswith("sha256:") or _v == "2026-09-02T00:00:00Z"):
+            _template_constants.add(_v)
+
 placeholders = [
     "/".join(str(p) for p in path)
     for path, value in _walk(instance)
-    if isinstance(value, str) and value.startswith("TODO")
+    if isinstance(value, str)
+    and (value.startswith("TODO") or value in _template_constants)
 ]
 if placeholders and not os.environ.get("ALLOW_TEMPLATE_PLACEHOLDERS"):
     sys.stderr.write(
-        f"FAIL: {sys.argv[2]} still carries {len(placeholders)} TODO placeholder(s) "
-        "-- a copied template is not a run-record:\n"
+        f"FAIL: {sys.argv[2]} still carries {len(placeholders)} unfilled template "
+        "value(s) -- a copied template is not a run-record:\n"
     )
     for loc in placeholders[:8]:
         sys.stderr.write(f"  {loc}\n")

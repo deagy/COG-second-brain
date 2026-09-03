@@ -44,6 +44,11 @@ FRAMEWORK_FILES=(
   # as blocking checks ("non-zero means the phase cannot be marked done"), so a vault
   # that has the skills but not the scripts gets "No such file or directory" where a
   # gate should run.
+  #
+  # Registering them is necessary but not yet sufficient: file_has_changes returns 1
+  # for a path with no upstream version, so until these land in the configured
+  # upstream every entry below is skipped and the gap stays open for anyone updating
+  # from it. The registration is what makes them ship once they are published.
   ".claude/lib/backlog-lint.sh"
   ".claude/lib/ci-status.sh"
   ".claude/lib/citation-lint.sh"
@@ -154,10 +159,6 @@ FRAMEWORK_FILES=(
   "06-templates/run-record.template.json"
 
   # Authority gate registry (Change 3)
-  # Only authority-gates.md ships: the gate registry is referenced by the
-  # publish/post/sync skills. plan/README.md and plan/01-04 are this
-  # integration's own working documents, not framework content.
-  "plan/authority-gates.md"
 
   # Framework config
   "CLAUDE.md"

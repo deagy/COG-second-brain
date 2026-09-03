@@ -155,12 +155,6 @@ This is the most critical phase. The orchestrator must:
 
 **This phase writes data BACK to Linear to keep it up-to-date with reality from GitHub, Slack, and meetings.**
 
-This is a **G7 evidence** external mutation with the **Publisher** as deciding authority
-(`plan/authority-gates.md`). Record the approval with
-`bash .claude/lib/checkpoint.sh record_approval G7 Publisher <approver> "<issue-keys>" [run-dir]`
-before any Linear write; a sync-back without a recorded approval does not run. The ledger
-exists in every session, so this works outside a harness run.
-
 Use ToolSearch to load the necessary Linear update tools: "+linear update issue", "+linear update initiative", "+linear update project", "+linear create comment", "+linear create attachment", "+linear save status update", "+linear update milestone".
 
 #### Step 1: PR ↔ Issue Linkage

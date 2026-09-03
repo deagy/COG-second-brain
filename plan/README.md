@@ -63,7 +63,7 @@ with placeholder values, not a schema. The authoritative lifecycle contract is
 |---|---|---|---|---|---|
 | 1 | Run-record as the shared object | Every harness run emits a run-record with auditable provenance | new schema + template, `closed-loop/SKILL.md`, `WORKFLOW.md`, new lint | low | implemented (`1d8966b`) |
 | 2 | Per-task amend semantics | COG's CP-3v verify loop gets deny/re-entry teeth | `closed-loop/SKILL.md`, `task-verifier.md`, `checkpoint.sh`, `WORKFLOW.md` | low | implemented (`8a07f03`) |
-| 3 | Gate the high-consequence mutations | External writes go through a named authority + explicit approval | `publish-to-confluence`, `team-brief`, `content-factory` skills | medium | implemented (`883b7fd`) |
+| 3 | Gate the high-consequence mutations | External writes go through a named authority + explicit approval | four publishing skills + `worker-publisher` | medium | **split out** (see below) |
 | 4 | Roster dispatch for specialized execution | — | — | high | **descoped** (see below) |
 
 ## Sequencing
@@ -99,15 +99,46 @@ foundation everything else reads, even though its full wiring comes later.
    `/roster-dispatch` worked in exactly one checkout.
 
    This is the "two authorities for one shape" defect recorded in the
-   2026-08-28 braindump, one level down. Changes 1-3 do not depend on it — none
-   of `run-record-lint.sh`, `checkpoint.sh`, `closed-loop/SKILL.md`, or
-   `authority-gates.md` reference the roster. If COG wants specialist dispatch,
-   the cheap version calls the installed plugin by role name and writes a
-   run-record; it needs no vendored copy.
+   2026-08-28 braindump, one level down. Nothing else depends on it — neither
+   `run-record-lint.sh`, `checkpoint.sh` nor `closed-loop/SKILL.md` references
+   the roster. If COG wants specialist dispatch, the cheap version calls the
+   installed plugin by role name and writes a run-record; it needs no vendored
+   copy.
+
+### Change 3 — split out to its own branch
+
+Gating the external mutations was built here and moved to `plan/cadre-cog-gates`
+(at `5205029`) to be designed once rather than patched a fifth time. Four review
+passes each found defects in it, including every high-severity finding across all
+four; Changes 1 and 2 produced only mechanical defects that stayed closed.
+
+The last pass found the reason the patching was not converging. The gate as built
+did not gate anything:
+
+- `content-factory` is "designed to run unattended on a schedule (nightly)", and
+  the gate text instructed the *agent* to record the approval and then publish —
+  the agent signing its own permission slip. `team-brief`'s Linear sync-back had
+  the same shape.
+- The check meant to catch that matched on gate number alone, so any prior G8 or
+  G9 row satisfied the gate for an unrelated artifact. Demonstrated: a G8 row for
+  a wiki page cleared a Slack post.
+- The artifact it should have matched on is unknowable at approval time — a new
+  page's URL is assigned by the server on POST, so "record the approval before
+  the page is created" against `<page-url>` cannot be satisfied.
+
+A control that looks like a control but passes unconditionally is worse than no
+control, so it does not ship in this state. Redesigning it means deciding what an
+approval *is* in a solo vault running autonomous skills: who records it, against
+what durable identity, and whether an unattended pipeline may publish at all. That
+is a design question, not a patch, and it gets its own PR.
+
+Until then the pre-existing discipline stands unchanged — `CLAUDE.md` § Skill
+Post-Condition Rule already requires explicit approval before an external mutation
+and observation of the artifact after it.
 
 Each sub-plan below is self-contained: the change, the files it touches, the
 acceptance criteria that define done, the risk, and the one decision that unblocks
-it. Read `01-run-record.md` first; the others cross-reference it.
+it. Read `01-run-record.md` first; `02-per-task-amend.md` cross-references it.
 
 ## The rule that governs all four
 
