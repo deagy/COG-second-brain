@@ -2,3 +2,4 @@
 2026-09-03T01:57:03Z	CP-3	PASS	AC-7 and AC-9 in recall 378cd92
 2026-09-03T02:57:02Z	CP-3v	PASS	AC-7 and AC-9 verified against released v0.3.6; 30+ real processes, escape attempts blocked
 2026-09-03T03:24:39Z	CP-5	PASS	AC-7 and AC-9 observed against released recall v0.3.6
+2026-09-03T04:09:45Z	CP-4	FAIL	round 1: evidence lost to a lock race; deletion path unscoped by a scoped credential

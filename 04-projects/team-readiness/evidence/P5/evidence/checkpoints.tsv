@@ -2,3 +2,4 @@
 2026-09-03T03:00:25Z	CP-3	PASS	delete-ingested and deletion-evidence, cadre cli-v0.7.9
 2026-09-03T03:00:25Z	CP-3v	PASS	AC-8 verified end to end against released binaries; absence confirmed independently via recall store info
 2026-09-03T03:24:39Z	CP-5	PASS	AC-8 observed end to end against cli-v0.7.9, absence confirmed via recall store info
+2026-09-03T04:09:45Z	CP-4	FAIL	round 1: evidence lost to a lock race; deletion path unscoped by a scoped credential

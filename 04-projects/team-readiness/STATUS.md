@@ -31,13 +31,19 @@ Releases the criteria are verified against: cadre `cli-v0.7.9`, recall
 
 ## Next action (resume cold from here)
 
-**CP-4 for P3, P4 and P5 is running as one cross-phase verification**, because
-the integration question spans them and sits inside none: P5's deletion
-evidence takes its actor from the resolver P3 built, and P4's namespace scoping
-decides whether two people sharing that store can reach each other's records.
+**Round 2 of CP-4 for P3, P4 and P5**, against the release cut from cadre
+`68095d81` (`cli-v0.7.10`). Round 1 returned FAIL:fixable on two cross-phase
+findings; both are fixed and the fixes are falsified, but a fix verified by its
+author is not verified.
 
-Then: CP-4 for P1 and P2, CP-5 acceptance per phase, CP-6, CP-7 retro, and the
-north-star gate over all nine criteria.
+Then: CP-6 per phase, CP-7 retro, and the north-star gate over all nine
+criteria. CP-4 for P1 and P2 passed at round 2; CP-5 is recorded for all five
+phases.
+
+**This checkpoint was recorded as running when it had never been dispatched.**
+`phase-gates.sh` caught it — three phases with no CP-4 row and no artifact. It
+is the capability-parity failure repeated, and the reason the gate counts rows
+rather than reading this file.
 
 **Releases the criteria are verified against:** cadre `cli-v0.7.9`, recall
 `v0.3.6`, cadre-kernel `v0.14.4`. Every phase from P3 cut one before its
