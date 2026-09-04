@@ -33,6 +33,8 @@ Two of the harness's rules are worth applying whether or not it is on, because t
 
 - **Verification means observing the artifact**: curl the URL, screenshot the page, re-fetch the issue, diff the file. Never re-read a worker's own summary of it. Mandatory for external mutations; see § Skill Post-Condition Rule.
 - **A worker never grades its own homework.** When a fresh pair of eyes is the point (external mutations, auditable claims), the verifier is a separate read-only subagent that receives paths and criteria, never the worker's output.
+- **A mutation check must defeat the test cache, or it is not evidence.** `go test` served a cached `ok` during a mutation check and a mutation appeared to survive that had never run. Pass `-count=1`, or the equivalent for the runner. And treat a surviving mutation as a question rather than a verdict: twice in one session it meant something other than a weak test — once the cache, once an upstream guard short-circuiting before the assertion under test.
+- **A fix that closes a review finding is itself unreviewed.** Two of four review passes on one branch found a defect the previous pass's fix had introduced. The correction gets trusted more than the original precisely because it was written to be correct. When a fix lands in the same surface a finding named, it earns the same scrutiny the finding did.
 
 ## Visual Verification (ALWAYS APPLY, UI/UX tasks)
 
@@ -164,6 +166,8 @@ This is opt-in per skill — not a hard rule for every output. Apply it where wr
 - Do not end a background command with an `echo` after the command whose exit code matters. The notification reports the *last* command's status, so a failed watch followed by `echo` is reported as success. Two CI watches in one session reported exit 0 while having 404'd on an empty run id.
 - Verify the outcome against the artifact, not the wrapper's exit code — for CI, `.claude/lib/ci-status.sh`, which resolves the run for HEAD's exact sha and treats a missing or in-flight run as not-green.
 - No check reaches these: a `PreToolUse` hook could inspect the command string before it runs, and COG ships no hook infrastructure. A cost argument, not an impossibility, and it closes alongside the write-and-commit rule above if hooks ever arrive.
+
+- **Do not chain a state-changing command with one that may be policy-blocked.** A blocked verb rejects the *whole* compound, so nothing earlier in it runs. A `git commit` chained ahead of a `git checkout` never executed, and the block message names the offending verb without saying the command was rejected entire — from the transcript, "the commit failed" and "the commit never ran" are indistinguishable. After any block, `git log -1` and `git status` say which happened. That is recovery; the prevention is not chaining them.
 
 ### Before you assert it, check it
 
