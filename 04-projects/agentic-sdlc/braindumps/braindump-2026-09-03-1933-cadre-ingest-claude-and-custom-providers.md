@@ -6,7 +6,7 @@ date: "2026-09-03"
 created: "2026-09-03 19:33"
 themes: ["knowledge-ingest", "chat-export-parsers", "chunking", "recall"]
 tags: ["#braindump", "#raw-thoughts", "#agentic-sdlc", "#recall", "#ingest"]
-status: "scoped"
+status: "in-progress"
 energy_level: "medium"
 emotional_tone: "neutral"
 confidence: "high"
@@ -169,29 +169,61 @@ and its child chunker inherits the same `MinChunkSize` drop. Fixing hazard 1 is 
 prerequisite either way.
 [Source: `~/sdk/recall/chunker/parent_child.go:51-80` | 2026-09-03 | confidence: high]
 
-## Open questions
+## Built: the chunking half is done
 
-- Expose `document_aware` as a config strategy, or select it implicitly for conversation loaders?
-- How does `MinChunkSize` become reachable per-ingest — config field, loader hint, or a
-  conversation-specific chunker that does not drop?
-- Boundary marker that cannot collide with chat content (which routinely contains `---`)?
-- Should `MetaSectionIndex` be replaced by an explicit turn index the loader sets, given the
-  raw-split-index behaviour?
-- Fix or re-document the `MinChunkSize` "merged with adjacent" comment upstream?
-- Format selection: explicit `--format claude` vs content sniffing, given both exports are `.json`?
+`recall` `feat/document-aware-chunking` — `239560b` (fix + tests) and `f6866b7`
+(changelog + migration), pushed 2026-09-03.
+
+- `document_aware` is now a selectable `store.chunking.strategy`. Config validation
+  and `app.ChunkerFactory` both accept it.
+- `store.chunking.min_chunk_size` is configurable and **defaults to 0 for
+  `document_aware`**, so short turns survive. Not defaulted by zero-value, because 0
+  is a real setting meaning "keep every chunk".
+- `store.chunking.boundary` is exposed, so the marker can avoid colliding with the
+  `---` that chat transcripts routinely contain.
+- **A second, pre-existing bug fell out of the wiring:** `BuildStore` passed
+  `ChunkerFactory(sc.Chunking)` while both stores invoked that factory with
+  `chunker.DefaultConfig()`, so configured `max_tokens` and `overlap` were discarded
+  and every store chunked at package defaults regardless of config. Fixed, and
+  labelled **Breaking (behavioural)** in the CHANGELOG with a `docs/MIGRATION.md`
+  note — applying those values moves chunk boundaries and therefore changes
+  embeddings on the next ingest.
+
+The `MinChunkSize` drop is no longer an inference. `TestChunkerFactory_DocumentAwareKeepsShortTurns`
+failed with *"3 of 5 turns produced no chunk and are absent from the index: short
+confirm, short decision, very short ack"* before the fix. Both tests were
+mutation-checked rather than trusted for being green: restoring `MinChunkSize` 50
+for `document_aware` fails the first on its default assertion, and restoring the
+factory's read of its argument fails both.
+[Source: `~/sdk/recall` `feat/document-aware-chunking` | 2026-09-03 | confidence: high]
+
+## What remains — the loader
+
+The chunking substrate is ready; nothing has been built on the ingest side yet.
+
+- `ClaudeExportLoader` registered via `DirectoryLoader.Loaders`, emitting one
+  Document per conversation with turns separated by the configured boundary.
+- Format selection, still undecided: both Claude and ChatGPT exports are `.json`,
+  so `ForExtension` cannot tell them apart. Explicit `--format claude` or content
+  sniffing.
+- Whether the loader sets an explicit turn index rather than relying on
+  `MetaSectionIndex`, which is a raw split index with empties skipped while
+  `MetaSectionCount` is computed before dropping them — so it cannot be read as
+  "turn 3 of 12".
+- `chunker/chunker.go:16` still documents `MinChunkSize` as *"merged with adjacent
+  chunks"*. No merge logic exists anywhere in the package. Left untouched as a
+  separate claim to correct.
 
 ## Action Items
 
 ### Immediate (24-48 hours)
-- [ ] Decide how `MinChunkSize` becomes per-ingest controllable — without this, short turns drop silently 📅 2026-09-04
-- [ ] Pick a boundary marker that cannot collide with `---` in chat content 📅 2026-09-04
+- [ ] Merge `feat/document-aware-chunking` and cut the release via Actions → "Tag release" → minor 📅 2026-09-04
 
 ### Short-term (1-2 weeks)
-- [ ] Expose `document_aware` in `config.go` validation and `app.ChunkerFactory` 📅 2026-09-10
-- [ ] Prototype `ClaudeExportLoader` via `DirectoryLoader.Loaders`: one Document per conversation, turns boundary-separated 📅 2026-09-10
-- [ ] Add a regression test for a sub-50-character turn surviving ingest 📅 2026-09-10
-- [ ] Decide whether the loader sets an explicit turn index rather than relying on `MetaSectionIndex` 📅 2026-09-10
-- [ ] Report or fix the `MinChunkSize` doc/behaviour mismatch in `chunker/chunker.go:16` 📅 2026-09-10
+- [ ] Build `ClaudeExportLoader` via `DirectoryLoader.Loaders`: one Document per conversation, turns boundary-separated 📅 2026-09-10
+- [ ] Decide format selection: `--format claude` vs content sniffing 📅 2026-09-10
+- [ ] Decide whether the loader sets an explicit turn index rather than `MetaSectionIndex` 📅 2026-09-10
+- [ ] Fix the `MinChunkSize` "merged with adjacent chunks" doc comment in `chunker/chunker.go:16` 📅 2026-09-10
 
 ## Connections
 - **Related Braindumps:** [[braindump-2026-08-28-1928-scrapping-cadre-for-gloop-and-recall]]
